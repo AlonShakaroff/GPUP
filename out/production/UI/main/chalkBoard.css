@@ -4,10 +4,9 @@
  default-primary-color : #1b4115  ;
  light-primary-color   : #5ea253  ;
  text-primary-color    : #ffffff  ;
- accent-color          : #b2ff9d
-;
- divider-color         : #e1ffd8
-;
+ accent-color          : #b2ff9d  ;
+ divider-color         : #e1ffd8  ;
+
 
 }
 
@@ -96,6 +95,7 @@
 }
  .title {
   -fx-background-color: default-primary-color;
+
  }
  .title > .text{
   -fx-fill: text-primary-color;
