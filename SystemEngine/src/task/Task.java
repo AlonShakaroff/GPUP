@@ -32,40 +32,40 @@ public abstract class Task {
             for (Target target: targetGraph.getWaitingSet()){
                 target.setStatus(Target.Status.IN_PROCESS);
 
-                communicator.printStartTask(this,target);
-                fileSaver.printStartTask(target.getName(), taskName);
-                communicator.printTargetExtraData(target);
-                fileSaver.printExtraData(target.getExtraData());
+                //communicator.printStartTask(this,target);
+                //fileSaver.printStartTask(target.getName(), taskName);
+                //communicator.printTargetExtraData(target);
+                //fileSaver.printExtraData(target.getExtraData());
 
                 runTaskOnTarget(target);
                 target.setStatus(Target.Status.FINISHED);
 
-                communicator.printRunResult(target);
-                fileSaver.printTargetRunResult(target);
+                //communicator.printRunResult(target);
+                //fileSaver.printTargetRunResult(target);
 
                 updateWaitingAndSkipped(target,targetGraph);
-                fileSaver.CloseFile();
+                //fileSaver.CloseFile();
             }
             targetGraph.recalculateStatusGraph();
         }
         targetGraph.setTaskEndTime(Instant.now());
         targetGraph.setTotalTaskDuration(Duration.between(targetGraph.getTaskStartTime(),targetGraph.getTaskEndTime()));
-        communicator.printGraphStats(targetGraph, dirPath);
+        //communicator.printGraphStats(targetGraph, dirPath);
         targetGraph.canRunIncrementally();
     }
 
     public void updateWaitingAndSkipped(Target target, TargetGraph targetGraph) {
         if(target.getRunResult() == Target.Result.FAILURE) {
             target.setAllAboveSkipped();
-            communicator.printAllTargetsAboveSkipped(target);
-            fileSaver.printAllTargetsAboveSkipped(target);
+            //communicator.printAllTargetsAboveSkipped(target);
+            //fileSaver.printAllTargetsAboveSkipped(target);
         }
         else { // success or success with warning
             for (Target curTarget : target.getRequiredForSet()) {
                 curTarget.determineIfStatusIsWaiting();
                 if(curTarget.getRunStatus() == Target.Status.WAITING) {
-                    communicator.printTargetReadyToTask(curTarget);
-                    fileSaver.printTargetReadyToTask(curTarget.getName(),taskName);
+                    //communicator.printTargetReadyToTask(curTarget);
+                    //fileSaver.printTargetReadyToTask(curTarget.getName(),taskName);
                 }
             }
         }

@@ -1,7 +1,7 @@
 package task;
 
 import target.Target;
-import userinterface.Communicator;
+//import userinterface.Communicator;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -14,8 +14,8 @@ public class SimulationTask extends Task{
     private final float warningChance;
     private final Random random;
 
-    public SimulationTask(int processTimeInMS,boolean isRandom,float successChance,float warningChance, Communicator communicator){
-        super(communicator,"Simulation task" );
+    public SimulationTask(int processTimeInMS,boolean isRandom,float successChance,float warningChance/*, Communicator communicator*/){
+        super(/*communicator,*/"Simulation task" );
         this.isRandom  = isRandom;
         this.processTimeInMS = processTimeInMS;
         this.successChance = successChance;
@@ -33,15 +33,15 @@ public class SimulationTask extends Task{
             runTime = processTimeInMS;
 
         target.setTargetTaskBegin(Instant.now());
-        communicator.printTaskIsStarting(this,target);
-        fileSaver.printTaskIsStarting(target.getName(),getTaskName());
+        //communicator.printTaskIsStarting(this,target);
+        //fileSaver.printTaskIsStarting(target.getName(),getTaskName());
 
         try { Thread.sleep(runTime);
         } catch (InterruptedException ignored) { }
         target.setTargetTaskEnd(Instant.now());
 
-        communicator.printTaskIsEnding(this,target ,runTime*0.001f);
-        fileSaver.printTaskIsEnding(target.getName(),getTaskName() ,runTime*0.001f);
+        //communicator.printTaskIsEnding(this,target ,runTime*0.001f);
+        //fileSaver.printTaskIsEnding(target.getName(),getTaskName() ,runTime*0.001f);
 
         if (randSuccess > successChance){
             target.setResult(Target.Result.FAILURE);

@@ -11,6 +11,30 @@ import java.time.Instant;
 import java.util.*;
 
 public class Target implements Serializable {
+
+    static public enum Status {FROZEN, SKIPPED, WAITING, IN_PROCESS, FINISHED};
+    static public enum Result {SUCCESS, WARNING, FAILURE, SKIPPED};
+    static public enum Type {LEAF, MIDDLE, ROOT, INDEPENDENT};
+
+    private String name;
+    private String ExtraData;
+    private Set<Target> requiredForSet;
+    private Set<Target> dependsOnSet;
+    private Status runStatus;
+    private Result runResult;
+    private Type nodeType;
+    private Duration targetTaskTime;
+    private Instant targetTaskBegin,targetTaskEnd;
+    private boolean isVisited;
+    private boolean didSucceedInPrevRuns;
+    private Set<String> serialSets;
+
+    public Set<String> getSerialSets() {
+        return serialSets;
+    }
+
+    public void addSerialSet(String setName) { serialSets.add(setName); }
+
     public Duration getTargetTaskTime() {
         return targetTaskTime;
     }
@@ -72,7 +96,7 @@ public class Target implements Serializable {
 
     }
 
-    public boolean isDidSucceedInPrevRuns() {
+    public boolean didSucceedInPrevRuns() {
         return didSucceedInPrevRuns;
     }
 
@@ -80,21 +104,7 @@ public class Target implements Serializable {
         this.didSucceedInPrevRuns = didSucceedInPrevRuns;
     }
 
-    static public enum Status {FROZEN, SKIPPED, WAITING, IN_PROCESS, FINISHED};
-    static public enum Result {SUCCESS, WARNING, FAILURE, SKIPPED};
-    static public enum Type {LEAF, MIDDLE, ROOT, INDEPENDENT};
 
-    private String name;
-    private String ExtraData;
-    private Set<Target> requiredForSet;
-    private Set<Target> dependsOnSet;
-    private Status runStatus;
-    private Result runResult;
-    private Type nodeType;
-    private Duration targetTaskTime;
-    private Instant targetTaskBegin,targetTaskEnd;
-    private boolean isVisited;
-    private boolean didSucceedInPrevRuns;
 
     public Target(String name, String extraData)
     {
@@ -106,6 +116,7 @@ public class Target implements Serializable {
         this.dependsOnSet = new HashSet<Target>();
         this.requiredForSet = new HashSet<Target>();
         this.runStatus = Status.WAITING;
+        this.serialSets = new HashSet<>();
         this.resetTarget();
     }
 

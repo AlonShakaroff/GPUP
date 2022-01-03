@@ -15,7 +15,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 import runtask.TaskController;
+import target.TargetGraph;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -46,28 +48,24 @@ public class MainController {
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(CONNECTIONS_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
-        assert url != null;
         connectionsComponent = fxmlLoader.load(url.openStream());
         connectionsController = fxmlLoader.getController();
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(GRAPH_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
-        assert url != null;
         graphComponent = fxmlLoader.load(url.openStream());
         graphController = fxmlLoader.getController();
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(RUNTASK_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
-        assert url != null;
         runTaskComponent = fxmlLoader.load(url.openStream());
         taskController = fxmlLoader.getController();
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(ABOUT_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
-        assert url != null;
         aboutComponent = fxmlLoader.load(url.openStream());
     }
 
@@ -209,11 +207,16 @@ public class MainController {
         fileChooser.getExtensionFilters().add(extensionFilter);
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
-            menuBarCloseFileButton.setDisable(false);
-            closeFileButton.setDisable(false);
-            graphButton.setDisable(false);
-            connectionsButton.setDisable(false);
-            runTaskButton.setDisable(false);
+            try {
+                TargetGraph.createTargetGraphFromXml(file);
+                menuBarCloseFileButton.setDisable(false);
+                closeFileButton.setDisable(false);
+                graphButton.setDisable(false);
+                connectionsButton.setDisable(false);
+                runTaskButton.setDisable(false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package target;
 
 import exceptions.*;
+import xmlfiles.generated.GPUPConfiguration;
 import xmlfiles.generated.GPUPDescriptor;
 import xmlfiles.generated.GPUPTarget;
 
@@ -25,12 +26,20 @@ public class TargetGraph implements Serializable {
     private Boolean canRunIncrementally;
     private String graphName;
     private String directory;
+    private Map<String, Set<String>> SerialSets;
+    private int maxParallelism;
+
+    public Map<String, Set<String>> getSerialSets() {
+        return SerialSets;
+    }
 
     static public enum pathDirection {DEPENDS_ON, REQUIRED_FOR}
 
-    public TargetGraph(String name, String directory) {
+    public TargetGraph(String name, String directory, int maxParallelism) {
         this.graphName = name;
         this.directory = directory;
+        this.maxParallelism = maxParallelism;
+        this.SerialSets = new HashMap<>();
         allTargets = new HashMap<>();
         statusGraph = new HashMap<>();
         typeSetMap = new HashMap<>();
@@ -247,17 +256,46 @@ public class TargetGraph implements Serializable {
         return circleFound;
     }
 
-    public static TargetGraph createTargetGraphFromXml(String FILE_NAME) throws Exception {
-        GPUPDescriptor gpupDescriptor = fromXmlFileToObject(FILE_NAME);
-        String GpupWorkingDirectory = gpupDescriptor.getGPUPConfiguration().getGPUPWorkingDirectory();
+    public static TargetGraph createTargetGraphFromXml(File file) throws Exception {
+
+        JAXBContext jaxbContext = JAXBContext.newInstance(GPUPDescriptor.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        GPUPDescriptor gpupDescriptor = (GPUPDescriptor) jaxbUnmarshaller.unmarshal(file);
+
+        GPUPConfiguration gpupConfiguration = gpupDescriptor.getGPUPConfiguration();
+        String GpupWorkingDirectory = gpupConfiguration.getGPUPWorkingDirectory();
         checkIfPathIsValidDirectory(GpupWorkingDirectory);
-        TargetGraph targetGraph = new TargetGraph(gpupDescriptor.getGPUPConfiguration().getGPUPGraphName(),GpupWorkingDirectory);
+        TargetGraph targetGraph = new TargetGraph(gpupConfiguration.getGPUPGraphName(),GpupWorkingDirectory,gpupConfiguration.getGPUPMaxParallelism());
         for (GPUPTarget gpupTarget : gpupDescriptor.getGPUPTargets().getGPUPTarget()) {
             Target target = new Target(gpupTarget);
             if (targetGraph.allTargets.containsKey(target.getName().toUpperCase())){
                 throw new TargetAppearTwiceException(target);
             }
             targetGraph.addTargetToGraph(target);
+        }
+        if(gpupDescriptor.getGPUPSerialSets() == null)
+            targetGraph.SerialSets = null;
+        else {
+            for (GPUPDescriptor.GPUPSerialSets.GPUPSerialSet serialSet : gpupDescriptor.getGPUPSerialSets().getGPUPSerialSet()) {
+
+                Map<String, Set<String>> serialSets = targetGraph.getSerialSets();
+                if (serialSets.containsKey(serialSet.getName().toUpperCase()))
+                    throw new TwoSerialSetsWithSameName(serialSet.getName());
+                else {
+                    String[] targetsInCurrentSet = serialSet.getTargets().split(",");
+                    Set<String> currentSetTargetsSet = new HashSet<>();
+
+                    for (String targetName : targetsInCurrentSet) {
+                        if (!targetGraph.allTargets.containsKey(targetName.toUpperCase()))
+                            throw new TargetThatAppearsInTheSerialSetDoNotExist(targetName.toUpperCase(), serialSet.getName().toUpperCase());
+                        else {
+                            targetGraph.getTarget(targetName).addSerialSet(serialSet.getName());
+                            currentSetTargetsSet.add(targetName.toUpperCase());
+                        }
+                    }
+                    serialSets.put(serialSet.getName(), currentSetTargetsSet);
+                }
+            }
         }
         for (GPUPTarget gpupTarget : gpupDescriptor.getGPUPTargets().getGPUPTarget()) {
             if (gpupTarget.getGPUPTargetDependencies() != null) {
@@ -279,21 +317,6 @@ public class TargetGraph implements Serializable {
         else {
             Files.createDirectories(workingDirPath);
         }
-    }
-
-    private static GPUPDescriptor fromXmlFileToObject(String FILE_NAME) throws JAXBException, xmlFileNotFoundException,NotXmlFileException {
-            File file = new File(FILE_NAME);
-            if(!file.exists())
-                throw new xmlFileNotFoundException(FILE_NAME);
-            int i =FILE_NAME.lastIndexOf('.');
-            String extension = "";
-            if(i>0)
-                extension= FILE_NAME.substring(i+1);
-            if (!extension.equals("xml"))
-                throw new NotXmlFileException(FILE_NAME);
-            JAXBContext jaxbContext = JAXBContext.newInstance(GPUPDescriptor.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            return (GPUPDescriptor) jaxbUnmarshaller.unmarshal(file);
     }
 
     public String getDirectory() {
