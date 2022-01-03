@@ -25,7 +25,7 @@
                         <Label styleClass="headLines" text="targets dependencies" />
                         <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="SOMETIMES">
                            <content>
-                              <TableView fx:id="dependenciesTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: silver;">
+                              <TableView fx:id="dependenciesTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
                                  <columns>
                                     <TableColumn minWidth="50.0" prefWidth="-1.0" text="Name" />
                                     <TableColumn minWidth="50.0" prefWidth="-1.0" text="Type" />

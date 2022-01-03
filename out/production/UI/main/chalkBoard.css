@@ -4,8 +4,9 @@
  default-primary-color : #1b4115  ;
  light-primary-color   : #5ea253  ;
  text-primary-color    : #ffffff  ;
- accent-color          : #7cff59  ;
- divider-color         : #BDBDBD  ;
+ accent-color          : #b2ff9d  ;
+ divider-color         : #e1ffd8  ;
+
 
 }
 
@@ -52,10 +53,13 @@
 
 .toggle-button:hover{
  -fx-background-color : linear-gradient(dark-primary-color, light-primary-color);
+ -fx-border-width: 2;
+ -fx-font-size: 15px;
+ -fx-border-color: divider-color;
 }
 .toggle-button:selected{
- -fx-background-color : linear-gradient(dark-primary-color, darkgrey);
- -fx-effect: innershadow(gaussian,black,5,0.2,1,1);
+ -fx-background-color : linear-gradient(dark-primary-color, default-primary-color);
+ -fx-effect: innershadow(gaussian,black,10,0.3,1,1);
 }
 
 .label{
@@ -91,8 +95,12 @@
 }
  .title {
   -fx-background-color: default-primary-color;
-  -fx-border-color: dark-primary-color;
+
  }
+ .title > .text{
+  -fx-fill: text-primary-color;
+ }
+
 .tab-header-background{
  -fx-background-color: dark-primary-color;
 }
@@ -132,4 +140,29 @@
 
 .radio-button{
  -fx-text-fill: text-primary-color;
+}
+
+.list-view{
+ -fx-background-image: url(/resources/images/chalkBoardBlack.jpg);
+}
+
+.table-view{
+  -fx-background-image: url(/resources/images/chalkBoardBlack.jpg);
+ }
+
+.table-column > .label{
+ -fx-background-image: url(/resources/images/chalkBoardBlack.jpg);
+ -fx-background-color: lightgreen;
+ -fx-opacity: 0.7;
+}
+.progress-bar:determinate >.bar {
+ -fx-background-color : linear-gradient(lightgreen, darkgreen);
+ -fx-effect: innershadow(gaussian,white,5,0.2,1,1);
+}
+.track{
+ -fx-background-color: linear-gradient(darkslategray, lightslategray);
+ -fx-effect: innershadow(gaussian,black,10,0.3,1,1);
+}
+.text-area .content{
+ -fx-background-image: url(/resources/images/chalkBoardBlack.jpg);
 }

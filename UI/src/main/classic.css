@@ -52,7 +52,11 @@
 
 .toggle-button:hover{
  -fx-background-color : linear-gradient(dark-primary-color, light-primary-color);
+ -fx-font-size: 15px;
+ -fx-border-width: 2;
+ -fx-border-color: divider-color;
 }
+
 .toggle-button:selected{
  -fx-background-color : linear-gradient(dark-primary-color, darkgrey);
  -fx-effect: innershadow(gaussian,black,5,0.2,1,1);
