@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="connections.ConnectionsController">
+   <content>
+      <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="280.0" minWidth="540.0" prefHeight="480.0" prefWidth="640.0">
+         <tabs>
+            <Tab closable="false" text="Find path">
+               <content>
+                  <BorderPane prefHeight="400.0" prefWidth="700.0" styleClass="primaryBackground">
+                     <top>
+                        <Label styleClass="headLines" text="Find path between two targets" textFill="#a39090" BorderPane.alignment="CENTER_LEFT">
+                           <BorderPane.margin>
+                              <Insets left="10.0" top="10.0" />
+                           </BorderPane.margin>
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Label>
+                     </top>
+                     <left>
+                        <VBox maxHeight="1.7976931348623157E308" minWidth="-Infinity" prefWidth="170.0" spacing="5.0" BorderPane.alignment="TOP_LEFT">
+                           <children>
+                              <VBox maxHeight="80.0" prefHeight="0.0" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <Label text="Source" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="sourceComboBox" editable="true" onAction="#sourceComboBoxClicked" prefWidth="150.0" promptText="from" VBox.vgrow="SOMETIMES" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <VBox layoutX="10.0" layoutY="20.0" maxHeight="80.0" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <Label text="destination" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="destinationComboBox" editable="true" onAction="#destinationComboBoxClicked" prefWidth="150.0" promptText="to" VBox.vgrow="SOMETIMES" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <VBox layoutX="15.0" layoutY="191.0" maxHeight="80.0" spacing="5.0" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <RadioButton fx:id="pathReqForradioButton" mnemonicParsing="false" selected="true" text="requierd for">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="conactions" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="pathDependsOnRadioButton" mnemonicParsing="false" text="depends on" toggleGroup="$conactions" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets left="5.0" />
+                                 </padding>
+                              </VBox>
+                              <Button fx:id="pathSubmitButton" disable="true" mnemonicParsing="false" onAction="#pathSubmitButtonClicked" prefWidth="150.0" text="submit" VBox.vgrow="NEVER">
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" left="5.0" />
+                                 </VBox.margin>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding>
+                        </VBox>
+                     </left>
+                     <center>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <ListView fx:id="pathListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" />
+                           </content>
+                           <BorderPane.margin>
+                              <Insets bottom="30.0" right="30.0" top="15.0" />
+                           </BorderPane.margin>
+                        </ScrollPane>
+                     </center>
+                  </BorderPane>
+               </content>
+            </Tab>
+            <Tab closable="false" text="Find circle">
+               <content>
+                  <BorderPane prefHeight="400.0" prefWidth="700.0" styleClass="primaryBackground">
+                     <top>
+                        <Label styleClass="headLines" text="Find out if target is in a circle" textFill="#a39090" BorderPane.alignment="CENTER_LEFT">
+                           <BorderPane.margin>
+                              <Insets left="10.0" top="10.0" />
+                           </BorderPane.margin>
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Label>
+                     </top>
+                     <left>
+                        <VBox maxHeight="1.7976931348623157E308" prefWidth="170.0" spacing="20.0" BorderPane.alignment="TOP_LEFT">
+                           <children>
+                              <VBox maxHeight="235.0" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <Label text="Choose target" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="circleTargetComboBox" editable="true" onAction="#circleTargetComboBoxClicked" prefWidth="150.0" promptText="target" VBox.vgrow="SOMETIMES" />
+                                 </children>
+                                 <padding>
+                                    <Insets right="5.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <Button fx:id="circleSubmitButton" disable="true" mnemonicParsing="false" onAction="#circleSubmitButtonClicked" prefWidth="150.0" text="submit" VBox.vgrow="NEVER">
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" left="5.0" />
+                                 </VBox.margin>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding>
+                        </VBox>
+                     </left>
+                     <center>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <ListView fx:id="circleListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
+                                 <padding>
+                                    <Insets bottom="30.0" left="30.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </ListView>
+                           </content>
+                           <BorderPane.margin>
+                              <Insets bottom="30.0" right="30.0" top="15.0" />
+                           </BorderPane.margin>
+                        </ScrollPane>
+                     </center>
+                  </BorderPane>
+               </content>
+            </Tab>
+            <Tab closable="false" text="what if">
+               <content>
+                  <BorderPane prefHeight="400.0" prefWidth="700.0" styleClass="primaryBackground">
+                     <top>
+                        <Label styleClass="headLines" text="Find all dependencies of a target" textFill="#a39090" BorderPane.alignment="CENTER_LEFT">
+                           <BorderPane.margin>
+                              <Insets left="10.0" top="10.0" />
+                           </BorderPane.margin>
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Label>
+                     </top>
+                     <left>
+                        <VBox maxHeight="1.7976931348623157E308" prefWidth="170.0" spacing="20.0" BorderPane.alignment="TOP_LEFT">
+                           <children>
+                              <VBox maxHeight="80.0" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <Label text="Choose target" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="whatIfTargetComboBox" editable="true" onAction="#whatIfTargetComboBoxClicked" prefWidth="150.0" promptText="target" VBox.vgrow="SOMETIMES" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <VBox maxHeight="135.0" spacing="5.0" VBox.vgrow="SOMETIMES">
+                                 <children>
+                                    <RadioButton fx:id="whatIfReqForRadioButton" mnemonicParsing="false" selected="true" text="requierd for">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="conactions1" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="whatIfDependsOnRadioButton" mnemonicParsing="false" text="depends on" toggleGroup="$conactions1" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <Button fx:id="WhatIfSubmitButton" disable="true" mnemonicParsing="false" onAction="#WhatIfSubmitButtonClicked" prefHeight="20.0" prefWidth="150.0" text="submit" VBox.vgrow="SOMETIMES">
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" left="5.0" />
+                                 </VBox.margin>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding>
+                        </VBox>
+                     </left>
+                     <center>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+                           <content>
+                              <TableView fx:id="WhatIfTable" disable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0">
+                                <columns>
+                                  <TableColumn prefWidth="148.0" text="target" />
+                                    <TableColumn prefWidth="126.0" text="direct / indirect" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </content>
+                           <BorderPane.margin>
+                              <Insets bottom="30.0" right="30.0" top="10.0" />
+                           </BorderPane.margin>
+                        </ScrollPane>
+                     </center>
+                  </BorderPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </content>
+</ScrollPane>
