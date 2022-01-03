@@ -1,19 +1,19 @@
 
 {
- dark-primary-color    : #c7c7cc;
- default-primary-color : #e5e5ea;
- light-primary-color   : #f2f2f7;
- accent-color          : #bad3e5;
- primary-text-color    : #000000  ;
- divider-color         : #BDBDBD; 
+ dark-primary-color    : #1b2b09  ;
+ default-primary-color : #1b4115  ;
+ light-primary-color   : #5ea253  ;
+ text-primary-color    : #ffffff  ;
+ accent-color          : #7cff59  ;
+ divider-color         : #BDBDBD  ;
 
 }
 
 .primaryBackground{
 /*-fx-background-color : light-primary-color;*/
--fx-background-image: url(/resources/images/graybackground.jpg);
- -fx-background-repeat: stretch;
- -fx-background-size: cover;
+-fx-background-image: url(/resources/images/chalkBoard.jpg);
+-fx-background-repeat: stretch;
+-fx-background-size: cover;
 }
 .secondaryBackground{
 -fx-background-color : default-primary-color;
@@ -33,9 +33,9 @@
 .button{
 -fx-border-color : divider-color;	
 -fx-background-color : dark-primary-color;
--fx-text-fill : primary-text-color;
+-fx-text-fill : text-primary-color;
 -fx-font-size : 14px;
--fx-font-family : "system-ui";
+-fx-font-family : "Comic Sans MS";
  -fx-font-weight : bold;
 }
 .button:hover{
@@ -44,9 +44,9 @@
 
 .toggle-button{
 -fx-background-color : dark-primary-color;
--fx-text-fill : primary-text-color;
+-fx-text-fill : text-primary-color;
 -fx-font-size : 14px;
--fx-font-family : "system-ui";
+-fx-font-family : "Comic Sans MS";
  -fx-font-weight : bold;
 }
 
@@ -59,15 +59,15 @@
 }
 
 .label{
--fx-text-fill : primary-text-color;
+-fx-text-fill : text-primary-color;
 -fx-font-size : 14px;
--fx-font-family : "system-ui";
+-fx-font-family : "Comic Sans MS";
 }
 
 .headLines{
--fx-font-size : 26px;
--fx-text-fill: primary-text-color;
--fx-font-family : "system-ui";
+-fx-font-size : 24px;
+-fx-font-family : "Comic Sans MS";
+-fx-text-fill: accent-color;
 -fx-font-weight : bold;
 }
 
@@ -86,7 +86,7 @@
 }
 .searchfilebutton {
  -fx-font-size: 12px;
- -fx-font-family: "system-ui";
+ -fx-font-family: "Comic Sans MS";
  -fx-background-color: default-primary-color;
 }
  .title {
@@ -99,6 +99,9 @@
 .tab{
   -fx-background-color: default-primary-color;
 }
+.tab-label{
+ -fx-text-fill: text-primary-color;
+}
 .tab:hover{
  -fx-background-color : linear-gradient(default-primary-color, light-primary-color);
 }
@@ -110,10 +113,23 @@
 }
 
 #logo {
- -fx-image: url("/resources/images/classicLogo.png");
+ -fx-image: url("/resources/images/chalkBoardLogo.png");
  -fx-repeat: stretch;
  -fx-size: 900 506;
  -fx-position: center center;
  -fx-opacity : 1;
 }
+.menu-item{
+ -fx-background-color: light-primary-color;
+}
+.menu-item:hover{
+ -fx-background-color: dark-primary-color;
+}
 
+.check-box{
+ -fx-text-fill: text-primary-color;
+}
+
+.radio-button{
+ -fx-text-fill: text-primary-color;
+}

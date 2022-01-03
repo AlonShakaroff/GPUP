@@ -42,7 +42,7 @@ public class Main extends Application {
         MainController mainController = fxmlLoader.getController();
 
         Scene scene = new Scene(mainMenuComponent,1280, 800);
-        scene.getStylesheets().add(getClass().getResource("classic.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
         primaryStage.setScene(scene);
 
         mainController.initialize(primaryStage);

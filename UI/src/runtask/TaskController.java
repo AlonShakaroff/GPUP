@@ -2,14 +2,7 @@ package runtask;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -88,6 +81,9 @@ public class TaskController {
     private TableView<?> progressTableView;
 
     @FXML
+    private TextArea runDetailsTextArea;
+
+    @FXML
     private ProgressBar progressBar;
 
     @FXML
@@ -119,5 +115,6 @@ public class TaskController {
     void stopTaskButtonClicked(ActionEvent event) {
 
     }
+
 
 }

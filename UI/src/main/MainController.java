@@ -13,15 +13,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import javafx.stage.*;
 import runtask.TaskController;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 
 import static main.include.CommonResourcesPaths.*;
 
@@ -134,6 +132,7 @@ public class MainController {
     private Color x4;
 
 
+
     @FXML
     void aboutGPUPButtonClicked(ActionEvent event) {
         if (aboutStage == null) {
@@ -229,6 +228,7 @@ public class MainController {
 
     @FXML
     void streetSkinButtonClicked(ActionEvent event) {
+
     }
 
     @FXML
@@ -237,9 +237,12 @@ public class MainController {
 
     @FXML
     void chalkboardSkinButtonClicked(ActionEvent event) {
+        primaryStage.getScene().getStylesheets().remove(0,1);
+        primaryStage.getScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("chalkBoard.css")).toExternalForm());
     }
-
     @FXML
     void classicSkinButtonClicked(ActionEvent event) {
+        primaryStage.getScene().getStylesheets().remove(0,1);
+        primaryStage.getScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
     }
 }
