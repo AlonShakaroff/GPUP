@@ -3,18 +3,17 @@
  dark-primary-color    : #c7c7cc;
  default-primary-color : #e5e5ea;
  light-primary-color   : #f2f2f7;
- text-primary-color    : #FFFFFF; 
  accent-color          : #bad3e5;
- primary-text-color    : #212121; 
- secondary-text-color  : #757575; 
+ primary-text-color    : #000000  ;
  divider-color         : #BDBDBD; 
 
 }
 
 .primaryBackground{
- -fx-background-image: url(/resources/images/graybackground.jpg);
+/*-fx-background-color : light-primary-color;*/
+-fx-background-image: url(/resources/images/graybackground.jpg);
+ -fx-background-repeat: stretch;
  -fx-background-size: cover;
-
 }
 .secondaryBackground{
 -fx-background-color : default-primary-color;
@@ -53,7 +52,11 @@
 
 .toggle-button:hover{
  -fx-background-color : linear-gradient(dark-primary-color, light-primary-color);
+ -fx-font-size: 15px;
+ -fx-border-width: 2;
+ -fx-border-color: divider-color;
 }
+
 .toggle-button:selected{
  -fx-background-color : linear-gradient(dark-primary-color, darkgrey);
  -fx-effect: innershadow(gaussian,black,5,0.2,1,1);
@@ -66,8 +69,8 @@
 }
 
 .headLines{
--fx-font-size : 24px;
--fx-effect: dropshadow(gaussian, dark-primary-color,0.1,0.1,0.1,0.1);
+-fx-font-size : 26px;
+-fx-text-fill: primary-text-color;
 -fx-font-family : "system-ui";
 -fx-font-weight : bold;
 }
@@ -112,7 +115,7 @@
 
 #logo {
  -fx-image: url("/resources/images/classicLogo.png");
- -fx-repeat: streach;
+ -fx-repeat: stretch;
  -fx-size: 900 506;
  -fx-position: center center;
  -fx-opacity : 1;

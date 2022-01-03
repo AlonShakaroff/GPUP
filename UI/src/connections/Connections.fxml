@@ -84,7 +84,7 @@
                      <center>
                         <ScrollPane fitToHeight="true" fitToWidth="true">
                            <content>
-                              <ListView fx:id="pathListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="pathListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" />
                            </content>
                            <BorderPane.margin>
                               <Insets bottom="30.0" right="30.0" top="15.0" />
@@ -136,7 +136,7 @@
                      <center>
                         <ScrollPane fitToHeight="true" fitToWidth="true">
                            <content>
-                              <ListView fx:id="circleListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
+                              <ListView fx:id="circleListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
                                  <padding>
                                     <Insets bottom="30.0" left="30.0" right="10.0" top="10.0" />
                                  </padding>
@@ -205,10 +205,10 @@
                      <center>
                         <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
                            <content>
-                              <TableView fx:id="WhatIfTable" disable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0">
+                              <TableView fx:id="WhatIfTable" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0">
                                 <columns>
-                                  <TableColumn prefWidth="148.0" text="target" />
-                                    <TableColumn prefWidth="126.0" text="direct / indirect" />
+                                  <TableColumn editable="false" prefWidth="148.0" text="target" />
+                                    <TableColumn editable="false" prefWidth="126.0" text="direct / indirect" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

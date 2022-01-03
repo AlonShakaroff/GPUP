@@ -18,14 +18,14 @@
    <tabs>
       <Tab closable="false" text="Table view">
          <content>
-            <SplitPane dividerPositions="0.55" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="552.0" prefWidth="1000.0">
+            <SplitPane dividerPositions="0.55" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="552.0" prefWidth="1000.0" styleClass="primaryBackground">
                <items>
                   <VBox alignment="TOP_CENTER" styleClass="primaryBackground">
                      <children>
                         <Label styleClass="headLines" text="targets dependencies" />
                         <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="SOMETIMES">
                            <content>
-                              <TableView fx:id="dependenciesTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: silver;">
+                              <TableView fx:id="dependenciesTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
                                  <columns>
                                     <TableColumn minWidth="50.0" prefWidth="-1.0" text="Name" />
                                     <TableColumn minWidth="50.0" prefWidth="-1.0" text="Type" />
@@ -45,7 +45,7 @@
                         <Insets bottom="5.0" left="5.0" top="5.0" />
                      </padding>
                   </VBox>
-                  <SplitPane dividerPositions="0.25" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL">
+                  <SplitPane dividerPositions="0.25" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" styleClass="primaryBackground">
                      <items>
                         <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="primaryBackground">
                            <children>
@@ -91,7 +91,7 @@
          <content>
             <ScrollPane fitToHeight="true" fitToWidth="true">
                <content>
-                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="500.0" minWidth="800.0">
+                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="500.0" minWidth="800.0" styleClass="primaryBackground">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />

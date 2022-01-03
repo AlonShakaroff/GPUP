@@ -77,7 +77,7 @@
                            <children>
                               <Accordion minHeight="80.0" minWidth="120.0">
                                 <panes>
-                                  <TitledPane fx:id="simulationTitledPane" animated="false" styleClass="secondaryBackground" text="simulation task">
+                                  <TitledPane fx:id="simulationTitledPane" animated="false" text="simulation task">
                                        <content>
                                           <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
                                              <content>
@@ -128,10 +128,10 @@
                                                                   <Insets left="2.0" />
                                                                </VBox.margin>
                                                             </Label>
-                                                            <HBox>
+                                                            <HBox alignment="CENTER" maxHeight="27.0" minHeight="27.0">
                                                                <children>
                                                                   <TextField fx:id="compileTaskSourceTextField" minWidth="-Infinity" prefHeight="25.0" prefWidth="135.0" promptText="path" HBox.hgrow="ALWAYS" />
-                                                                  <Button fx:id="compileTaskSourceSearchButton" mnemonicParsing="false" prefWidth="30.0" styleClass="searchfilebutton" text="choose" HBox.hgrow="NEVER" />
+                                                                  <Button fx:id="compileTaskSourceSearchButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" styleClass="searchfilebutton" text="choose" HBox.hgrow="NEVER" />
                                                                </children>
                                                                <padding>
                                                                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
@@ -149,10 +149,10 @@
                                                                   <Insets left="2.0" />
                                                                </padding>
                                                             </Label>
-                                                            <HBox>
+                                                            <HBox alignment="CENTER" maxHeight="27.0" minHeight="27.0">
                                                                <children>
                                                                   <TextField fx:id="compileTaskDestTextField" minWidth="-Infinity" prefHeight="25.0" prefWidth="135.0" promptText="path" HBox.hgrow="ALWAYS" />
-                                                                  <Button fx:id="compileTaskDestSearchButton" mnemonicParsing="false" prefWidth="30.0" styleClass="searchfilebutton" text="choose" HBox.hgrow="NEVER" />
+                                                                  <Button fx:id="compileTaskDestSearchButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" styleClass="searchfilebutton" text="choose" HBox.hgrow="NEVER" />
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets />
@@ -223,12 +223,12 @@
                         <ListView fx:id="TargetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="165.0" />
                      </content>
                   </ScrollPane>
-                  <FlowPane hgap="5.0" vgap="5.0" VBox.vgrow="SOMETIMES">
+                  <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="5.0" vgap="5.0" VBox.vgrow="SOMETIMES">
                      <children>
-                        <Button fx:id="selectAllButton" mnemonicParsing="false" onAction="#selectAllButtonClicked" prefWidth="100.0" text="select all" />
-                        <Button fx:id="deSelectAllButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#deSelectAllButtonClicked" prefWidth="100.0" text="deselect all" />
-                        <Button fx:id="dependsOnButton" disable="true" layoutX="80.0" layoutY="10.0" mnemonicParsing="false" onAction="#dependsOnButtonClicked" prefWidth="100.0" text="depends on" />
-                        <Button fx:id="reqForButton" disable="true" layoutX="10.0" layoutY="46.0" mnemonicParsing="false" onAction="#reqForButtonClicked" prefWidth="100.0" text="requierd for" />
+                        <Button fx:id="selectAllButton" mnemonicParsing="false" onAction="#selectAllButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="select all" />
+                        <Button fx:id="deSelectAllButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#deSelectAllButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="deselect all" />
+                        <Button fx:id="dependsOnButton" disable="true" layoutX="80.0" layoutY="10.0" mnemonicParsing="false" onAction="#dependsOnButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="depends on" />
+                        <Button fx:id="reqForButton" disable="true" layoutX="10.0" layoutY="46.0" mnemonicParsing="false" onAction="#reqForButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="requierd for" />
                      </children>
                   </FlowPane>
                </children>
@@ -238,7 +238,7 @@
             </VBox>
     </content>
   </ScrollPane>
-      <VBox disable="true" prefHeight="671.0" prefWidth="667.0" styleClass="primaryBackground">
+      <VBox prefHeight="671.0" prefWidth="667.0" styleClass="primaryBackground">
          <children>
       <Label alignment="CENTER" font="$x1" style="&#10;" styleClass="headLines" text="Details" textAlignment="CENTER" textFill="$x2" wrapText="false">
                <VBox.margin>
@@ -261,7 +261,7 @@
                </content>
             </ScrollPane>
             <TextArea fx:id="runDetailsTextArea" editable="false" prefHeight="100.0" prefWidth="200.0" />
-            <ProgressBar fx:id="progressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="20.0" progress="0.0" VBox.vgrow="ALWAYS">
+            <ProgressBar id="bar" fx:id="progressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="20.0" progress="0.34" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>
