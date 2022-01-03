@@ -39,6 +39,7 @@ public class MainController {
 
 
     private final FileChooser fileChooser = new FileChooser();
+    
 
     @FXML
     public void initialize(Stage primaryStage) throws IOException {

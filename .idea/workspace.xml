@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="24edd866-3062-4980-b663-5f5873064b84" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SystemEngine/src/exceptions/TargetThatAppearsInTheSerialSetDoNotExist.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SystemEngine/src/exceptions/TwoSerialSetsWithSameName.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/GPUP_FX.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SystemEngine/src/target/Target.java" beforeDir="false" afterPath="$PROJECT_DIR$/SystemEngine/src/target/Target.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SystemEngine/src/target/TargetGraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/SystemEngine/src/target/TargetGraph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SystemEngine/src/task/SimulationTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/SystemEngine/src/task/SimulationTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SystemEngine/src/task/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/SystemEngine/src/task/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/UI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/UI.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/MainController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
