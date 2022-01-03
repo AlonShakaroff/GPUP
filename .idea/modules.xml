@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GPUP_FX.iml" filepath="$PROJECT_DIR$/GPUP_FX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/GPUP.iml" filepath="$PROJECT_DIR$/.idea/GPUP.iml" />
       <module fileurl="file://$PROJECT_DIR$/SystemEngine/SystemEngine.iml" filepath="$PROJECT_DIR$/SystemEngine/SystemEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/UI/UI.iml" filepath="$PROJECT_DIR$/UI/UI.iml" />
     </modules>
