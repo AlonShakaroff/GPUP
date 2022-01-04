@@ -4,10 +4,8 @@
  default-primary-color : #1b4115  ;
  light-primary-color   : #5ea253  ;
  text-primary-color    : #ffffff  ;
- accent-color          : #b2ff9d
-;
- divider-color         : #e1ffd8
-;
+ accent-color          : #b2ff9d  ;
+ divider-color         : #e1ffd8  ;
 
 }
 
@@ -38,7 +36,7 @@
 -fx-text-fill : text-primary-color;
 -fx-font-size : 14px;
 -fx-font-family : "Comic Sans MS";
- -fx-font-weight : bold;
+-fx-font-weight : bold;
 }
 .button:hover{
 -fx-background-color : linear-gradient(dark-primary-color, light-primary-color);
