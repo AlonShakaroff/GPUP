@@ -44,6 +44,7 @@ public class MainController {
 
 
     private final FileChooser fileChooser = new FileChooser();
+
     
 
     @FXML
@@ -220,9 +221,10 @@ public class MainController {
                 graphButton.setDisable(false);
                 connectionsButton.setDisable(false);
                 runTaskButton.setDisable(false);
+
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Load Error");
+                alert.setTitle("Loading error");
                 alert.setHeaderText(e.getMessage());
 
                 alert.initOwner(primaryStage);
