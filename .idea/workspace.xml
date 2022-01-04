@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="24edd866-3062-4980-b663-5f5873064b84" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTableItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTypeSummery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SystemEngine/src/target/Target.java" beforeDir="false" afterPath="$PROJECT_DIR$/SystemEngine/src/target/Target.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SystemEngine/src/target/TargetGraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/SystemEngine/src/target/TargetGraph.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SystemEngine/src/target/TargetTableItem.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/MainController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,7 +117,7 @@
       <workItem from="1641216654869" duration="213000" />
       <workItem from="1641218010500" duration="28000" />
       <workItem from="1641289535958" duration="37000" />
-      <workItem from="1641293197780" duration="880000" />
+      <workItem from="1641293197780" duration="7501000" />
     </task>
     <servers />
   </component>

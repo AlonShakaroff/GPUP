@@ -2,6 +2,7 @@ package main;
 
 import connections.ConnectionsController;
 import graph.GraphController;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -44,13 +45,24 @@ public class MainController {
 
 
     private final FileChooser fileChooser = new FileChooser();
+    private SimpleBooleanProperty isFileSelected;
 
-    
+
+    public MainController()
+    {
+        isFileSelected = new SimpleBooleanProperty(false);
+    }
 
     @FXML
     public void initialize(Stage primaryStage) throws IOException {
 
         this.primaryStage = primaryStage;
+        menuBarCloseFileButton.disableProperty().bind(isFileSelected.not());
+        closeFileButton.disableProperty().bind(isFileSelected.not());
+        graphButton.disableProperty().bind(isFileSelected.not());
+        connectionsButton.disableProperty().bind(isFileSelected.not());
+        runTaskButton.disableProperty().bind(isFileSelected.not());
+
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(CONNECTIONS_FXML_RESOURCE);
@@ -166,15 +178,15 @@ public class MainController {
 
     private void closeFile() {
         mainChangingScene.setContent(logoGridPane);
-        menuBarCloseFileButton.setDisable(true);
+        /* menuBarCloseFileButton.setDisable(true);
         closeFileButton.setDisable(true);
         graphButton.setDisable(true);
-        graphButton.setSelected(false);
         connectionsButton.setDisable(true);
+        runTaskButton.setDisable(true); */
+        graphButton.setSelected(false);
         connectionsButton.setSelected(false);
-        runTaskButton.setDisable(true);
         runTaskButton.setSelected(false);
-
+        isFileSelected.set(false);
     }
 
     @FXML
@@ -216,19 +228,16 @@ public class MainController {
         if (file != null) {
             try {
                 TargetGraph.createTargetGraphFromXml(file);
-                menuBarCloseFileButton.setDisable(false);
-                closeFileButton.setDisable(false);
-                graphButton.setDisable(false);
-                connectionsButton.setDisable(false);
-                runTaskButton.setDisable(false);
+                mainChangingScene.setContent(graphComponent);
+                graphButton.setSelected(true);
+                isFileSelected.set(true);
 
             } catch (Exception e) {
+                Toolkit.getDefaultToolkit().beep();
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Loading error");
                 alert.setHeaderText(e.getMessage());
-
                 alert.initOwner(primaryStage);
-                Toolkit.getDefaultToolkit().beep();
                 Optional<ButtonType> result = alert.showAndWait();
             }
         }
