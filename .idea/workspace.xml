@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="24edd866-3062-4980-b663-5f5873064b84" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SystemEngine/src/target/TargetTableItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/src/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/main/chalkBoard.css" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UI/main/chalkBoard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/runtask/RunTask.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UI/runtask/RunTask.fxml" afterDir="false" />
-    </list>
+    <list default="true" id="24edd866-3062-4980-b663-5f5873064b84" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -114,6 +108,7 @@
       <workItem from="1641206688338" duration="7831000" />
       <workItem from="1641216654869" duration="213000" />
       <workItem from="1641218010500" duration="28000" />
+      <workItem from="1641289063697" duration="304000" />
     </task>
     <servers />
   </component>
