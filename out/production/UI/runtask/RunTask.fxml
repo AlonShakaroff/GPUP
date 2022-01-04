@@ -218,7 +218,7 @@
                         <Insets left="15.0" top="15.0" />
                      </VBox.margin>
                   </Label>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                      <content>
                         <ListView fx:id="TargetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="165.0" />
                      </content>
@@ -245,7 +245,7 @@
                   <Insets left="15.0" top="15.0" />
                </VBox.margin>
             </Label>
-            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="SOMETIMES">
+            <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER" VBox.vgrow="SOMETIMES">
                <content>
                   <TableView fx:id="progressTableView" minWidth="300.0" prefWidth="614.0">
                     <columns>

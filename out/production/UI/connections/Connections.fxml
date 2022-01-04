@@ -82,7 +82,7 @@
                         </VBox>
                      </left>
                      <center>
-                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                        <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
                            <content>
                               <ListView fx:id="pathListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" />
                            </content>
@@ -134,7 +134,7 @@
                         </VBox>
                      </left>
                      <center>
-                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                        <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
                            <content>
                               <ListView fx:id="circleListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
                                  <padding>
@@ -203,7 +203,7 @@
                         </VBox>
                      </left>
                      <center>
-                        <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+                        <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
                            <content>
                               <TableView fx:id="WhatIfTable" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0">
                                 <columns>
