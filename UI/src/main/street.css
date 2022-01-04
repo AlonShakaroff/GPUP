@@ -15,7 +15,7 @@
 }
 
 .primaryBackground{
- -fx-background-image: url(/resources/images/darkenWall.jpg);
+ -fx-background-image: url(/resources/images/street/darkenWall.jpg);
 }
 .secondaryBackground{
  -fx-background-color: default-primary-color;
@@ -29,7 +29,8 @@
  -fx-background-color : light-primary-color;
 }
 .thumb{
- -fx-background-color : dark-primary-color;
+ -fx-background-color : linear-gradient(dark-primary-color,default-primary-color);
+ -fx-effect: innershadow(gaussian,white,5,0.2,1,1);
 }
 
 .button{
@@ -74,6 +75,7 @@
  -fx-font-family : "Jokerman";
  -fx-text-fill: accent-color;
  -fx-font-weight : bold;
+ -fx-text-effect: dropshadow(gaussian, #ffffff,3,0,0,0);
 }
 
 .menu:hover{
@@ -121,7 +123,7 @@
 }
 
 #logo {
- -fx-image: url("/resources/images/streetLogo.png");
+ -fx-image: url("/resources/images/street/streetLogo.png");
  -fx-repeat: stretch;
  -fx-size: 900 506;
  -fx-position: center center;

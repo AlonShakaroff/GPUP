@@ -186,7 +186,7 @@
                         </VBox>
                         <HBox alignment="CENTER" spacing="5.0" styleClass="primaryBackground">
                            <children>
-                              <Button id="playbutton" fx:id="runTaskButton" disable="true" maxHeight="120.0" maxWidth="120.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#runTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="run task" HBox.hgrow="ALWAYS" />
+                              <Button id="playbutton" fx:id="runTaskButton" disable="true" maxHeight="120.0" maxWidth="120.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#runTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="run" HBox.hgrow="ALWAYS" />
                               <Button id="pausebutton" fx:id="pauseTaskButton" disable="true" maxHeight="120.0" maxWidth="120.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#runTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="pause" HBox.hgrow="ALWAYS" />
                               <Button id="stopbutton" fx:id="stopTaskButton" disable="true" maxHeight="120.0" maxWidth="120.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#stopTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="stop" HBox.hgrow="ALWAYS" />
                            </children>
@@ -261,7 +261,7 @@
                </content>
             </ScrollPane>
             <TextArea fx:id="runDetailsTextArea" editable="false" prefHeight="100.0" prefWidth="200.0" />
-            <ProgressBar id="bar" fx:id="progressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="20.0" progress="0.34" VBox.vgrow="ALWAYS">
+            <ProgressBar id="bar" fx:id="progressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="20.0" progress="0.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>
