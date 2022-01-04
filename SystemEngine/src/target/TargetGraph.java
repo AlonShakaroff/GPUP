@@ -322,4 +322,25 @@ public class TargetGraph implements Serializable {
     public String getDirectory() {
         return directory;
     }
+
+    public int getAmountOfTargets() {
+        return allTargets.size();
+    }
+
+    public int getAmountOfRoots() {
+        return typeSetMap.get(Target.Type.ROOT).size();
+    }
+
+    public int getAmountOfMiddles() {
+        return typeSetMap.get(Target.Type.MIDDLE).size();
+    }
+
+    public int getAmountOfLeafs() {
+        return typeSetMap.get(Target.Type.LEAF).size();
+    }
+
+    public int getAmountOfIndependent() {
+        return typeSetMap.get(Target.Type.INDEPENDENT).size();
+    }
+
 }

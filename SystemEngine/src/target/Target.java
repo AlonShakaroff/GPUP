@@ -29,6 +29,36 @@ public class Target implements Serializable {
     private boolean didSucceedInPrevRuns;
     private Set<String> serialSets;
 
+    public Target(String name, String extraData)
+    {
+        this.name = name;
+        if(extraData != null)
+            this.ExtraData = extraData;
+        else
+            this.ExtraData = "";
+        this.dependsOnSet = new HashSet<Target>();
+        this.requiredForSet = new HashSet<Target>();
+        this.runStatus = Status.WAITING;
+        this.serialSets = new HashSet<>();
+        this.resetTarget();
+    }
+
+    public Target(String name)
+    {
+        this(name,"");
+    }
+
+    public void resetTarget(){
+        this.isVisited = false;
+        this.didSucceedInPrevRuns = false;
+        determineInitialType();
+        this.runResult = Result.SKIPPED;
+    }
+
+    public Target(GPUPTarget gpupTarget){
+        this(gpupTarget.getName(),gpupTarget.getGPUPUserData());
+    }
+
     public Set<String> getSerialSets() {
         return serialSets;
     }
@@ -61,6 +91,21 @@ public class Target implements Serializable {
 
     public Type getNodeType() {
         return nodeType;
+    }
+
+    public String getNodeTypeAsString() {
+        switch (nodeType)
+        {
+            case LEAF:
+                return "Leaf";
+            case ROOT:
+                return "Root";
+            case MIDDLE:
+                return "Middle";
+            case INDEPENDENT:
+                return "Independent";
+        }
+        return "";
     }
 
     public boolean isVisited() {
@@ -104,37 +149,6 @@ public class Target implements Serializable {
         this.didSucceedInPrevRuns = didSucceedInPrevRuns;
     }
 
-
-
-    public Target(String name, String extraData)
-    {
-        this.name = name;
-        if(extraData != null)
-            this.ExtraData = extraData;
-        else
-            this.ExtraData = "";
-        this.dependsOnSet = new HashSet<Target>();
-        this.requiredForSet = new HashSet<Target>();
-        this.runStatus = Status.WAITING;
-        this.serialSets = new HashSet<>();
-        this.resetTarget();
-    }
-
-    public Target(String name)
-    {
-        this(name,"");
-    }
-
-    public void resetTarget(){
-        this.isVisited = false;
-        this.didSucceedInPrevRuns = false;
-        determineInitialType();
-        this.runResult = Result.SKIPPED;
-    }
-
-    public Target(GPUPTarget gpupTarget){
-            this(gpupTarget.getName(),gpupTarget.getGPUPUserData());
-    }
 
     public void determineInitialType() {
         if (dependsOnSet.isEmpty() && requiredForSet.isEmpty()) {
@@ -181,6 +195,20 @@ public class Target implements Serializable {
         for (Target curTarget: target.getRequiredForSet()) {
             aboveTargets.add(curTarget);
             getAllAboveTargetsRec(curTarget,aboveTargets);
+        }
+    }
+
+    public Set<Target> getAllBelowTargets() {
+        Set<Target> belowTargets = new HashSet<>();
+        getAllBelowTargetsRec(this,belowTargets);
+        return belowTargets;
+    }
+
+    private void getAllBelowTargetsRec(Target target ,Set<Target> belowTargets)
+    {
+        for (Target curTarget: target.getDependsOnSet()) {
+            belowTargets.add(curTarget);
+            getAllBelowTargetsRec(curTarget,belowTargets);
         }
     }
 
@@ -236,5 +264,25 @@ public class Target implements Serializable {
 
     public Result getRunResult() {
         return runResult;
+    }
+
+    public int getAmountOfDirectlyDependsOn() {
+        return getDependsOnSet().size();
+    }
+
+    public int getAmountOfTotalDependsOn() {
+        return getAllBelowTargets().size();
+    }
+
+    public int getAmountOfDirectlyRequiredFor() {
+        return getRequiredForSet().size();
+    }
+
+    public int getAmountOfTotalRequiredFor() {
+        return getAllAboveTargets().size();
+    }
+
+    public int getAmountOfSerialSets() {
+        return getSerialSets().size();
     }
 }
