@@ -262,7 +262,6 @@
             </ScrollPane>
             <TextArea fx:id="runDetailsTextArea" editable="false" prefHeight="100.0" prefWidth="200.0" />
             <ProgressBar id="bar" fx:id="progressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="20.0" progress="0.34" VBox.vgrow="ALWAYS">
-
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>

@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -18,10 +21,12 @@ import runtask.TaskController;
 import target.TargetGraph;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
+import java.util.Optional;
 
 import static main.include.CommonResourcesPaths.*;
 
@@ -216,7 +221,13 @@ public class MainController {
                 connectionsButton.setDisable(false);
                 runTaskButton.setDisable(false);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Load Error");
+                alert.setHeaderText(e.getMessage());
+
+                alert.initOwner(primaryStage);
+                Toolkit.getDefaultToolkit().beep();
+                Optional<ButtonType> result = alert.showAndWait();
             }
         }
     }
