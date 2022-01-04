@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -75,6 +76,7 @@ public class MainController {
         fxmlLoader.setLocation(url);
         graphComponent = fxmlLoader.load(url.openStream());
         graphController = fxmlLoader.getController();
+        graphController.initialize();
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(RUNTASK_FXML_RESOURCE);
@@ -178,11 +180,6 @@ public class MainController {
 
     private void closeFile() {
         mainChangingScene.setContent(logoGridPane);
-        /* menuBarCloseFileButton.setDisable(true);
-        closeFileButton.setDisable(true);
-        graphButton.setDisable(true);
-        connectionsButton.setDisable(true);
-        runTaskButton.setDisable(true); */
         graphButton.setSelected(false);
         connectionsButton.setSelected(false);
         runTaskButton.setSelected(false);
@@ -224,14 +221,13 @@ public class MainController {
     private void fileExplorerLoadXMLFile() {
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extensionFilter);
-        File file = fileChooser.showOpenDialog(new Stage());
+        File file = fileChooser.showOpenDialog(primaryStage);
         if (file != null) {
             try {
-                TargetGraph.createTargetGraphFromXml(file);
+                graphController.setTargetGraph(TargetGraph.createTargetGraphFromXml(file));
                 mainChangingScene.setContent(graphComponent);
                 graphButton.setSelected(true);
                 isFileSelected.set(true);
-
             } catch (Exception e) {
                 Toolkit.getDefaultToolkit().beep();
                 Alert alert = new Alert(Alert.AlertType.ERROR);

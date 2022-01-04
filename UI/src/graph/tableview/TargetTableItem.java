@@ -5,11 +5,11 @@ import target.Target;
 public class TargetTableItem {
     private String name;
     private String type;
-    private int dependsOnDirectly;
-    private int dependsOnTotal;
-    private int requiredForDirectly;
-    private int requiredForTotal;
-    private int amountOfSerialSets;
+    private Integer dependsOnDirectly;
+    private Integer dependsOnTotal;
+    private Integer requiredForDirectly;
+    private Integer requiredForTotal;
+    private Integer amountOfSerialSets;
 
     public TargetTableItem(Target target)
     {
