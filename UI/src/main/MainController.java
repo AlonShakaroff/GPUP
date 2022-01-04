@@ -249,6 +249,8 @@ public class MainController {
 
     @FXML
     void AviadSkinButtonClicked(ActionEvent event) {
+        primaryStage.getScene().getStylesheets().remove(0,1);
+        primaryStage.getScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("aviad.css")).toExternalForm());
     }
 
     @FXML
