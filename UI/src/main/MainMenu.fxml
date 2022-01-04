@@ -78,7 +78,7 @@
     </MenuBar>
       <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <ScrollPane fitToHeight="true" fitToWidth="true" minWidth="100.0" prefHeight="552.0" prefWidth="130.0">
+            <ScrollPane id="optionsBar" fitToHeight="true" fitToWidth="true" minWidth="100.0" prefHeight="552.0" prefWidth="130.0">
                <content>
                   <VBox alignment="TOP_CENTER" minWidth="80.0" spacing="5.0" styleClass="secondaryBackground">
                      <padding>
@@ -96,12 +96,12 @@
                               <Insets bottom="20.0" top="10.0" />
                            </VBox.margin>
                   </Label>
-                        <Button fx:id="newFileButton" maxWidth="1.7976931348623157E308" minWidth="55.0" mnemonicParsing="false" onAction="#newFileButtonClicked" prefHeight="31.0" text="new">
+                        <Button fx:id="newFileButton" maxWidth="1.7976931348623157E308" minWidth="55.0" mnemonicParsing="false" onAction="#newFileButtonClicked" prefHeight="31.0" styleClass="fileButton" text="new">
                            <font>
-                              <Font size="13.0" />
+                              <Font name="Corbel" size="13.0" />
                            </font>
                         </Button>
-                        <Button fx:id="closeFileButton" disable="true" maxWidth="1.7976931348623157E308" minWidth="55.0" mnemonicParsing="false" onAction="#closeFileButtonClicked" prefHeight="31.0" text="close">
+                        <Button fx:id="closeFileButton" disable="true" maxWidth="1.7976931348623157E308" minWidth="55.0" mnemonicParsing="false" onAction="#closeFileButtonClicked" prefHeight="31.0" styleClass="fileButton" text="close">
                            <font>
                               <Font size="13.0" />
                            </font>

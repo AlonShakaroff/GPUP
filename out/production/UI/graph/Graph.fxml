@@ -18,7 +18,7 @@
    <tabs>
       <Tab closable="false" text="Table view">
          <content>
-            <SplitPane dividerPositions="0.55" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="552.0" prefWidth="1000.0" styleClass="primaryBackground">
+            <SplitPane dividerPositions="0.575" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="552.0" prefWidth="1000.0" styleClass="primaryBackground">
                <items>
                   <VBox alignment="TOP_CENTER" styleClass="primaryBackground">
                      <children>
@@ -27,12 +27,13 @@
                            <content>
                               <TableView fx:id="dependenciesTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
                                  <columns>
-                                    <TableColumn minWidth="50.0" prefWidth="-1.0" text="Name" />
-                                    <TableColumn minWidth="50.0" prefWidth="-1.0" text="Type" />
-                                    <TableColumn minWidth="95.0" prefWidth="-1.0" text="Depends on &#10;directly" />
-                                    <TableColumn minWidth="90.0" prefWidth="-1.0" text="Depends on&#10;total" />
-                                    <TableColumn minWidth="95.0" text="Required for&#10;directly" />
-                                    <TableColumn minWidth="95.0" prefWidth="-1.0" text="Required for&#10;total" />
+                                    <TableColumn fx:id="name" minWidth="50.0" prefWidth="-1.0" text="Name" />
+                                    <TableColumn fx:id="type" minWidth="50.0" prefWidth="-1.0" text="Type" />
+                                    <TableColumn fx:id="dependsOnDirectly" minWidth="95.0" prefWidth="-1.0" text="Depends on &#10;directly" />
+                                    <TableColumn fx:id="dependsOnTotal" minWidth="90.0" prefWidth="-1.0" text="Depends on&#10;total" />
+                                    <TableColumn fx:id="requiredForDirectly" minWidth="95.0" text="Required for&#10;directly" />
+                                    <TableColumn fx:id="requiredForTotal" minWidth="95.0" prefWidth="-1.0" text="Required for&#10;total" />
+                                    <TableColumn fx:id="serialSetsAmount" minWidth="65.0" prefWidth="-1.0" text="Serial sets" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -42,23 +43,23 @@
                         </ScrollPane>
                      </children>
                      <padding>
-                        <Insets bottom="5.0" left="5.0" top="5.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                   </VBox>
-                  <SplitPane dividerPositions="0.25" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" styleClass="primaryBackground">
+                  <SplitPane dividerPositions="0.25" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" prefHeight="552.0" prefWidth="412.0" styleClass="primaryBackground">
                      <items>
                         <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="primaryBackground">
                            <children>
                               <Label styleClass="headLines" text="target type summary" VBox.vgrow="NEVER" />
-                              <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                              <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="primaryBackground" VBox.vgrow="ALWAYS">
                                  <content>
-                                    <TableView fx:id="typeTableView" maxHeight="136.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="81.0" prefWidth="438.0">
+                                    <TableView fx:id="typeTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="81.0" prefWidth="307.0">
                                        <columns>
-                                          <TableColumn minWidth="30.0" prefWidth="-1.0" text="targets" />
-                                          <TableColumn minWidth="40.0" prefWidth="-1.0" text="Independent" />
-                                          <TableColumn minWidth="8.0" prefWidth="-1.0" text="Leaf" />
-                                          <TableColumn minWidth="30.0" prefWidth="-1.0" text="Middle" />
-                                          <TableColumn minWidth="13.0" prefWidth="-1.0" text="Root" />
+                                          <TableColumn fx:id="targetsAmount" minWidth="30.0" prefWidth="-1.0" text="Targets" />
+                                          <TableColumn fx:id="independentAmount" minWidth="40.0" prefWidth="-1.0" text="Independent" />
+                                          <TableColumn fx:id="leafAmount" minWidth="8.0" prefWidth="-1.0" text="Leaf" />
+                                          <TableColumn fx:id="middleAmount" minWidth="30.0" prefWidth="-1.0" text="Middle" />
+                                          <TableColumn fx:id="rootAmount" minWidth="13.0" prefWidth="-1.0" text="Root" />
                                        </columns>
                                        <columnResizePolicy>
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -73,14 +74,14 @@
                               <Label styleClass="headLines" text="serial sets" />
                               <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
                                  <content>
-                                    <ListView fx:id="serialSetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="400.0" prefHeight="234.0" prefWidth="438.0" />
+                                    <ListView fx:id="serialSetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0" prefHeight="300.0" />
                                  </content>
                               </ScrollPane>
                            </children>
                         </VBox>
                      </items>
                      <padding>
-                        <Insets bottom="5.0" right="5.0" top="5.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                   </SplitPane>
                </items>

@@ -11,7 +11,7 @@
 
 .primaryBackground{
 /*-fx-background-color : light-primary-color;*/
--fx-background-image: url(/resources/images/graybackground.jpg);
+-fx-background-image: url(/resources/images/classic/graybackground.jpg);
  -fx-background-repeat: stretch;
  -fx-background-size: cover;
 }
@@ -114,7 +114,7 @@
 }
 
 #logo {
- -fx-image: url("/resources/images/classicLogo.png");
+ -fx-image: url("/resources/images/classic/classicLogo.png");
  -fx-repeat: stretch;
  -fx-size: 900 506;
  -fx-position: center center;
