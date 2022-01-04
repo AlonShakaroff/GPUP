@@ -7,6 +7,8 @@
     <list default="true" id="24edd866-3062-4980-b663-5f5873064b84" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/graph/GraphController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/GraphController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTableItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTableItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTypeSummery.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTypeSummery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/MainController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -114,7 +116,7 @@
       <workItem from="1641218010500" duration="28000" />
       <workItem from="1641289535958" duration="37000" />
       <workItem from="1641293197780" duration="14579000" />
-      <workItem from="1641315039234" duration="1088000" />
+      <workItem from="1641315039234" duration="2452000" />
     </task>
     <servers />
   </component>
@@ -135,5 +137,16 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LAST_COMMIT_MESSAGE" value="" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/UI/src/graph/GraphController.java</url>
+          <line>111</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -5,11 +5,11 @@ import target.Target;
 public class TargetTableItem {
     private String name;
     private String type;
-    private Integer dependsOnDirectly;
-    private Integer dependsOnTotal;
-    private Integer requiredForDirectly;
-    private Integer requiredForTotal;
-    private Integer amountOfSerialSets;
+    private int dependsOnDirectly;
+    private int dependsOnTotal;
+    private int requiredForDirectly;
+    private int requiredForTotal;
+    private int amountOfSerialSets;
 
     public TargetTableItem(Target target)
     {
@@ -20,5 +20,61 @@ public class TargetTableItem {
         this.requiredForDirectly = target.getAmountOfDirectlyRequiredFor();
         this.requiredForTotal = target.getAmountOfTotalRequiredFor();
         this.amountOfSerialSets = target.getAmountOfSerialSets();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getDependsOnDirectly() {
+        return dependsOnDirectly;
+    }
+
+    public void setDependsOnDirectly(int dependsOnDirectly) {
+        this.dependsOnDirectly = dependsOnDirectly;
+    }
+
+    public int getDependsOnTotal() {
+        return dependsOnTotal;
+    }
+
+    public void setDependsOnTotal(int dependsOnTotal) {
+        this.dependsOnTotal = dependsOnTotal;
+    }
+
+    public int getRequiredForDirectly() {
+        return requiredForDirectly;
+    }
+
+    public void setRequiredForDirectly(int requiredForDirectly) {
+        this.requiredForDirectly = requiredForDirectly;
+    }
+
+    public int getRequiredForTotal() {
+        return requiredForTotal;
+    }
+
+    public void setRequiredForTotal(int requiredForTotal) {
+        this.requiredForTotal = requiredForTotal;
+    }
+
+    public int getAmountOfSerialSets() {
+        return amountOfSerialSets;
+    }
+
+    public void setAmountOfSerialSets(int amountOfSerialSets) {
+        this.amountOfSerialSets = amountOfSerialSets;
     }
 }

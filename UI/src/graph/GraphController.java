@@ -79,19 +79,19 @@ public class GraphController {
     public void initializeTargetTable() {
         name.setCellValueFactory(new PropertyValueFactory<TargetTableItem,String>("Name"));
         type.setCellValueFactory(new PropertyValueFactory<TargetTableItem,String>("Type"));
-        dependsOnDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("Depends on directly"));
-        dependsOnTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("Depends on total"));
-        requiredForDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("Required for directly"));
-        requiredForTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("Required for total"));
-        serialSetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("Serial sets"));
+        dependsOnDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("DependsOnDirectly"));
+        dependsOnTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("DependsOnTotal"));
+        requiredForDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("RequiredForDirectly"));
+        requiredForTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("RequiredForTotal"));
+        serialSetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("AmountOfSerialSets"));
     }
 
     public void initializeTypeSummeryTable() {
-        targetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Targets"));
+        targetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("TotalAmountOfTargets"));
         rootAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Root"));
         middleAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Middle"));
         leafAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Leaf"));
-        independentAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Independents"));
+        independentAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Independent"));
     }
 
     public void initializeSerialSetListView() {
