@@ -160,6 +160,17 @@
  -fx-background-color:linear-gradient(dark-primary-color,default-primary-color);
 }
 
+.combo-box > .list-cell > .text{
+ -fx-font-weight: bold;
+ -fx-fill: primary-text-color;
+}
+
+.combo-box{
+ -fx-background-color : linear-gradient(default-primary-color, light-primary-color);
+ -fx-border-color: divider-color;
+ -fx-effect: innershadow(gaussian, #ffffff,5,0.2,1,1);
+}
+
 
 
 /*table view*/
@@ -225,12 +236,4 @@
 .table-view > .virtual-flow > .scroll-bar:horizontal > .increment-button,
 .table-view > .virtual-flow > .scroll-bar:horizontal > .decrement-button {
  -fx-opacity: 0;
-}
-
-.combo-box > .list-cell:filled:selected > .text{
- -fx-font-weight: bold;
-}
-
-.combo-box{
- -fx-background-color: default-primary-color;
 }
