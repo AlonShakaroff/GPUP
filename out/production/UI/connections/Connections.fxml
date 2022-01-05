@@ -47,8 +47,8 @@
                               </VBox>
                               <VBox layoutX="10.0" layoutY="20.0" maxHeight="80.0" VBox.vgrow="SOMETIMES">
                                  <children>
-                                    <Label text="Destination" VBox.vgrow="SOMETIMES" />
-                                    <ComboBox fx:id="destinationComboBox" editable="true" onAction="#destinationComboBoxClicked" prefWidth="150.0" promptText="to" VBox.vgrow="SOMETIMES" />
+                                    <Label text="destination" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="destinationComboBox" disable="true" editable="true" onAction="#destinationComboBoxClicked" prefWidth="150.0" promptText="to" VBox.vgrow="SOMETIMES" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />

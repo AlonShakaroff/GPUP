@@ -245,7 +245,8 @@
 
 
 .table-view {
- -fx-background-color: transparent;
+ -fx-background-color:linear-gradient(orange,darkorange);
+ -fx-effect: innershadow(gaussian,orangered,15,0.3,2,2);
 }
 
 .table-view:focused {
