@@ -193,8 +193,10 @@ public class Target implements Serializable {
     private void getAllAboveTargetsRec(Target target ,Set<Target> aboveTargets)
     {
         for (Target curTarget: target.getRequiredForSet()) {
-            aboveTargets.add(curTarget);
-            getAllAboveTargetsRec(curTarget,aboveTargets);
+            if(!aboveTargets.contains(curTarget)) {
+                aboveTargets.add(curTarget);
+                getAllAboveTargetsRec(curTarget, aboveTargets);
+            }
         }
     }
 
@@ -207,8 +209,10 @@ public class Target implements Serializable {
     private void getAllBelowTargetsRec(Target target ,Set<Target> belowTargets)
     {
         for (Target curTarget: target.getDependsOnSet()) {
-            belowTargets.add(curTarget);
-            getAllBelowTargetsRec(curTarget,belowTargets);
+            if(!belowTargets.contains(curTarget)) {
+                belowTargets.add(curTarget);
+                getAllBelowTargetsRec(curTarget, belowTargets);
+            }
         }
     }
 

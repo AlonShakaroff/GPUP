@@ -48,15 +48,15 @@
                               <VBox layoutX="10.0" layoutY="20.0" maxHeight="80.0" VBox.vgrow="SOMETIMES">
                                  <children>
                                     <Label text="destination" VBox.vgrow="SOMETIMES" />
-                                    <ComboBox fx:id="destinationComboBox" editable="true" onAction="#destinationComboBoxClicked" prefWidth="150.0" promptText="to" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="destinationComboBox" disable="true" editable="true" onAction="#destinationComboBoxClicked" prefWidth="150.0" promptText="to" VBox.vgrow="SOMETIMES" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />
                                  </VBox.margin>
                               </VBox>
-                              <VBox layoutX="15.0" layoutY="191.0" maxHeight="80.0" spacing="5.0" VBox.vgrow="SOMETIMES">
+                              <VBox fx:id="pathDirectionChoiceVBox" disable="true" layoutX="15.0" layoutY="191.0" maxHeight="80.0" spacing="5.0" VBox.vgrow="SOMETIMES">
                                  <children>
-                                    <RadioButton fx:id="pathReqForradioButton" mnemonicParsing="false" selected="true" text="requierd for">
+                                    <RadioButton fx:id="pathRequiredForRadioButton" mnemonicParsing="false" selected="true" text="required for">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="conactions" />
                                        </toggleGroup>
@@ -84,7 +84,7 @@
                      <center>
                         <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
                            <content>
-                              <ListView fx:id="pathListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:id="pathListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" />
                            </content>
                            <BorderPane.margin>
                               <Insets bottom="30.0" right="30.0" top="15.0" />
@@ -136,7 +136,7 @@
                      <center>
                         <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
                            <content>
-                              <ListView fx:id="circleListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
+                              <ListView fx:id="circleListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
                                  <padding>
                                     <Insets bottom="30.0" left="30.0" right="10.0" top="10.0" />
                                  </padding>
@@ -175,9 +175,9 @@
                                     <Insets left="5.0" />
                                  </VBox.margin>
                               </VBox>
-                              <VBox maxHeight="135.0" spacing="5.0" VBox.vgrow="SOMETIMES">
+                              <VBox fx:id="whatIfDirectionVBox" disable="true" maxHeight="135.0" spacing="5.0" VBox.vgrow="SOMETIMES">
                                  <children>
-                                    <RadioButton fx:id="whatIfReqForRadioButton" mnemonicParsing="false" selected="true" text="requierd for">
+                                    <RadioButton fx:id="whatIfRequiredForRadioButton" mnemonicParsing="false" selected="true" text="required for">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="conactions1" />
                                        </toggleGroup>
@@ -205,7 +205,7 @@
                      <center>
                         <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
                            <content>
-                              <TableView fx:id="WhatIfTable" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0">
+                              <TableView fx:id="WhatIfTable" disable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0">
                                 <columns>
                                   <TableColumn editable="false" prefWidth="148.0" text="target" />
                                     <TableColumn editable="false" prefWidth="126.0" text="direct / indirect" />

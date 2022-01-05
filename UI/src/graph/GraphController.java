@@ -71,7 +71,7 @@ public class GraphController {
     public void initialize() {
         initializeTargetTable();
         initializeTypeSummeryTable();
-        initializeSerialSetChoiceBox();
+        initializeSerialSetComboBox();
     }
 
     public void initializeTargetTable() {
@@ -92,7 +92,7 @@ public class GraphController {
         independentAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Independent"));
     }
 
-    public void initializeSerialSetChoiceBox() {
+    public void initializeSerialSetComboBox() {
         serialSetComboBox.setOnAction((event) -> {
             serialSetInfoList.clear();
             if(!targetGraph.getSerialSets().isEmpty()) {
@@ -105,9 +105,10 @@ public class GraphController {
     public void setTargetGraph(TargetGraph targetGraph)
     {
         this.targetGraph = targetGraph;
+        initialize();
         setDependenciesTable();
         setTypeSummeryTable();
-        setSerialSetChoiceBox();
+        setSerialSetComboBox();
     }
 
     private void setDependenciesTable() {
@@ -128,14 +129,21 @@ public class GraphController {
         typeTableView.setItems(typeSummeryList);
     }
 
-    private void setSerialSetChoiceBox() {
+    private void setSerialSetComboBox() {
         serialSetNameList.clear();
-
+        serialSetInfoList.clear();
         if(targetGraph.getSerialSets() != null) {
+            serialSetComboBox.setDisable(false);
+            serialSetsListView.setDisable(false);
             serialSetNameList.addAll(targetGraph.getSerialSets().keySet());
             serialSetComboBox.setItems(serialSetNameList.sorted());
         }
-
+        else {
+            serialSetComboBox.setDisable(true);
+            serialSetInfoList.add("No serial sets");
+            serialSetsListView.setItems(serialSetInfoList);
+            serialSetsListView.setDisable(true);
+        }
         serialSetComboBox.setTooltip
                 (new Tooltip("Choose a serial set to display all the targets that belong to it"));
     }

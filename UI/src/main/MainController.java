@@ -77,7 +77,6 @@ public class MainController {
         fxmlLoader.setLocation(url);
         graphComponent = fxmlLoader.load(url.openStream());
         graphController = fxmlLoader.getController();
-        graphController.initialize();
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(RUNTASK_FXML_RESOURCE);

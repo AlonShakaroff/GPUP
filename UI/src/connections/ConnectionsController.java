@@ -1,5 +1,7 @@
-package connections;
+ package connections;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,20 +10,25 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.VBox;
+import target.TargetGraph;
 
-public class ConnectionsController {
-
-    @FXML
-    private ComboBox<?> sourceComboBox;
-
-    @FXML
-    private ComboBox<?> destinationComboBox;
+ public class ConnectionsController {
 
     @FXML
-    private RadioButton pathReqForradioButton;
+    private ComboBox<String> sourceComboBox;
 
     @FXML
-    private ToggleGroup conactions;
+    private ComboBox<String> destinationComboBox;
+
+    @FXML
+    private VBox pathDirectionChoiceVBox;
+
+    @FXML
+    private RadioButton pathRequiredForRadioButton;
+
+    @FXML
+    private ToggleGroup connections;
 
     @FXML
     private RadioButton pathDependsOnRadioButton;
@@ -30,25 +37,25 @@ public class ConnectionsController {
     private Button pathSubmitButton;
 
     @FXML
-    private ListView<?> pathListView;
+    private ListView<String> pathListView;
 
     @FXML
-    private ComboBox<?> circleTargetComboBox;
+    private ComboBox<String> circleTargetComboBox;
 
     @FXML
     private Button circleSubmitButton;
 
     @FXML
-    private ListView<?> circleListView;
+    private ListView<String> circleListView;
 
     @FXML
-    private ComboBox<?> whatIfTargetComboBox;
+    private ComboBox<String> whatIfTargetComboBox;
 
     @FXML
-    private RadioButton whatIfReqForRadioButton;
+    private VBox whatIfDirectionVBox;
 
     @FXML
-    private ToggleGroup conactions1;
+    private RadioButton whatIfRequiredForRadioButton;
 
     @FXML
     private RadioButton whatIfDependsOnRadioButton;
@@ -57,7 +64,7 @@ public class ConnectionsController {
     private Button WhatIfSubmitButton;
 
     @FXML
-    private TableView<?> WhatIfTable;
+    private TableView<String> WhatIfTable;
 
     @FXML
     void WhatIfSubmitButtonClicked(ActionEvent event) {
@@ -93,5 +100,15 @@ public class ConnectionsController {
     void whatIfTargetComboBoxClicked(ActionEvent event) {
 
     }
+
+    ObservableList<String> serialSetNameList = FXCollections.observableArrayList();
+    ObservableList<String> allTargetsNameList = FXCollections.observableArrayList();
+
+    TargetGraph targetGraph;
+
+//    void setTargetGraph(TargetGraph targetGraph) {
+//        this.targetGraph = targetGraph;
+//        if()
+//    }
 
 }
