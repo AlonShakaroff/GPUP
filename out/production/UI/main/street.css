@@ -1,17 +1,11 @@
 
 {
- dark-primary-color    : #310000
-;
- default-primary-color : #424242
-;
- light-primary-color   : #616161
-;
- text-primary-color    : #ffffff
-;
- accent-color          : #ffe3c5
-;
- divider-color         : #ffdc73
-;
+ dark-primary-color    : #310000  ;
+ default-primary-color : #424242  ;
+ light-primary-color   : #616161  ;
+ text-primary-color    : #ffffff  ;
+ accent-color          : #ffe3c5  ;
+ divider-color         : #d3d3d3  ;
 }
 
 .primaryBackground{
@@ -162,12 +156,15 @@
 
 .combo-box > .list-cell > .text{
  -fx-font-weight: bold;
- -fx-fill: primary-text-color;
+ -fx-fill: text-primary-color;
 }
 
 .combo-box{
  -fx-background-color : linear-gradient(default-primary-color, light-primary-color);
  -fx-border-color: divider-color;
+}
+.combo-box:hover{
+ -fx-background-color : linear-gradient(#949494 , light-primary-color );
  -fx-effect: innershadow(gaussian, #ffffff,5,0.2,1,1);
 }
 

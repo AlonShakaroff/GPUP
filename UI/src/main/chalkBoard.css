@@ -162,7 +162,7 @@
 
 .combo-box > .list-cell > .text{
  -fx-font-weight: bold;
- -fx-fill: primary-text-color;
+ -fx-fill: text-primary-color;
 }
 
 .combo-box{

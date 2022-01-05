@@ -1,14 +1,10 @@
 
 {
- dark-primary-color    : #ff2f00
-;
+ dark-primary-color    : #ff2f00  ;
  default-primary-color : #ff7300  ;
- light-primary-color   : #ff9900
-;
- text-primary-color    : #050049
-;
- accent-color          : #ffffff
-;
+ light-primary-color   : #ff9900  ;
+ text-primary-color    : #050049  ;
+ accent-color          : #ffffff  ;
  divider-color         : #ffdc73  ;
 }
 
@@ -211,7 +207,7 @@
 
 .combo-box > .list-cell > .text{
  -fx-font-weight: bold;
- -fx-fill: primary-text-color;
+ -fx-fill: text-primary-color;
 }
 
 .combo-box{
