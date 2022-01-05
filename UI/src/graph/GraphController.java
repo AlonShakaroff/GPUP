@@ -131,7 +131,7 @@ public class GraphController {
     private void setSerialSetChoiceBox() {
         serialSetNameList.clear();
 
-        if(!targetGraph.getSerialSets().isEmpty()) {
+        if(targetGraph.getSerialSets() != null) {
             serialSetNameList.addAll(targetGraph.getSerialSets().keySet());
             serialSetComboBox.setItems(serialSetNameList.sorted());
         }
