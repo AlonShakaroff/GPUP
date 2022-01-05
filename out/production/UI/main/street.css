@@ -160,6 +160,17 @@
  -fx-background-color:linear-gradient(dark-primary-color,default-primary-color);
 }
 
+.combo-box > .list-cell > .text{
+ -fx-font-weight: bold;
+ -fx-fill: primary-text-color;
+}
+
+.combo-box{
+ -fx-background-color : linear-gradient(default-primary-color, light-primary-color);
+ -fx-border-color: divider-color;
+ -fx-effect: innershadow(gaussian, #ffffff,5,0.2,1,1);
+}
+
 
 
 /*table view*/
