@@ -138,10 +138,6 @@
  -fx-text-fill: text-primary-color;
 }
 
-.list-view{
- -fx-background-color:linear-gradient(dark-primary-color,default-primary-color);
-}
-
 .progress-bar:determinate >.bar {
  -fx-background-color : linear-gradient(deepskyblue,darkblue );
  -fx-effect: innershadow(gaussian,white,5,0.2,1,1);
@@ -152,6 +148,7 @@
 }
 .text-area .content{
  -fx-background-color:linear-gradient(dark-primary-color,default-primary-color);
+
 }
 
 .combo-box > .list-cell > .text{
@@ -163,11 +160,34 @@
  -fx-background-color : linear-gradient(default-primary-color, light-primary-color);
  -fx-border-color: divider-color;
 }
+
+.list-view{
+  -fx-background-color: #424242;
+ }
+
 .combo-box:hover{
  -fx-background-color : linear-gradient(#949494 , light-primary-color );
  -fx-effect: innershadow(gaussian, #ffffff,5,0.2,1,1);
 }
 
+.list-cell:even{
+ -fx-background-color:  #616161;
+ -fx-text-fill: text-primary-color;
+}
+
+.list-cell:odd{
+ -fx-background-color:  #424242;
+ -fx-text-fill: text-primary-color;
+}
+
+.list-cell:selected{
+ -fx-background-color: dark-primary-color;
+ -fx-text-fill: text-primary-color;
+}
+
+.combo-box .list-cell:hover{
+ -fx-background-color: rgba(0, 0, 0, 0.5);
+}
 
 
 /*table view*/
@@ -175,7 +195,7 @@
 
 
 .table-view{
- -fx-background-color: transparent;
+ -fx-background-color: #424242;
 }
 
 .table-view:focused{

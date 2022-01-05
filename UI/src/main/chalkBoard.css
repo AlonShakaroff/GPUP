@@ -168,7 +168,34 @@
 .combo-box{
  -fx-background-color : linear-gradient(default-primary-color, light-primary-color);
  -fx-border-color: divider-color;
+}
+
+.combo-box:hover{
+ -fx-background-color : linear-gradient(#007300, light-primary-color );
  -fx-effect: innershadow(gaussian, #ffffff,5,0.2,1,1);
+}
+
+.list-cell:even{
+ -fx-background-image: url(/resources/images/chalkboard/chalkBoardBlack.jpg);
+ -fx-background-size: stretch stretch;
+ -fx-text-fill: text-primary-color;
+}
+
+.list-cell:odd{
+ -fx-background-image: url(/resources/images/chalkboard/chalkBoard.jpg);
+ -fx-background-size: stretch stretch;
+ -fx-text-fill: text-primary-color;
+}
+
+.list-cell:selected{
+ -fx-background-image: none;
+ -fx-background-color: #242519;
+ -fx-text-fill: text-primary-color;
+}
+
+.combo-box .list-cell:hover{
+ -fx-background-image: none;
+ -fx-background-color: #002a00;
 }
 
 
@@ -204,18 +231,21 @@
 }
 
 .table-row-cell{
- -fx-background-color: -fx-table-cell-border-color, #8a8439;
+ -fx-background-image: url(/resources/images/chalkboard/chalkBoard.jpg);
+ -fx-background-size: stretch stretch;
  -fx-background-insets: 0, 0 0 1 0;
  -fx-padding: 0.0em; /* 0 */
 }
 
 .table-row-cell:odd{
- -fx-background-color: -fx-table-cell-border-color, light-primary-color;
+ -fx-background-image: url(/resources/images/chalkboard/chalkBoardBlack.jpg);
+ -fx-background-size: stretch stretch;
  -fx-background-insets: 0, 0 0 1 0;
  -fx-padding: 0.0em; /* 0 */
 }
 
 .table-row-cell:selected {
+ -fx-background-image: none;
  -fx-background-color: #242519;
  -fx-background-insets: 0;
  -fx-background-radius: 1;

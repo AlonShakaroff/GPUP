@@ -213,9 +213,31 @@
 .combo-box{
  -fx-background-color : linear-gradient(default-primary-color, light-primary-color);
  -fx-border-color: divider-color;
+}
+
+.combo-box:hover{
+ -fx-background-color : linear-gradient(#ffc400 , light-primary-color );
  -fx-effect: innershadow(gaussian, #ffffff,5,0.2,1,1);
 }
 
+.list-cell:even{
+ -fx-background-color:  #ffc400;
+ -fx-text-fill: text-primary-color;
+}
+
+.list-cell:odd{
+ -fx-background-color: light-primary-color;
+ -fx-text-fill: text-primary-color;
+}
+
+.list-cell:selected{
+ -fx-background-color: dark-primary-color;
+ -fx-text-fill: text-primary-color;
+}
+
+.combo-box .list-cell:hover{
+ -fx-background-color: rgb(162, 30, 0);
+}
 
 
 /*table view*/
@@ -263,7 +285,7 @@
 }
 
 .table-row-cell:selected {
- -fx-background-color: #b4c2ff;
+ -fx-background-color: dark-primary-color;
  -fx-background-insets: 0;
  -fx-background-radius: 1;
 }
