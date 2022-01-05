@@ -6,25 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="24edd866-3062-4980-b663-5f5873064b84" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-<<<<<<< Updated upstream
+      <change beforePath="$PROJECT_DIR$/UI/src/connections/Connections.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/connections/Connections.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/src/graph/Graph.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/Graph.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/graph/GraphController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/GraphController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTableItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTableItem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTypeSummery.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/tableview/TargetTypeSummery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/MainController.java" afterDir="false" />
-=======
-<<<<<<< Updated upstream
-      <change beforePath="$PROJECT_DIR$/UI/src/graph/Graph.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/Graph.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/src/graph/GraphController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/GraphController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/src/main/MainMenu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/MainMenu.fxml" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/UI/src/connections/Connections.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/connections/Connections.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/src/graph/Graph.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/graph/Graph.fxml" afterDir="false" />
->>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/UI/src/main/aviad.css" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/aviad.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/main/chalkBoard.css" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/chalkBoard.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/main/classic.css" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/classic.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/main/street.css" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/main/street.css" afterDir="false" />
-<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/UI/src/resources/images/aviadLogo.png" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/resources/images/aviad/aviadLogo.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/resources/images/chalkBoard.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/resources/images/chalkboard/chalkBoard.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/resources/images/chalkBoardBlack.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/resources/images/chalkboard/chalkBoardBlack.jpg" afterDir="false" />
@@ -37,9 +28,6 @@
       <change beforePath="$PROJECT_DIR$/UI/src/resources/images/wall.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/resources/images/street/wall.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/src/runtask/RunTask.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/runtask/RunTask.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/UI/main/aviad.css" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UI/main/aviad.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/main/chalkBoard.css" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UI/main/chalkBoard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/main/classic.css" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UI/main/classic.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/main/street.css" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UI/main/street.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/UI/resources/images/aviadLogo.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/UI/resources/images/chalkBoard.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/UI/resources/images/chalkBoardBlack.jpg" beforeDir="false" />
@@ -50,11 +38,6 @@
       <change beforePath="$PROJECT_DIR$/out/production/UI/resources/images/orange.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/UI/resources/images/streetLogo.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/UI/resources/images/wall.jpg" beforeDir="false" />
-
-=======
-      <change beforePath="$PROJECT_DIR$/UI/src/runtask/RunTask.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/runtask/RunTask.fxml" afterDir="false" />
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,18 +143,9 @@
       <workItem from="1641216654869" duration="213000" />
       <workItem from="1641218010500" duration="28000" />
       <workItem from="1641289535958" duration="37000" />
-<<<<<<< Updated upstream
       <workItem from="1641293197780" duration="14579000" />
       <workItem from="1641315039234" duration="2452000" />
-=======
-<<<<<<< Updated upstream
       <workItem from="1641293197780" duration="7501000" />
-=======
-      <workItem from="1641293197780" duration="14579000" />
-      <workItem from="1641315039234" duration="2452000" />
-      <workItem from="1641318305719" duration="5099000" />
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     </task>
     <servers />
   </component>
@@ -193,28 +167,4 @@
   <component name="VcsManagerConfiguration">
     <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/UI/src/graph/GraphController.java</url>
-<<<<<<< Updated upstream
-          <line>111</line>
-=======
-          <line>109</line>
->>>>>>> Stashed changes
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 </project>

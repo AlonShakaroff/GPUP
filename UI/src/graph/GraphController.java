@@ -108,7 +108,7 @@ public class GraphController {
 
     private void setDependenciesTable() {
         TargetTableItem currentItem;
-
+        targetTableList.clear();
         for (Target target: targetGraph.getAllTargets().values()) {
             currentItem = new TargetTableItem(target);
             targetTableList.add(currentItem);
@@ -118,13 +118,14 @@ public class GraphController {
     }
 
     private void setTypeSummeryTable() {
+        typeSummeryList.clear();
         TargetTypeSummery typeSummeryItem = new TargetTypeSummery(targetGraph);
         typeSummeryList.add(typeSummeryItem);
         typeTableView.setItems(typeSummeryList);
     }
 
     private void setSerialSetListView() {
-
+        serialSetNameList.clear();
     }
 
 }

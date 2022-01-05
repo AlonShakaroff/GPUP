@@ -242,9 +242,6 @@
 -fx-font-size: 15px;
  -fx-text-alignment: center center;
 }
-.table-view > .table-column{
- -fx-alignment: center-center;
-}
 
 .table-row-cell{
  -fx-background-color: -fx-table-cell-border-color, #ffc400;
