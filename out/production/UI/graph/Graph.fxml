@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <TabPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graph.GraphController">
@@ -71,14 +70,10 @@
                               </ScrollPane>
                            </children>
                         </VBox>
-                        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="trans" VBox.vgrow="ALWAYS">
+                        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" styleClass="trans" VBox.vgrow="ALWAYS">
                            <children>
-                              <StackPane>
-                                 <children>
-                                    <ChoiceBox fx:id="serialSetChoiceBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" />
-                                    <Label styleClass="headLines" text="serial sets" />
-                                 </children>
-                              </StackPane>
+                              <Label styleClass="headLines" text="serial sets" />
+                              <ComboBox fx:id="serialSetComboBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="choose serial set" VBox.vgrow="ALWAYS" />
                               <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                  <content>
                                     <ListView fx:id="serialSetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0" prefHeight="300.0" />

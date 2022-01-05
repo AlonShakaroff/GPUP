@@ -226,3 +226,11 @@
 .table-view > .virtual-flow > .scroll-bar:horizontal > .decrement-button {
  -fx-opacity: 0;
 }
+
+.combo-box > .list-cell:filled:selected > .text{
+ -fx-font-weight: bold;
+}
+
+.combo-box{
+ -fx-background-color: default-primary-color;
+}
