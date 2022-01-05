@@ -2,13 +2,13 @@
 {
  dark-primary-color    : #310000
 ;
- default-primary-color : #601e1e
+ default-primary-color : #424242
 ;
- light-primary-color   : #644d00
+ light-primary-color   : #616161
 ;
  text-primary-color    : #ffffff
 ;
- accent-color          : #d2dbff
+ accent-color          : #ffe3c5
 ;
  divider-color         : #ffdc73
 ;
@@ -145,16 +145,9 @@
 }
 
 .list-view{
- -fx-background-color:linear-gradient(rgba(49,0,0,0.8),rgba(96,30,30,0.8));
+ -fx-background-color:linear-gradient(dark-primary-color,default-primary-color);
 }
 
-.table-view{
- -fx-background-color:linear-gradient(rgba(49,0,0,0.8),rgba(96,30,30,0.8));
-}
-
-.table-column > .label{
- -fx-background-color: linear-gradient(default-primary-color, light-primary-color);
-}
 .progress-bar:determinate >.bar {
  -fx-background-color : linear-gradient(deepskyblue,darkblue );
  -fx-effect: innershadow(gaussian,white,5,0.2,1,1);
@@ -164,5 +157,72 @@
  -fx-effect: innershadow(gaussian,black,10,0.3,1,1);
 }
 .text-area .content{
- -fx-background-color:linear-gradient(rgba(49,0,0,0.8),rgba(96,30,30,0.8));
+ -fx-background-color:linear-gradient(dark-primary-color,default-primary-color);
+}
+
+
+
+/*table view*/
+
+
+
+.table-view{
+ -fx-background-color: transparent;
+}
+
+.table-view:focused{
+ -fx-background-color: transparent;
+}
+
+.table-view .column-header-background{
+ -fx-background-color: linear-gradient(#131313 0%, #424141 100%);
+}
+
+.table-view .column-header-background .label{
+ -fx-background-color: transparent;
+ -fx-text-fill: accent-color;
+}
+
+.table-view .column-header {
+ -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+ -fx-text-fill: text-primary-color;
+ -fx-text-alignment: center;
+}
+
+.table-row-cell{
+ -fx-background-color: -fx-table-cell-border-color, #616161;
+ -fx-background-insets: 0, 0 0 1 0;
+ -fx-padding: 0.0em; /* 0 */
+}
+
+.table-row-cell:odd{
+ -fx-background-color: -fx-table-cell-border-color, #424242;
+ -fx-background-insets: 0, 0 0 1 0;
+ -fx-padding: 0.0em; /* 0 */
+}
+
+.table-row-cell:selected {
+ -fx-background-color: dark-primary-color;
+ -fx-background-insets: 0;
+ -fx-background-radius: 1;
+}
+
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
+ -fx-background-color: transparent;
+ -fx-min-height: 0;
+ -fx-pref-height: 0;
+ -fx-max-height: 0;
+ -fx-min-width: 0;
+ -fx-pref-width: 0;
+ -fx-max-width: 0;
+}
+
+.table-view > .virtual-flow > .scroll-bar:horizontal > .increment-button,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .decrement-button {
+ -fx-opacity: 0;
 }
