@@ -7,8 +7,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import target.Target;
 import target.TargetGraph;
+
+import java.io.File;
 
 public class GraphController {
 
@@ -66,6 +70,9 @@ public class GraphController {
     @FXML
     private ListView<String> serialSetsListView;
 
+    @FXML
+    private ImageView graphImageView;
+
 
     @FXML
     public void initialize() {
@@ -100,6 +107,10 @@ public class GraphController {
                 serialSetsListView.setItems(serialSetInfoList.sorted());
             }
         });
+    }
+
+    public void initializeGraphImage() {
+//        graphImageView.setImage();
     }
 
     public void setTargetGraph(TargetGraph targetGraph)
@@ -148,4 +159,26 @@ public class GraphController {
                 (new Tooltip("Choose a serial set to display all the targets that belong to it"));
     }
 
+    //--------------------------------------------graphviz-----------------------------------------------------
+
+    public void GraphToImage(String type)
+    {
+        GraphViz gv=new GraphViz();
+        gv.addln(gv.start_graph());
+        for (Target target: targetGraph.getAllTargets().values()) {
+            gv.add(target.getName());
+            if (!target.getDependsOnSet().isEmpty()) {
+                gv.add(gv.start_subgraph());
+                for (Target dependTarget : target.getDependsOnSet()) {
+                    gv.add(dependTarget.getName() + " ");
+                }
+                gv.add(gv.end_subgraph());
+            }
+            gv.addln();
+        }
+        gv.addln(gv.end_graph());
+        gv.increaseDpi();
+        File out = new File("graph."+ type);
+        gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
+    }
 }
