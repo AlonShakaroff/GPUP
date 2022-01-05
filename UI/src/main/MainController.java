@@ -43,6 +43,7 @@ public class MainController {
     @FXML private VBox aboutComponent;
     private Stage aboutStage = null;
     private Stage primaryStage;
+    private static String lastVisitedDirectory = System.getProperty("user.home");
 
 
     private final FileChooser fileChooser = new FileChooser();
@@ -221,8 +222,10 @@ public class MainController {
     private void fileExplorerLoadXMLFile() {
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extensionFilter);
+        fileChooser.setInitialDirectory(new File(lastVisitedDirectory));
         File file = fileChooser.showOpenDialog(primaryStage);
         if (file != null) {
+            lastVisitedDirectory = file.getParent();
             try {
                 TargetGraph targetGraph = TargetGraph.createTargetGraphFromXml(file);
                 graphController.setTargetGraph(targetGraph);
