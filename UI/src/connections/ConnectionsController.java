@@ -1,5 +1,6 @@
- package connections;
+package connections;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,10 +11,41 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import target.Target;
 import target.TargetGraph;
 
- public class ConnectionsController {
+import javax.swing.event.ChangeEvent;
+
+public class ConnectionsController {
+    String sourceTargetName;
+    String destinationTargetName;
+    String whatIfTargetName;
+    private SimpleBooleanProperty isSourceTargetSelected;
+    private SimpleBooleanProperty isDestinationTargetSelected;
+    private SimpleBooleanProperty isWhatIfTargetSelected;
+    private SimpleBooleanProperty isCircleTargetSelected;
+
+    ObservableList<String> allTargetsNameList = FXCollections.observableArrayList();
+    ObservableList<String> pathList = FXCollections.observableArrayList();
+
+    TargetGraph targetGraph;
+
+    public ConnectionsController() {
+       isSourceTargetSelected = new SimpleBooleanProperty(false);
+       isWhatIfTargetSelected = new SimpleBooleanProperty(false);
+       isDestinationTargetSelected = new SimpleBooleanProperty(false);
+       isCircleTargetSelected = new SimpleBooleanProperty(false);
+    }
+
+    @FXML
+    public void initialize() {
+       destinationComboBox.disableProperty().bind(isSourceTargetSelected.not());
+       pathListView.disableProperty().bind(isDestinationTargetSelected.not());
+       circleListView.disableProperty().bind(isCircleTargetSelected.not());
+       WhatIfTable.disableProperty().bind(isWhatIfTargetSelected.not());
+    }
 
     @FXML
     private ComboBox<String> sourceComboBox;
@@ -67,48 +99,97 @@ import target.TargetGraph;
     private TableView<String> WhatIfTable;
 
     @FXML
-    void WhatIfSubmitButtonClicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void circleSubmitButtonClicked(ActionEvent event) {
-
-    }
-
-    @FXML
     void circleTargetComboBoxClicked(ActionEvent event) {
 
     }
 
     @FXML
-    void destinationComboBoxClicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void pathSubmitButtonClicked(ActionEvent event) {
-
-    }
-
-    @FXML
     void sourceComboBoxClicked(ActionEvent event) {
-
+       sourceTargetName = sourceComboBox.getValue();
+       pathList.clear();
+       if(sourceTargetName != null)
+          isSourceTargetSelected.set(true);
+       if(isDestinationTargetSelected.get())
+          refreshPathList();
     }
+
+    @FXML
+    void destinationComboBoxClicked(ActionEvent event) {
+       destinationTargetName = destinationComboBox.getValue();
+       pathList.clear();
+       if(destinationTargetName != null) {
+          isDestinationTargetSelected.set(true);
+          refreshPathList();
+       }
+    }
+
+    @FXML
+    void pathDependsOnRadioButtonClicked(ActionEvent event) {
+         if(isDestinationTargetSelected.get()) {
+            pathList.clear();
+            refreshPathList();
+         }
+    }
+
+    @FXML
+    void pathRequiredForRadioButtonClicked(ActionEvent event) {
+       if(isDestinationTargetSelected.get()) {
+          pathList.clear();
+          refreshPathList();
+       }
+    }
+
+    @FXML
+    void pathDependsOnKeyboardPress(KeyEvent event) {
+        if(isDestinationTargetSelected.get()) {
+            pathList.clear();
+            refreshPathList();
+        }
+    }
+
+
+    @FXML
+    void pathRequiredForKeyboardPress(KeyEvent event) {
+        if(isDestinationTargetSelected.get()) {
+            pathList.clear();
+            refreshPathList();
+        }
+    }
+
 
     @FXML
     void whatIfTargetComboBoxClicked(ActionEvent event) {
 
     }
 
-    ObservableList<String> serialSetNameList = FXCollections.observableArrayList();
-    ObservableList<String> allTargetsNameList = FXCollections.observableArrayList();
+    private void setAllTargetsNameList() {
+       allTargetsNameList.clear();
+       allTargetsNameList.addAll(targetGraph.getAllTargets().keySet());
+       sourceComboBox.setItems(allTargetsNameList.sorted());
+       destinationComboBox.setItems(allTargetsNameList.sorted());
+       circleTargetComboBox.setItems(allTargetsNameList.sorted());
+       whatIfTargetComboBox.setItems(allTargetsNameList.sorted());
+    }
 
-    TargetGraph targetGraph;
+    public void setTargetGraph(TargetGraph targetGraph) {
+        this.targetGraph = targetGraph;
+        isSourceTargetSelected.set(false);
+        isDestinationTargetSelected.set(false);
+        isWhatIfTargetSelected.set(false);
+        isCircleTargetSelected.set(false);
+        setAllTargetsNameList();
+        pathList.clear();
+    }
 
-//    void setTargetGraph(TargetGraph targetGraph) {
-//        this.targetGraph = targetGraph;
-//        if()
-//    }
-
+    private void refreshPathList() {
+       if(pathRequiredForRadioButton.isSelected()) {
+          pathList.addAll(targetGraph.getAllPathsFromTwoTargetsAsStrings(sourceTargetName,destinationTargetName, TargetGraph.pathDirection.REQUIRED_FOR));
+       }
+       else {
+          pathList.addAll(targetGraph.getAllPathsFromTwoTargetsAsStrings(sourceTargetName,destinationTargetName, TargetGraph.pathDirection.DEPENDS_ON));
+       }
+       if(pathList.isEmpty())
+          pathList.add("There is no path between those two targets in this direction");
+       pathListView.setItems(pathList);
+    }
 }

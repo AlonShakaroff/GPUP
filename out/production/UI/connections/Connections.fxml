@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -39,7 +38,7 @@
                               <VBox maxHeight="80.0" prefHeight="0.0" VBox.vgrow="SOMETIMES">
                                  <children>
                                     <Label text="Source" VBox.vgrow="SOMETIMES" />
-                                    <ComboBox fx:id="sourceComboBox" editable="true" onAction="#sourceComboBoxClicked" prefWidth="150.0" promptText="from" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="sourceComboBox" onAction="#sourceComboBoxClicked" prefWidth="150.0" VBox.vgrow="SOMETIMES" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />
@@ -47,21 +46,26 @@
                               </VBox>
                               <VBox layoutX="10.0" layoutY="20.0" maxHeight="80.0" VBox.vgrow="SOMETIMES">
                                  <children>
+<<<<<<< Updated upstream
                                     <Label text="destination" VBox.vgrow="SOMETIMES" />
                                     <ComboBox fx:id="destinationComboBox" disable="true" editable="true" onAction="#destinationComboBoxClicked" prefWidth="150.0" promptText="to" VBox.vgrow="SOMETIMES" />
+=======
+                                    <Label text="Destination" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="destinationComboBox" disable="true" onAction="#destinationComboBoxClicked" prefWidth="150.0" VBox.vgrow="SOMETIMES" />
+>>>>>>> Stashed changes
                                  </children>
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />
                                  </VBox.margin>
                               </VBox>
-                              <VBox fx:id="pathDirectionChoiceVBox" disable="true" layoutX="15.0" layoutY="191.0" maxHeight="80.0" spacing="5.0" VBox.vgrow="SOMETIMES">
+                              <VBox fx:id="pathDirectionChoiceVBox" layoutX="15.0" layoutY="191.0" maxHeight="80.0" spacing="5.0" VBox.vgrow="SOMETIMES">
                                  <children>
-                                    <RadioButton fx:id="pathRequiredForRadioButton" mnemonicParsing="false" selected="true" text="required for">
+                                    <RadioButton fx:id="pathRequiredForRadioButton" mnemonicParsing="false" onAction="#pathRequiredForRadioButtonClicked" onKeyPressed="#pathRequiredForKeyboardPress" selected="true" text="required for">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="connections" />
                                        </toggleGroup>
                                     </RadioButton>
-                                    <RadioButton fx:id="pathDependsOnRadioButton" mnemonicParsing="false" text="depends on" toggleGroup="$connections" />
+                                    <RadioButton fx:id="pathDependsOnRadioButton" mnemonicParsing="false" onAction="#pathDependsOnRadioButtonClicked" onKeyPressed="#pathDependsOnKeyboardPress" text="depends on" toggleGroup="$connections" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />
@@ -70,11 +74,6 @@
                                     <Insets left="5.0" />
                                  </padding>
                               </VBox>
-                              <Button fx:id="pathSubmitButton" disable="true" mnemonicParsing="false" onAction="#pathSubmitButtonClicked" prefWidth="150.0" text="submit" VBox.vgrow="NEVER">
-                                 <VBox.margin>
-                                    <Insets bottom="30.0" left="5.0" />
-                                 </VBox.margin>
-                              </Button>
                            </children>
                            <padding>
                               <Insets top="10.0" />
@@ -113,7 +112,7 @@
                               <VBox maxHeight="235.0" VBox.vgrow="SOMETIMES">
                                  <children>
                                     <Label text="Choose target" VBox.vgrow="SOMETIMES" />
-                                    <ComboBox fx:id="circleTargetComboBox" editable="true" onAction="#circleTargetComboBoxClicked" prefWidth="150.0" promptText="target" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="circleTargetComboBox" onAction="#circleTargetComboBoxClicked" prefWidth="150.0" VBox.vgrow="SOMETIMES" />
                                  </children>
                                  <padding>
                                     <Insets right="5.0" />
@@ -122,11 +121,6 @@
                                     <Insets left="5.0" />
                                  </VBox.margin>
                               </VBox>
-                              <Button fx:id="circleSubmitButton" disable="true" mnemonicParsing="false" onAction="#circleSubmitButtonClicked" prefWidth="150.0" text="submit" VBox.vgrow="NEVER">
-                                 <VBox.margin>
-                                    <Insets bottom="30.0" left="5.0" />
-                                 </VBox.margin>
-                              </Button>
                            </children>
                            <padding>
                               <Insets top="10.0" />
@@ -169,13 +163,13 @@
                               <VBox maxHeight="80.0" VBox.vgrow="SOMETIMES">
                                  <children>
                                     <Label text="Choose target" VBox.vgrow="SOMETIMES" />
-                                    <ComboBox fx:id="whatIfTargetComboBox" editable="true" onAction="#whatIfTargetComboBoxClicked" prefWidth="150.0" promptText="target" VBox.vgrow="SOMETIMES" />
+                                    <ComboBox fx:id="whatIfTargetComboBox" onAction="#whatIfTargetComboBoxClicked" prefWidth="150.0" VBox.vgrow="SOMETIMES" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="5.0" />
                                  </VBox.margin>
                               </VBox>
-                              <VBox fx:id="whatIfDirectionVBox" disable="true" maxHeight="135.0" spacing="5.0" VBox.vgrow="SOMETIMES">
+                              <VBox fx:id="whatIfDirectionVBox" maxHeight="135.0" spacing="5.0" VBox.vgrow="SOMETIMES">
                                  <children>
                                     <RadioButton fx:id="whatIfRequiredForRadioButton" mnemonicParsing="false" selected="true" text="required for">
                                        <toggleGroup>
@@ -191,11 +185,6 @@
                                     <Insets left="5.0" right="5.0" />
                                  </VBox.margin>
                               </VBox>
-                              <Button fx:id="WhatIfSubmitButton" disable="true" mnemonicParsing="false" onAction="#WhatIfSubmitButtonClicked" prefHeight="20.0" prefWidth="150.0" text="submit" VBox.vgrow="SOMETIMES">
-                                 <VBox.margin>
-                                    <Insets bottom="30.0" left="5.0" />
-                                 </VBox.margin>
-                              </Button>
                            </children>
                            <padding>
                               <Insets top="10.0" />

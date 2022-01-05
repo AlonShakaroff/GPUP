@@ -339,8 +339,28 @@ public class TargetGraph implements Serializable {
         return typeSetMap.get(Target.Type.LEAF).size();
     }
 
-    public int getAmountOfIndependent() {
-        return typeSetMap.get(Target.Type.INDEPENDENT).size();
+    public int getAmountOfIndependent() { return typeSetMap.get(Target.Type.INDEPENDENT).size(); }
+
+    public ArrayList<String> getAllPathsFromTwoTargetsAsStrings (String source, String destination, pathDirection direction) {
+        Set<List<Target>> paths = getAllPathsFromTwoTargets(getTarget(source),getTarget(destination),direction);
+        ArrayList<String> stringPaths = new ArrayList<>();
+        for (List<Target> path: paths) {
+            stringPaths.add(returnPathAsString(path));
+        }
+        return stringPaths;
     }
 
+    private String returnPathAsString(List<Target> path) {
+        String StringPath = "";
+        char rightArrow = '\u2192';
+        int i = 0;
+        for (Target target : path) {
+            if(i==0)
+                StringPath += target.getName().toUpperCase();
+            else
+                StringPath = StringPath + ' ' + rightArrow + ' ' + target.getName().toUpperCase();
+            i++;
+        }
+        return StringPath;
+    }
 }

@@ -228,6 +228,7 @@ public class MainController {
             try {
                 TargetGraph targetGraph = TargetGraph.createTargetGraphFromXml(file);
                 graphController.setTargetGraph(targetGraph);
+                connectionsController.setTargetGraph(targetGraph);
                 mainChangingScene.setContent(graphComponent);
                 graphButton.setSelected(true);
                 isFileSelected.set(true);
