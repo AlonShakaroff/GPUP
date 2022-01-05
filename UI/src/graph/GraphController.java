@@ -61,7 +61,7 @@ public class GraphController {
     private TableColumn<TargetTypeSummery, Integer> rootAmount;
 
     @FXML
-    private ChoiceBox<String> serialSetChoiceBox;
+    private ComboBox<String> serialSetComboBox;
 
     @FXML
     private ListView<String> serialSetsListView;
@@ -93,10 +93,10 @@ public class GraphController {
     }
 
     public void initializeSerialSetChoiceBox() {
-        serialSetChoiceBox.setOnAction((event) -> {
+        serialSetComboBox.setOnAction((event) -> {
             serialSetInfoList.clear();
             if(!targetGraph.getSerialSets().isEmpty()) {
-                serialSetInfoList.addAll(targetGraph.getSerialSets().get(serialSetChoiceBox.getValue()));
+                serialSetInfoList.addAll(targetGraph.getSerialSets().get(serialSetComboBox.getValue()));
                 serialSetsListView.setItems(serialSetInfoList.sorted());
             }
         });
@@ -133,10 +133,10 @@ public class GraphController {
 
         if(!targetGraph.getSerialSets().isEmpty()) {
             serialSetNameList.addAll(targetGraph.getSerialSets().keySet());
-            serialSetChoiceBox.setItems(serialSetNameList.sorted());
+            serialSetComboBox.setItems(serialSetNameList.sorted());
         }
 
-        serialSetChoiceBox.setTooltip
+        serialSetComboBox.setTooltip
                 (new Tooltip("Choose a serial set to display all the targets that belong to it"));
     }
 
