@@ -5,22 +5,17 @@ import graph.tableview.TargetTypeSummery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import target.Target;
 import target.TargetGraph;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class GraphController {
 
     ObservableList<TargetTableItem> targetTableList = FXCollections.observableArrayList();
     ObservableList<TargetTypeSummery> typeSummeryList = FXCollections.observableArrayList();
     ObservableList<String> serialSetNameList = FXCollections.observableArrayList();
+    ObservableList<String> serialSetInfoList = FXCollections.observableArrayList();
     TargetGraph targetGraph;
 
     @FXML
@@ -66,6 +61,9 @@ public class GraphController {
     private TableColumn<TargetTypeSummery, Integer> rootAmount;
 
     @FXML
+    private ChoiceBox<String> serialSetChoiceBox;
+
+    @FXML
     private ListView<String> serialSetsListView;
 
 
@@ -73,7 +71,7 @@ public class GraphController {
     public void initialize() {
         initializeTargetTable();
         initializeTypeSummeryTable();
-        initializeSerialSetListView();
+        initializeSerialSetChoiceBox();
     }
 
     public void initializeTargetTable() {
@@ -94,8 +92,14 @@ public class GraphController {
         independentAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Independent"));
     }
 
-    public void initializeSerialSetListView() {
-
+    public void initializeSerialSetChoiceBox() {
+        serialSetChoiceBox.setOnAction((event) -> {
+            serialSetInfoList.clear();
+            if(!targetGraph.getSerialSets().isEmpty()) {
+                serialSetInfoList.addAll(targetGraph.getSerialSets().get(serialSetChoiceBox.getValue()));
+                serialSetsListView.setItems(serialSetInfoList.sorted());
+            }
+        });
     }
 
     public void setTargetGraph(TargetGraph targetGraph)
@@ -103,7 +107,7 @@ public class GraphController {
         this.targetGraph = targetGraph;
         setDependenciesTable();
         setTypeSummeryTable();
-        setSerialSetListView();
+        setSerialSetChoiceBox();
     }
 
     private void setDependenciesTable() {
@@ -124,8 +128,16 @@ public class GraphController {
         typeTableView.setItems(typeSummeryList);
     }
 
-    private void setSerialSetListView() {
+    private void setSerialSetChoiceBox() {
         serialSetNameList.clear();
+
+        if(!targetGraph.getSerialSets().isEmpty()) {
+            serialSetNameList.addAll(targetGraph.getSerialSets().keySet());
+            serialSetChoiceBox.setItems(serialSetNameList.sorted());
+        }
+
+        serialSetChoiceBox.setTooltip
+                (new Tooltip("Choose a serial set to display all the targets that belong to it"));
     }
 
 }
