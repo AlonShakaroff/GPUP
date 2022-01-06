@@ -350,6 +350,14 @@ public class TargetGraph implements Serializable {
         return stringPaths;
     }
 
+    public String checkIfTargetIsInACircleAndReturnCircleAsString(Target target) {
+        List<Target> circle = checkIfATargetIsInACircleAndReturnCircle(target);
+        if(circle == null)
+            return "Target is not in a circle";
+        else
+            return returnPathAsString(circle);
+    }
+
     private String returnPathAsString(List<Target> path) {
         String StringPath = "";
         char rightArrow = '\u2192';

@@ -21,6 +21,7 @@ import javax.swing.event.ChangeEvent;
 public class ConnectionsController {
     String sourceTargetName;
     String destinationTargetName;
+    String circleTargetName;
     String whatIfTargetName;
     private SimpleBooleanProperty isSourceTargetSelected;
     private SimpleBooleanProperty isDestinationTargetSelected;
@@ -29,7 +30,7 @@ public class ConnectionsController {
 
     ObservableList<String> allTargetsNameList = FXCollections.observableArrayList();
     ObservableList<String> pathList = FXCollections.observableArrayList();
-
+    ObservableList<String> circleList = FXCollections.observableArrayList();
     TargetGraph targetGraph;
 
     public ConnectionsController() {
@@ -100,7 +101,13 @@ public class ConnectionsController {
 
     @FXML
     void circleTargetComboBoxClicked(ActionEvent event) {
-
+        circleTargetName = circleTargetComboBox.getValue();
+        circleList.clear();
+        if(circleTargetName != null) {
+            isCircleTargetSelected.set(true);
+            circleList.add(targetGraph.checkIfTargetIsInACircleAndReturnCircleAsString(targetGraph.getTarget(circleTargetName)));
+        }
+        circleListView.setItems(circleList);
     }
 
     @FXML
