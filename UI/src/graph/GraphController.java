@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import target.Target;
 import target.TargetGraph;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 
 public class GraphController {
@@ -109,10 +110,6 @@ public class GraphController {
         });
     }
 
-    public void initializeGraphImage() {
-//        graphImageView.setImage();
-    }
-
     public void setTargetGraph(TargetGraph targetGraph)
     {
         this.targetGraph = targetGraph;
@@ -120,7 +117,7 @@ public class GraphController {
         setDependenciesTable();
         setTypeSummeryTable();
         setSerialSetComboBox();
-
+        setGraphImageView();
     }
 
     private void setDependenciesTable() {
@@ -162,9 +159,9 @@ public class GraphController {
 
     //--------------------------------------------graphviz-----------------------------------------------------
 
-    public void graphToImage(String type)
+    public Image graphToImage(String type)
     {
-        GraphViz gv=new GraphViz();
+        GraphViz gv = new GraphViz(targetGraph.getDirectory());
         gv.addln(gv.start_graph());
         for (Target target: targetGraph.getAllTargets().values()) {
             gv.add(target.getName());
@@ -178,15 +175,12 @@ public class GraphController {
             gv.addln();
         }
         gv.addln(gv.end_graph());
-        gv.increaseDpi();
-        File out = new File("graph."+ type);
-        gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
+        byte[] byteImg = gv.getGraph( gv.getDotSource(), type );
+        return new Image(new ByteArrayInputStream(byteImg));
     }
 
-//    private void setGraphImageView() {
-//        graphToImage("png");
-//        graphImageView.setImage(getClass().getResource());
-//    }
-
+    private void setGraphImageView() {
+        graphImageView.setImage(graphToImage("png"));
+    }
 }
 
