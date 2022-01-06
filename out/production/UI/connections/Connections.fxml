@@ -53,12 +53,12 @@
                               </VBox>
                               <VBox fx:id="pathDirectionChoiceVBox" layoutX="15.0" layoutY="191.0" maxHeight="80.0" spacing="5.0" VBox.vgrow="SOMETIMES">
                                  <children>
-                                    <RadioButton fx:id="pathRequiredForRadioButton" mnemonicParsing="false" onAction="#pathRequiredForRadioButtonClicked" onKeyPressed="#pathRequiredForKeyboardPress" selected="true" text="required for">
+                                    <RadioButton fx:id="pathRequiredForRadioButton" focusTraversable="false" mnemonicParsing="false" onAction="#pathRequiredForRadioButtonClicked" onKeyPressed="#pathRequiredForKeyboardPress" selected="true" text="required for">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="connections" />
                                        </toggleGroup>
                                     </RadioButton>
-                                    <RadioButton fx:id="pathDependsOnRadioButton" mnemonicParsing="false" onAction="#pathDependsOnRadioButtonClicked" onKeyPressed="#pathDependsOnKeyboardPress" text="depends on" toggleGroup="$connections" />
+                                    <RadioButton fx:id="pathDependsOnRadioButton" focusTraversable="false" mnemonicParsing="false" onAction="#pathDependsOnRadioButtonClicked" onKeyPressed="#pathDependsOnKeyboardPress" text="depends on" toggleGroup="$connections" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />
@@ -160,12 +160,12 @@
                               </VBox>
                               <VBox fx:id="whatIfDirectionVBox" maxHeight="135.0" spacing="5.0" VBox.vgrow="SOMETIMES">
                                  <children>
-                                    <RadioButton fx:id="whatIfRequiredForRadioButton" mnemonicParsing="false" onAction="#whatIfRequiredForClicked" onKeyPressed="#whatIfRequiredForKeyBoardPressed" selected="true" text="required for">
+                                    <RadioButton fx:id="whatIfRequiredForRadioButton" focusTraversable="false" mnemonicParsing="false" onAction="#whatIfRequiredForClicked" onKeyPressed="#whatIfRequiredForKeyBoardPressed" selected="true" text="required for">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="conactions1" />
                                        </toggleGroup>
                                     </RadioButton>
-                                    <RadioButton fx:id="whatIfDependsOnRadioButton" mnemonicParsing="false" onAction="#whatIfDependsOnClicked" onKeyPressed="#whatIfDependsOnKeyBoardPressed" text="depends on" toggleGroup="$conactions1" />
+                                    <RadioButton fx:id="whatIfDependsOnRadioButton" focusTraversable="false" mnemonicParsing="false" onAction="#whatIfDependsOnClicked" onKeyPressed="#whatIfDependsOnKeyBoardPressed" text="depends on" toggleGroup="$conactions1" />
                                  </children>
                                  <padding>
                                     <Insets left="5.0" />

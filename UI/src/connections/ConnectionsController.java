@@ -17,6 +17,8 @@ import target.Target;
 import target.TargetGraph;
 
 import javax.swing.event.ChangeEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConnectionsController {
     String sourceTargetName;
@@ -40,6 +42,7 @@ public class ConnectionsController {
        isDestinationTargetSelected = new SimpleBooleanProperty(false);
        isCircleTargetSelected = new SimpleBooleanProperty(false);
     }
+
 
     @FXML
     public void initialize() {

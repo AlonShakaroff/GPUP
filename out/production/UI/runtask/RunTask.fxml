@@ -96,8 +96,8 @@
                                                       </CheckBox>
                                                       <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="15.0" spacing="5.0">
                                                          <children>
-                                                            <Label text="sucsuss rate (0 - 1) " HBox.hgrow="SOMETIMES" />
-                                                            <Spinner fx:id="simulationSucsussRateSpinner" editable="true" maxWidth="100.0" minHeight="30.0" minWidth="50.0" prefHeight="20.0" prefWidth="70.0" HBox.hgrow="SOMETIMES" />
+                                                            <Label text="success rate (0 - 1) " HBox.hgrow="SOMETIMES" />
+                                                            <Spinner fx:id="simulationSuccessRateSpinner" editable="true" maxWidth="100.0" minHeight="30.0" minWidth="50.0" prefHeight="20.0" prefWidth="70.0" HBox.hgrow="SOMETIMES" />
                                                          </children>
                                                       </HBox>
                                                       <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="62.0" spacing="5.0">
