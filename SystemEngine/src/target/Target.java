@@ -184,36 +184,52 @@ public class Target implements Serializable {
      *
      * @return set of targets that depends on this target.
      */
-    public Set<Target> getAllAboveTargets() {
+    public Set<Target> getAllRequiredForTargets() {
         Set<Target> aboveTargets = new HashSet<>();
-        getAllAboveTargetsRec(this,aboveTargets);
+        getAllRequiredForTargetsRec(this,aboveTargets);
         return aboveTargets;
     }
 
-    private void getAllAboveTargetsRec(Target target ,Set<Target> aboveTargets)
+    private void getAllRequiredForTargetsRec(Target target , Set<Target> aboveTargets)
     {
         for (Target curTarget: target.getRequiredForSet()) {
             if(!aboveTargets.contains(curTarget)) {
                 aboveTargets.add(curTarget);
-                getAllAboveTargetsRec(curTarget, aboveTargets);
+                getAllRequiredForTargetsRec(curTarget, aboveTargets);
             }
         }
     }
 
-    public Set<Target> getAllBelowTargets() {
+    public Set<String> getAllRequiredForTargetsAsStrings() {
+        Set<String> requiredForTargets = new HashSet<>();
+        for(Target target: getAllRequiredForTargets()) {
+            requiredForTargets.add(target.getName().toUpperCase());
+        }
+        return requiredForTargets;
+    }
+
+    public Set<Target> getAllDependsOnTargets() {
         Set<Target> belowTargets = new HashSet<>();
-        getAllBelowTargetsRec(this,belowTargets);
+        getAllDependsOnTargetsRec(this,belowTargets);
         return belowTargets;
     }
 
-    private void getAllBelowTargetsRec(Target target ,Set<Target> belowTargets)
+    private void getAllDependsOnTargetsRec(Target target , Set<Target> belowTargets)
     {
         for (Target curTarget: target.getDependsOnSet()) {
             if(!belowTargets.contains(curTarget)) {
                 belowTargets.add(curTarget);
-                getAllBelowTargetsRec(curTarget, belowTargets);
+                getAllDependsOnTargetsRec(curTarget, belowTargets);
             }
         }
+    }
+
+    public Set<String> getAllDependsOnTargetsAsStrings() {
+        Set<String> dependsOnTargets = new HashSet<>();
+        for(Target target: getAllDependsOnTargets()) {
+            dependsOnTargets.add(target.getName().toUpperCase());
+        }
+        return dependsOnTargets;
     }
 
     public void setResult(Result res){
@@ -225,7 +241,7 @@ public class Target implements Serializable {
     }
 
     public void setAllAboveSkipped(){
-        for (Target target: this.getAllAboveTargets()){
+        for (Target target: this.getAllRequiredForTargets()){
             target.setStatus(Status.SKIPPED);
         }
     }
@@ -275,7 +291,7 @@ public class Target implements Serializable {
     }
 
     public int getAmountOfTotalDependsOn() {
-        return getAllBelowTargets().size();
+        return getAllDependsOnTargets().size();
     }
 
     public int getAmountOfDirectlyRequiredFor() {
@@ -283,7 +299,7 @@ public class Target implements Serializable {
     }
 
     public int getAmountOfTotalRequiredFor() {
-        return getAllAboveTargets().size();
+        return getAllRequiredForTargets().size();
     }
 
     public int getAmountOfSerialSets() {

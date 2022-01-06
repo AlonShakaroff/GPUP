@@ -31,6 +31,7 @@ public class ConnectionsController {
     ObservableList<String> allTargetsNameList = FXCollections.observableArrayList();
     ObservableList<String> pathList = FXCollections.observableArrayList();
     ObservableList<String> circleList = FXCollections.observableArrayList();
+    ObservableList<String> whatIfList = FXCollections.observableArrayList();
     TargetGraph targetGraph;
 
     public ConnectionsController() {
@@ -45,7 +46,7 @@ public class ConnectionsController {
        destinationComboBox.disableProperty().bind(isSourceTargetSelected.not());
        pathListView.disableProperty().bind(isDestinationTargetSelected.not());
        circleListView.disableProperty().bind(isCircleTargetSelected.not());
-       WhatIfTable.disableProperty().bind(isWhatIfTargetSelected.not());
+       whatIfListView.disableProperty().bind(isWhatIfTargetSelected.not());
     }
 
     @FXML
@@ -97,7 +98,7 @@ public class ConnectionsController {
     private Button WhatIfSubmitButton;
 
     @FXML
-    private TableView<String> WhatIfTable;
+    private ListView<String> whatIfListView;
 
     @FXML
     void circleTargetComboBoxClicked(ActionEvent event) {
@@ -105,7 +106,7 @@ public class ConnectionsController {
         circleList.clear();
         if(circleTargetName != null) {
             isCircleTargetSelected.set(true);
-            circleList.add(targetGraph.checkIfTargetIsInACircleAndReturnCircleAsString(targetGraph.getTarget(circleTargetName)));
+            circleList.add(targetGraph.checkIfTargetIsInACircleAndReturnCircleAsString(circleTargetName));
         }
         circleListView.setItems(circleList);
     }
@@ -133,7 +134,6 @@ public class ConnectionsController {
     @FXML
     void pathDependsOnRadioButtonClicked(ActionEvent event) {
          if(isDestinationTargetSelected.get()) {
-            pathList.clear();
             refreshPathList();
          }
     }
@@ -141,7 +141,6 @@ public class ConnectionsController {
     @FXML
     void pathRequiredForRadioButtonClicked(ActionEvent event) {
        if(isDestinationTargetSelected.get()) {
-          pathList.clear();
           refreshPathList();
        }
     }
@@ -149,7 +148,6 @@ public class ConnectionsController {
     @FXML
     void pathDependsOnKeyboardPress(KeyEvent event) {
         if(isDestinationTargetSelected.get()) {
-            pathList.clear();
             refreshPathList();
         }
     }
@@ -158,7 +156,6 @@ public class ConnectionsController {
     @FXML
     void pathRequiredForKeyboardPress(KeyEvent event) {
         if(isDestinationTargetSelected.get()) {
-            pathList.clear();
             refreshPathList();
         }
     }
@@ -166,7 +163,35 @@ public class ConnectionsController {
 
     @FXML
     void whatIfTargetComboBoxClicked(ActionEvent event) {
+        whatIfTargetName = whatIfTargetComboBox.getValue();
+        if(whatIfTargetName != null) {
+            isWhatIfTargetSelected.set(true);
+            refreshWhatIfList();
+        }
+    }
 
+    @FXML
+    void whatIfDependsOnClicked(ActionEvent event) {
+        if(isWhatIfTargetSelected.get())
+            refreshWhatIfList();
+    }
+
+    @FXML
+    void whatIfDependsOnKeyBoardPressed(KeyEvent event) {
+        if(isWhatIfTargetSelected.get())
+            refreshWhatIfList();
+    }
+
+    @FXML
+    void whatIfRequiredForClicked(ActionEvent event) {
+        if(isWhatIfTargetSelected.get())
+            refreshWhatIfList();
+    }
+
+    @FXML
+    void whatIfRequiredForKeyBoardPressed(KeyEvent event) {
+        if(isWhatIfTargetSelected.get())
+            refreshWhatIfList();
     }
 
     private void setAllTargetsNameList() {
@@ -189,6 +214,7 @@ public class ConnectionsController {
     }
 
     private void refreshPathList() {
+        pathList.clear();
        if(pathRequiredForRadioButton.isSelected()) {
           pathList.addAll(targetGraph.getAllPathsFromTwoTargetsAsStrings(sourceTargetName,destinationTargetName, TargetGraph.pathDirection.REQUIRED_FOR));
        }
@@ -198,5 +224,23 @@ public class ConnectionsController {
        if(pathList.isEmpty())
           pathList.add("There is no path between those two targets in this direction");
        pathListView.setItems(pathList);
+    }
+
+    private void refreshWhatIfList() {
+        whatIfList.clear();
+        if(isWhatIfTargetSelected.get()) {
+            if (whatIfRequiredForRadioButton.isSelected()) {
+                whatIfList.addAll(targetGraph.getTarget(whatIfTargetName).getAllRequiredForTargetsAsStrings());
+                if(whatIfList.isEmpty())
+                    whatIfList.add("The target is not required for any other targets");
+            }
+            else {
+                whatIfList.addAll(targetGraph.getTarget(whatIfTargetName).getAllDependsOnTargetsAsStrings());
+                if(whatIfList.isEmpty())
+                    whatIfList.add("The target does not depend on any other targets");
+            }
+        }
+
+        whatIfListView.setItems(whatIfList);
     }
 }

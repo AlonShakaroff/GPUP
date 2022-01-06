@@ -8,8 +8,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -125,11 +123,7 @@
                      <center>
                         <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
                            <content>
-                              <ListView fx:id="circleListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
-                                 <padding>
-                                    <Insets bottom="30.0" left="30.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </ListView>
+                              <ListView fx:id="circleListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" />
                            </content>
                            <BorderPane.margin>
                               <Insets bottom="30.0" right="30.0" top="15.0" />
@@ -166,12 +160,12 @@
                               </VBox>
                               <VBox fx:id="whatIfDirectionVBox" maxHeight="135.0" spacing="5.0" VBox.vgrow="SOMETIMES">
                                  <children>
-                                    <RadioButton fx:id="whatIfRequiredForRadioButton" mnemonicParsing="false" selected="true" text="required for">
+                                    <RadioButton fx:id="whatIfRequiredForRadioButton" mnemonicParsing="false" onAction="#whatIfRequiredForClicked" onKeyPressed="#whatIfRequiredForKeyBoardPressed" selected="true" text="required for">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="conactions1" />
                                        </toggleGroup>
                                     </RadioButton>
-                                    <RadioButton fx:id="whatIfDependsOnRadioButton" mnemonicParsing="false" text="depends on" toggleGroup="$conactions1" />
+                                    <RadioButton fx:id="whatIfDependsOnRadioButton" mnemonicParsing="false" onAction="#whatIfDependsOnClicked" onKeyPressed="#whatIfDependsOnKeyBoardPressed" text="depends on" toggleGroup="$conactions1" />
                                  </children>
                                  <padding>
                                     <Insets left="5.0" />
@@ -188,20 +182,12 @@
                      </left>
                      <center>
                         <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
-                           <content>
-                              <TableView fx:id="WhatIfTable" disable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="150.0">
-                                <columns>
-                                  <TableColumn editable="false" prefWidth="148.0" text="target" />
-                                    <TableColumn editable="false" prefWidth="126.0" text="direct / indirect" />
-                                </columns>
-                                 <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                 </columnResizePolicy>
-                              </TableView>
-                           </content>
                            <BorderPane.margin>
-                              <Insets bottom="30.0" right="30.0" top="10.0" />
+                              <Insets bottom="30.0" right="30.0" top="15.0" />
                            </BorderPane.margin>
+                           <content>
+                              <ListView fx:id="whatIfListView" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" />
+                           </content>
                         </ScrollPane>
                      </center>
                   </BorderPane>
