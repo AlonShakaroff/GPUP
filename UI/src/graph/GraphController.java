@@ -12,8 +12,7 @@ import javafx.scene.image.ImageView;
 import target.Target;
 import target.TargetGraph;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.*;
 
 public class GraphController {
 
@@ -159,28 +158,71 @@ public class GraphController {
 
     //--------------------------------------------graphviz-----------------------------------------------------
 
-    public Image graphToImage(String type)
+    private void setGraphImageView()
     {
-        GraphViz gv = new GraphViz(targetGraph.getDirectory());
-        gv.addln(gv.start_graph());
-        for (Target target: targetGraph.getAllTargets().values()) {
-            gv.add(target.getName());
-            if (!target.getDependsOnSet().isEmpty()) {
-                gv.add(gv.start_subgraph());
-                for (Target dependTarget : target.getDependsOnSet()) {
-                    gv.add(dependTarget.getName() + " ");
-                }
-                gv.add(gv.end_subgraph());
-            }
-            gv.addln();
-        }
-        gv.addln(gv.end_graph());
-        byte[] byteImg = gv.getGraph( gv.getDotSource(), type );
-        return new Image(new ByteArrayInputStream(byteImg));
+        Image image = generateGraphImage();
+        if (image != null)
+             graphImageView.setImage(image);
     }
 
-    private void setGraphImageView() {
-        graphImageView.setImage(graphToImage("png"));
+    public Image generateGraphImage() {
+        byte[] img_stream = null;
+        String directoryPath = targetGraph.getDirectory();
+        String fileNameDOT = "GeneratedGraph.dot";
+        String fileNamePNG = "GeneratedGraph.png";
+        String createPNGFromDOT = "dot -Tpng "+ fileNameDOT + " -o " + fileNamePNG;
+        String properties = "digraph G {\n" + "node [margin=0 fontcolor=black fontsize=28 width=2 shape=circle style=filled]\n" +
+                "\n" +
+                "nodesep = 2;\n" +
+                "ranksep = 2;\n" + "penwidth = 5;\n";
+
+        try {
+            FileWriter dotFile = new FileWriter(new File(directoryPath,fileNameDOT));
+            dotFile.write(properties);
+
+            for (Target target : targetGraph.getAllTargets().values()) {
+                dotFile.write(target.getName());
+                if (!target.getDependsOnSet().isEmpty())
+                    dotFile.write("-> {" + printAllDependsOnTarget(target) + "}\n");
+
+                dotFile.write("\n");
+            }
+            dotFile.write("}");
+            dotFile.close();
+
+            Process process = Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"cd \\ && cd " + directoryPath + " && " + createPNGFromDOT + " && exit");
+            process.waitFor();
+            Thread.sleep(500);
+
+            File img =  new File(targetGraph.getDirectory() + "/" + fileNamePNG);
+            if (!img.exists())
+                return null;
+            FileInputStream in = new FileInputStream(img.getAbsolutePath());
+            img_stream = new byte[in.available()];
+            in.read(img_stream);
+            // Close it if we need to
+            if( in != null ) in.close();
+
+            if (!img.delete())
+                System.err.println("Warning: " + img.getAbsolutePath() + " could not be deleted!");
+        }
+        catch(InterruptedException | IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        return new Image(new ByteArrayInputStream(img_stream));
     }
+
+    private String printAllDependsOnTarget(Target curTarget)
+    {
+        String DependedTarget = "";
+        for (Target dependsOnTarget : curTarget.getDependsOnSet())
+        {
+            DependedTarget = DependedTarget + dependsOnTarget.getName() + " ";
+        }
+        return DependedTarget;
+    }
+
 }
 

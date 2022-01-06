@@ -72,11 +72,7 @@ public class MainController {
         connectionsComponent = fxmlLoader.load(url.openStream());
         connectionsController = fxmlLoader.getController();
 
-        fxmlLoader = new FXMLLoader();
-        url = getClass().getResource(GRAPH_FXML_RESOURCE);
-        fxmlLoader.setLocation(url);
-        graphComponent = fxmlLoader.load(url.openStream());
-        graphController = fxmlLoader.getController();
+        refreshGraphComponentAndController();
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(RUNTASK_FXML_RESOURCE);
@@ -88,6 +84,16 @@ public class MainController {
         url = getClass().getResource(ABOUT_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
         aboutComponent = fxmlLoader.load(url.openStream());
+    }
+
+    private void refreshGraphComponentAndController() throws IOException {
+        URL url;
+        FXMLLoader fxmlLoader;
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource(GRAPH_FXML_RESOURCE);
+        fxmlLoader.setLocation(url);
+        graphComponent = fxmlLoader.load(url.openStream());
+        graphController = fxmlLoader.getController();
     }
 
     @FXML
@@ -227,6 +233,7 @@ public class MainController {
             lastVisitedDirectory = file.getParent();
             try {
                 TargetGraph targetGraph = TargetGraph.createTargetGraphFromXml(file);
+                refreshGraphComponentAndController();
                 graphController.setTargetGraph(targetGraph);
                 connectionsController.setTargetGraph(targetGraph);
                 taskController.setTargetGraph(targetGraph);
