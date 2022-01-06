@@ -1,62 +1,15 @@
 package graph;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-/**
- * <dl>
- * <dt>Purpose: GraphViz Java API
- * <dd>
- *
- * <dt>Description:
- * <dd> With this Java class you can simply call dot
- *      from your Java programs.
- * <dt>Example usage:
- * <dd>
- * <pre>
- *    GraphViz gv = new GraphViz();
- *    gv.addln(gv.start_graph());
- *    gv.addln("A -> B;");
- *    gv.addln("A -> C;");
- *    gv.addln(gv.end_graph());
- *    System.out.println(gv.getDotSource());
- *
- *    String type = "gif";
- *    File out = new File("out." + type);   // out.gif in this example
- *    gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
- * </pre>
- * </dd>
- *
- * </dl>
- *
- * @version v0.5.1, 2013/03/18 (March) -- Patch of Juan Hoyos (Mac support)
- * @version v0.5, 2012/04/24 (April) -- Patch of Abdur Rahman (OS detection + start subgraph +
- * read config file)
- * @version v0.4, 2011/02/05 (February) -- Patch of Keheliya Gallaba is added. Now you
- * can specify the type of the output file: gif, dot, fig, pdf, ps, svg, png, etc.
- * @version v0.3, 2010/11/29 (November) -- Windows support + ability to read the graph from a text file
- * @version v0.2, 2010/07/22 (July) -- bug fix
- * @version v0.1, 2003/12/04 (December) -- first release
- * @author  Laszlo Szathmary (<a href="jabba.laci@gmail.com">jabba.laci@gmail.com</a>)
- */
 public class GraphViz
 {
     /**
-     * Detects the client's operating system.
-     */
-    private final static String osName = System.getProperty("os.name").replaceAll("\\s","");
-
-    /**
      * The dir. where temporary files will be created.
      */
-    private static final String TEMP_DIR = "/resources/images/graphs/tmp";
+    private final String TEMP_DIR;
 
     /**
      * The image size in dpi. 96 dpi is normal size. Higher values are 10% higher each.
@@ -65,6 +18,9 @@ public class GraphViz
      * dpi patch by Peter Mueller
      */
     private final int[] dpiSizes = {46, 51, 57, 63, 70, 78, 86, 96, 106, 116, 128, 141, 155, 170, 187, 206, 226, 249};
+
+
+    //----------------dpi--------------------//
 
     /**
      * Define the index in the image size array.
@@ -92,6 +48,7 @@ public class GraphViz
     public int getImageDpi() {
         return this.dpiSizes[this.currentDpiPos];
     }
+    //---------------------------------------//
 
     /**
      * The source of the graph written in dot language.
@@ -102,8 +59,7 @@ public class GraphViz
      * Constructor: creates a new GraphViz object that will contain
      * a graph.
      */
-    public GraphViz() {
-    }
+    public GraphViz(String tmpDir) { TEMP_DIR = tmpDir;}
 
     /**
      * Returns the graph's source description in dot language.
@@ -138,12 +94,7 @@ public class GraphViz
         this.graph = new StringBuilder();
     }
 
-    /**
-     * Returns the graph as an image in binary format.
-     * @param dot_source Source of the graph to be drawn.
-     * @param type Type of the output image to be produced, e.g.: gif, dot, fig, pdf, ps, svg, png.
-     * @return A byte array containing the image of the graph.
-     */
+    /** Returns the graph as an image in binary format.*/
     public byte[] getGraph(String dot_source, String type)
     {
         File dot;
@@ -162,24 +113,12 @@ public class GraphViz
         } catch (java.io.IOException ioe) { return null; }
     }
 
-    /**
-     * Writes the graph's image in a file.
-     * @param img   A byte array containing the image of the graph.
-     * @param file  Name of the file to where we want to write.
-     * @return Success: 1, Failure: -1
-     */
+    /** Writes the graph's image in a file.*/
     public int writeGraphToFile(byte[] img, String file)
     {
         File to = new File(file);
         return writeGraphToFile(img, to);
     }
-
-    /**
-     * Writes the graph's image in a file.
-     * @param img   A byte array containing the image of the graph.
-     * @param to    A File object to where we want to write.
-     * @return Success: 1, Failure: -1
-     */
     public int writeGraphToFile(byte[] img, File to)
     {
         try {
@@ -191,26 +130,18 @@ public class GraphViz
     }
 
     /**
-     * It will call the external dot program, and return the image in
-     * binary format.
-     * @param dot Source of the graph (in dot language).
-     * @param type Type of the output image to be produced, e.g.: gif, dot, fig, pdf, ps, svg, png.
-     * @return The image of the graph in .gif format.
+     * It will call the external dot program, and return the image in binary format.
      */
     private byte[] get_img_stream(File dot, String type)
     {
-        File img;
         byte[] img_stream = null;
-
         try {
-            img = File.createTempFile("graph_", "."+type, new File(GraphViz.TEMP_DIR));
             Runtime rt = Runtime.getRuntime();
-            String savePath = new File("resources/images/graphs").getAbsolutePath();
-            String createPNGFromDOT = "dot - T "+ type +" graph.dot -o graph." + type;
-            String[] args = {"cmd /c cmd.exe /k \" \\ && cd " + savePath + " && " + createPNGFromDOT + " && exit"};
+            String createPNGFromDOT = "dot - T "+ type +" dotSource.dot -o graph." + type;
+            String[] args = {"cmd /c cmd.exe /k \" \\ && cd " + TEMP_DIR + " && " + createPNGFromDOT + " && exit"};
             Process p = rt.exec(args);
             p.waitFor();
-
+            File img =  new File(TEMP_DIR + "/graph." + type);
             FileInputStream in = new FileInputStream(img.getAbsolutePath());
             img_stream = new byte[in.available()];
             in.read(img_stream);
@@ -221,7 +152,7 @@ public class GraphViz
                 System.err.println("Warning: " + img.getAbsolutePath() + " could not be deleted!");
         }
         catch (java.io.IOException ioe) {
-            System.err.println("Error:    in I/O processing of tempfile in dir " + GraphViz.TEMP_DIR+"\n");
+            System.err.println("Error:    in I/O processing of tempfile in dir\n");
             System.err.println("       or in calling external command");
             ioe.printStackTrace();
         }
@@ -241,16 +172,14 @@ public class GraphViz
      */
     private File writeDotSourceToFile(String str) throws java.io.IOException
     {
-        File temp;
-        try {
-            temp = File.createTempFile("dorrr",".dot", new File(GraphViz.TEMP_DIR));
-            FileWriter fout = new FileWriter(temp);
-            fout.write(str);
-            BufferedWriter br=new BufferedWriter(new FileWriter("dotsource.dot"));
-            br.write(str);
-            br.flush();
-            br.close();
-            fout.close();
+        File temp = new File(TEMP_DIR+"/dotSource.dot");
+        Writer writer;
+            try { writer = new BufferedWriter(
+                    new OutputStreamWriter(
+                            new FileOutputStream(temp, true), StandardCharsets.UTF_8));
+            writer.write(str);
+            writer.flush();
+            writer.close();
         }
         catch (Exception e) {
             System.err.println("Error: I/O error while writing the dot source to temp file!");
@@ -281,7 +210,7 @@ public class GraphViz
      * @return A string to open a subgraph.
      */
     public String start_subgraph() {
-        return "{";
+        return "-> {";
     }
 
     /**
