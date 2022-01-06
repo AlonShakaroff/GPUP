@@ -120,6 +120,7 @@ public class GraphController {
         setDependenciesTable();
         setTypeSummeryTable();
         setSerialSetComboBox();
+
     }
 
     private void setDependenciesTable() {
@@ -161,7 +162,7 @@ public class GraphController {
 
     //--------------------------------------------graphviz-----------------------------------------------------
 
-    public void GraphToImage(String type)
+    public void graphToImage(String type)
     {
         GraphViz gv=new GraphViz();
         gv.addln(gv.start_graph());
@@ -181,4 +182,11 @@ public class GraphController {
         File out = new File("graph."+ type);
         gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
     }
+
+//    private void setGraphImageView() {
+//        graphToImage("png");
+//        graphImageView.setImage(getClass().getResource());
+//    }
+
 }
+
