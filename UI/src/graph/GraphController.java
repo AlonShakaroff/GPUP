@@ -9,10 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import target.Target;
 import target.TargetGraph;
-
-import java.io.*;
 
 public class GraphController {
 
@@ -73,6 +72,8 @@ public class GraphController {
     @FXML
     private ImageView graphImageView;
 
+    @FXML
+    private Pane ImagePane;
 
     @FXML
     public void initialize() {
@@ -116,6 +117,8 @@ public class GraphController {
         setDependenciesTable();
         setTypeSummeryTable();
         setSerialSetComboBox();
+        graphImageView.fitWidthProperty().bind(ImagePane.widthProperty());
+        graphImageView.fitHeightProperty().bind(ImagePane.heightProperty());
         setGraphImageView();
     }
 
@@ -166,63 +169,15 @@ public class GraphController {
     }
 
     public Image generateGraphImage() {
-        byte[] img_stream = null;
-        String directoryPath = targetGraph.getDirectory();
-        String fileNameDOT = "GeneratedGraph.dot";
-        String fileNamePNG = "GeneratedGraph.png";
-        String createPNGFromDOT = "dot -Tpng "+ fileNameDOT + " -o " + fileNamePNG;
-        String properties = "digraph G {\n" + "node [margin=0 fontcolor=black fontsize=28 width=2 shape=circle style=filled]\n" +
-                "\n" +
-                "nodesep = 2;\n" +
-                "ranksep = 2;\n" + "penwidth = 5;\n";
-
-        try {
-            FileWriter dotFile = new FileWriter(new File(directoryPath,fileNameDOT));
-            dotFile.write(properties);
-
-            for (Target target : targetGraph.getAllTargets().values()) {
-                dotFile.write(target.getName());
-                if (!target.getDependsOnSet().isEmpty())
-                    dotFile.write("-> {" + printAllDependsOnTarget(target) + "}\n");
-
-                dotFile.write("\n");
-            }
-            dotFile.write("}");
-            dotFile.close();
-
-            Process process = Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"cd \\ && cd " + directoryPath + " && " + createPNGFromDOT + " && exit");
-            process.waitFor();
-            Thread.sleep(500);
-
-            File img =  new File(targetGraph.getDirectory() + "/" + fileNamePNG);
-            if (!img.exists())
-                return null;
-            FileInputStream in = new FileInputStream(img.getAbsolutePath());
-            img_stream = new byte[in.available()];
-            in.read(img_stream);
-            // Close it if we need to
-            if( in != null ) in.close();
-
-            if (!img.delete())
-                System.err.println("Warning: " + img.getAbsolutePath() + " could not be deleted!");
+        GraphViz graphViz = new GraphViz(targetGraph.getDirectory(),
+                "yellow","blue","orange", "pink");
+        graphViz.openGraph();
+        for (Target target: targetGraph.getAllTargets().values()){
+            graphViz.addNode(target);
+            graphViz.addConnections(target,"black");
         }
-        catch(InterruptedException | IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-
-        return new Image(new ByteArrayInputStream(img_stream));
+        graphViz.closeGraph();
+        return graphViz.generateImage();
     }
-
-    private String printAllDependsOnTarget(Target curTarget)
-    {
-        String DependedTarget = "";
-        for (Target dependsOnTarget : curTarget.getDependsOnSet())
-        {
-            DependedTarget = DependedTarget + dependsOnTarget.getName() + " ";
-        }
-        return DependedTarget;
-    }
-
 }
 

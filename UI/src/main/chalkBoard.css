@@ -267,3 +267,8 @@
 .table-view > .virtual-flow > .scroll-bar:horizontal > .decrement-button {
  -fx-opacity: 0;
 }
+
+.colorLable{
+ -fx-text-fill : black;
+ -fx-font-size : 17px;
+}

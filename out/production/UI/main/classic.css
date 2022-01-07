@@ -144,3 +144,8 @@
   -fx-fill: primary-text-color;
 }
 
+ .colorLable{
+  -fx-text-fill : black;
+  -fx-font-size : 17px;
+ }
+
