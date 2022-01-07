@@ -99,9 +99,8 @@ public class GraphViz {
     private boolean createImageCMD() {
         try {
             Process process = Runtime.getRuntime().exec(
-                    "cmd /c start cmd.exe /K \"cd \\ && cd " + tempPath + " && " + createPNGFromDOT + " && exit");
+                    "cmd /c start /wait cmd.exe /K \"cd \\ && cd " + tempPath + " && " + createPNGFromDOT + "&& exit");
                 process.waitFor();
-                Thread.sleep(700);
             }catch (Exception exception) {
                 System.out.println("could not generate png from graph - problem with GraphViz in cmd");
             return true;
