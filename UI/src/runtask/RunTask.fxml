@@ -53,7 +53,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.25, 0.55" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="runtask.TaskController">
+<SplitPane dividerPositions="0.25, 0.55" focusTraversable="true" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="runtask.TaskController">
 <items>
       <ScrollPane fitToHeight="true" fitToWidth="true">
          <content>
@@ -129,8 +129,8 @@
                                                             </Label>
                                                             <HBox alignment="CENTER" maxHeight="27.0" minHeight="27.0">
                                                                <children>
-                                                                  <TextField fx:id="compileTaskSourceTextField" minWidth="-Infinity" prefHeight="25.0" prefWidth="135.0" promptText="path" HBox.hgrow="ALWAYS" />
-                                                                  <Button fx:id="compileTaskSourceSearchButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" styleClass="searchfilebutton" text="choose" HBox.hgrow="NEVER" />
+                                                                  <TextField fx:id="compileTaskSourceTextField" editable="false" minWidth="-Infinity" prefHeight="25.0" prefWidth="135.0" HBox.hgrow="ALWAYS" />
+                                                                  <Button fx:id="compileTaskSourceSearchButton" mnemonicParsing="false" onAction="#compileTaskSourceSearchButtonClicked" prefHeight="25.0" prefWidth="30.0" styleClass="searchfilebutton" text="choose" HBox.hgrow="NEVER" />
                                                                </children>
                                                                <padding>
                                                                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
@@ -150,8 +150,8 @@
                                                             </Label>
                                                             <HBox alignment="CENTER" maxHeight="27.0" minHeight="27.0">
                                                                <children>
-                                                                  <TextField fx:id="compileTaskDestTextField" minWidth="-Infinity" prefHeight="25.0" prefWidth="135.0" promptText="path" HBox.hgrow="ALWAYS" />
-                                                                  <Button fx:id="compileTaskDestSearchButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" styleClass="searchfilebutton" text="choose" HBox.hgrow="NEVER" />
+                                                                  <TextField fx:id="compileTaskDestTextField" editable="false" minWidth="-Infinity" prefHeight="25.0" prefWidth="135.0" HBox.hgrow="ALWAYS" />
+                                                                  <Button fx:id="compileTaskDestSearchButton" mnemonicParsing="false" onAction="#compileTaskDestSearchButtonClicked" prefHeight="25.0" prefWidth="30.0" styleClass="searchfilebutton" text="choose" HBox.hgrow="NEVER" />
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets />
@@ -219,7 +219,7 @@
                   </Label>
                   <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                      <content>
-                        <ListView fx:id="TargetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="165.0" />
+                        <ListView fx:id="TargetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                      </content>
                   </ScrollPane>
                   <Label alignment="CENTER" layoutX="30.0" layoutY="25.0" style="&#10;" styleClass="headLines" text="Selected targets" textAlignment="CENTER" wrapText="false">
@@ -235,26 +235,27 @@
                   </Label>
                   <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
                      <content>
-                        <ListView fx:id="AddedTargetsListView" prefHeight="260.0" prefWidth="296.0" />
+                        <ListView fx:id="AddedTargetsListView" />
                      </content>
                   </ScrollPane>
-                  <HBox alignment="TOP_CENTER" spacing="5.0">
+                  <HBox alignment="TOP_CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
                      <children>
                         <Button fx:id="selectAllButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#selectAllButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="select all" HBox.hgrow="ALWAYS" />
                         <Button fx:id="deSelectAllButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deSelectAllButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="deselect all" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <HBox alignment="TOP_CENTER" spacing="5.0" VBox.vgrow="NEVER">
+                  <HBox alignment="TOP_CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
                      <children>
                         <Button fx:id="allTargetsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#allTargetsButtonSelected" prefWidth="110.0" styleClass="selectionButton" text="all targets" HBox.hgrow="ALWAYS" />
                         <Button fx:id="requiredForButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#requiredForButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="required for" HBox.hgrow="ALWAYS" />
                         <Button fx:id="dependsOnButton" disable="true" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#dependsOnButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="depends on" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <HBox spacing="5.0">
+                  <HBox spacing="5.0" VBox.vgrow="ALWAYS">
                      <children>
                         <Button fx:id="addButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Add" HBox.hgrow="ALWAYS" />
                         <Button fx:id="removeButton" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removeButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Remove" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#clearButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Clear" />
                      </children>
                   </HBox>
                </children>

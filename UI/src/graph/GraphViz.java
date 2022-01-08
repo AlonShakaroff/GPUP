@@ -18,7 +18,7 @@ public class GraphViz {
     private static final String fileNameDOT = "GeneratedGraph.dot";
     private static final String fileNamePNG = "GeneratedGraph.png";
     private static final String createPNGFromDOT = "dot -Tpng "+ fileNameDOT + " -o " + fileNamePNG;
-    private static final String nodeProperties = "node[style = filled fontsize=28 width=1.5 shape=circle fillcolor=white]\n";
+    private static final String nodeProperties = "node[style = filled fontsize=42 width=1.5 shape=circle fillcolor=white]\n";
     private static final String graphProperties = "graph[truecolor=true bgcolor = transparent nodesep = 1.3 ranksep = 1.3]\n";
     private static final String edgeProperties = "edge[color=black arrowsize=3.0 penwidth =3.0]\n";
 
