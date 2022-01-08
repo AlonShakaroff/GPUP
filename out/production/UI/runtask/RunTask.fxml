@@ -199,11 +199,7 @@
                               </CheckBox>
                            </children>
                         </VBox>
-<<<<<<< Updated upstream
-                        <VBox>
-=======
-                        <VBox spacing="5.0">
->>>>>>> Stashed changes
+                        <VBox spacing="5.0" styleClass="primaryBackground">
                            <children>
                               <Label alignment="CENTER" style="&#10;" styleClass="headLines" text="Selected targets" textAlignment="CENTER" wrapText="false">
                                  <textFill>
@@ -249,9 +245,9 @@
     <content>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL">
                <items>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" styleClass="primaryBackground">
                      <children>
-                        <Label text="Target information" textFill="#9f9f9f">
+                        <Label styleClass="headLines" text="Target information" textFill="#9f9f9f">
                            <VBox.margin>
                               <Insets left="15.0" top="15.0" />
                            </VBox.margin>
@@ -259,9 +255,6 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-<<<<<<< Updated upstream
-                        <ListView fx:id="TargetInfoListView" disable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-=======
                         <TableView fx:id="TargetInfoTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                           <columns>
                             <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
@@ -269,9 +262,11 @@
                               <TableColumn fx:id="serialSets" prefWidth="93.0" text="Serial&#10;Sets" />
                               <TableColumn fx:id="status" prefWidth="75.0" text="Status" />
                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
                         </TableView>
                         <TextArea fx:id="TargetInfoTextArea" prefHeight="200.0" prefWidth="200.0" />
->>>>>>> Stashed changes
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" />
@@ -279,7 +274,7 @@
                   </VBox>
                   <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="175.0" spacing="5.0" styleClass="primaryBackground">
                      <children>
-                        <VBox spacing="5.0">
+                        <VBox spacing="5.0" styleClass="primaryBackground">
                            <children>
                       <Label alignment="CENTER" style="&#10;" styleClass="headLines" text="Choose targets" textAlignment="CENTER" wrapText="false">
                                  <textFill>
@@ -288,12 +283,9 @@
                                  <font>
                             <Font size="18.0" fx:id="x1" />
                                  </font>
-<<<<<<< Updated upstream
-=======
                                  <VBox.margin>
                                     <Insets left="15.0" />
                                  </VBox.margin>
->>>>>>> Stashed changes
                               </Label>
                               <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
                                  <content>
@@ -321,12 +313,9 @@
                                  </children>
                               </HBox>
                            </children>
-<<<<<<< Updated upstream
-=======
                            <padding>
                               <Insets bottom="5.0" top="5.0" />
                            </padding>
->>>>>>> Stashed changes
                         </VBox>
                      </children>
                      <padding>
@@ -348,9 +337,9 @@
                <content>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <VBox alignment="BOTTOM_CENTER" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                        <VBox alignment="BOTTOM_CENTER" maxHeight="1.7976931348623157E308" styleClass="primaryBackground" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="Frozen">
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f; -fx-background-color: transparent;" text="Frozen">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -361,9 +350,9 @@
                               <ListView fx:id="FrozenListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
-                        <VBox alignment="BOTTOM_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308">
+                        <VBox alignment="BOTTOM_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="primaryBackground">
                            <children>
-                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="Skipped">
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f; -fx-background-color: transparent;" text="Skipped">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -374,9 +363,9 @@
                               <ListView fx:id="SkippedListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
-                        <VBox alignment="BOTTOM_CENTER" layoutX="233.0" layoutY="10.0" maxHeight="1.7976931348623157E308">
+                        <VBox alignment="BOTTOM_CENTER" layoutX="233.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="primaryBackground">
                            <children>
-                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="Waiting">
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f; -fx-background-color: transparent;" text="Waiting">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -387,9 +376,9 @@
                               <ListView fx:id="WaitingListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
-                        <VBox alignment="BOTTOM_CENTER" layoutX="292.0" layoutY="10.0" maxHeight="1.7976931348623157E308">
+                        <VBox alignment="BOTTOM_CENTER" layoutX="292.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="primaryBackground">
                            <children>
-                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="In process">
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f; -fx-background-color: transparent;" text="In process">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -400,9 +389,9 @@
                               <ListView fx:id="InProcessListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
-                        <VBox alignment="BOTTOM_CENTER" layoutX="328.0" layoutY="10.0" maxHeight="1.7976931348623157E308">
+                        <VBox alignment="BOTTOM_CENTER" layoutX="328.0" layoutY="10.0" maxHeight="1.7976931348623157E308" styleClass="primaryBackground">
                            <children>
-                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="Finished">
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f; -fx-background-color: transparent;" text="Finished">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
