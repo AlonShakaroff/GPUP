@@ -2,6 +2,7 @@ package runtask;
 
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
+import graph.tableview.TargetTableItem;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,10 +16,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import runtask.tableview.TargetInfoTableItem;
 import target.TargetGraph;
 
 import java.awt.*;
@@ -58,6 +61,8 @@ public class TaskController {
 
     @FXML
     public void initialize() {
+        initializeTargetInfoTable();
+
         requiredForButton.disableProperty().bind(howManyTargetsSelected.isEqualTo(1).not());
         dependsOnButton.disableProperty().bind(howManyTargetsSelected.isEqualTo(1).not());
         currentSelectedList = TargetsListView.getSelectionModel().getSelectedItems();
@@ -183,9 +188,6 @@ public class TaskController {
     private Button removeButton;
 
     @FXML
-    private TableView<?> progressTableView;
-
-    @FXML
     private TextArea runDetailsTextArea;
 
     @FXML
@@ -195,7 +197,38 @@ public class TaskController {
     private Spinner<Integer> ParallelismSpinner;
 
     @FXML
-    private ListView<String> TargetInfoListView;
+    private ListView<String> FrozenListView;
+
+    @FXML
+    private ListView<String> SkippedListView;
+
+    @FXML
+    private ListView<String> WaitingListView;
+
+    @FXML
+    private ListView<String> InProcessListView;
+
+    @FXML
+    private ListView<String> FinishedListView;
+
+    @FXML
+    private TableView<TargetInfoTableItem> TargetInfoTableView;
+
+    @FXML
+    private TableColumn<TargetInfoTableItem, String> name;
+
+    @FXML
+    private TableColumn<TargetInfoTableItem, String> type;
+
+    @FXML
+    private TableColumn<TargetInfoTableItem, Set<String>> serialSets;
+
+    @FXML
+    private TableColumn<TargetInfoTableItem, String> status;
+
+    @FXML
+    private TextArea TargetInfoTextArea;
+
 
     @FXML
     void addButtonClicked(ActionEvent event) {
@@ -290,5 +323,12 @@ public class TaskController {
             lastVisitedDirectory = dir.getPath();
             compileTaskSourceTextField.textProperty().setValue(dir.getPath());
         }
+    }
+
+    public void initializeTargetInfoTable() {
+        name.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem,String>("Name"));
+        type.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem,String>("Type"));
+        serialSets.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem,Set<String>>("SerialSets"));
+        status.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem,String>("Status"));
     }
 }

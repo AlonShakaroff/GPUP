@@ -305,4 +305,20 @@ public class Target implements Serializable {
     public int getAmountOfSerialSets() {
         return getSerialSets().size();
     }
+
+    public String getRunStatusAsString() {
+        switch(runStatus) {
+            case WAITING:
+                return "Waiting";
+            case FROZEN:
+                return "Frozen";
+            case SKIPPED:
+                return "Skipped";
+            case FINISHED:
+                return "Finished";
+            case IN_PROCESS:
+                return "In process";
+        }
+        return "";
+    }
 }

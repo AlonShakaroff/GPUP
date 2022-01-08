@@ -199,7 +199,7 @@
                               </CheckBox>
                            </children>
                         </VBox>
-                        <VBox>
+                        <VBox spacing="5.0">
                            <children>
                               <Label alignment="CENTER" style="&#10;" styleClass="headLines" text="Selected targets" textAlignment="CENTER" wrapText="false">
                                  <textFill>
@@ -255,7 +255,15 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <ListView fx:id="TargetInfoListView" disable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                        <TableView fx:id="TargetInfoTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
+                            <TableColumn fx:id="type" prefWidth="75.0" text="Type" />
+                              <TableColumn fx:id="serialSets" prefWidth="93.0" text="Serial&#10;Sets" />
+                              <TableColumn fx:id="status" prefWidth="75.0" text="Status" />
+                          </columns>
+                        </TableView>
+                        <TextArea fx:id="TargetInfoTextArea" prefHeight="200.0" prefWidth="200.0" />
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" />
@@ -272,6 +280,9 @@
                                  <font>
                             <Font size="18.0" fx:id="x1" />
                                  </font>
+                                 <VBox.margin>
+                                    <Insets left="15.0" />
+                                 </VBox.margin>
                               </Label>
                               <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
                                  <content>
@@ -299,6 +310,9 @@
                                  </children>
                               </HBox>
                            </children>
+                           <padding>
+                              <Insets bottom="5.0" top="5.0" />
+                           </padding>
                         </VBox>
                      </children>
                      <padding>
@@ -318,17 +332,75 @@
             </Label>
             <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER" VBox.vgrow="SOMETIMES">
                <content>
-                  <TableView fx:id="progressTableView" minWidth="300.0" prefWidth="614.0">
-                    <columns>
-                      <TableColumn prefWidth="75.0" text="in progress" />
-                      <TableColumn prefWidth="75.0" text="finished" />
-                        <TableColumn prefWidth="75.0" text="waiting" />
-                        <TableColumn prefWidth="75.0" text="skipped" />
-                    </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="BOTTOM_CENTER" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="Frozen">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <ListView fx:id="FrozenListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="BOTTOM_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308">
+                           <children>
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="Skipped">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <ListView fx:id="SkippedListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="BOTTOM_CENTER" layoutX="233.0" layoutY="10.0" maxHeight="1.7976931348623157E308">
+                           <children>
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="Waiting">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <ListView fx:id="WaitingListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="BOTTOM_CENTER" layoutX="292.0" layoutY="10.0" maxHeight="1.7976931348623157E308">
+                           <children>
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="In process">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <ListView fx:id="InProcessListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="BOTTOM_CENTER" layoutX="328.0" layoutY="10.0" maxHeight="1.7976931348623157E308">
+                           <children>
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-border-color: #9f9f9f;" text="Finished">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <ListView fx:id="FinishedListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </content>
             </ScrollPane>
             <TextArea fx:id="runDetailsTextArea" editable="false" prefHeight="100.0" prefWidth="200.0" />
