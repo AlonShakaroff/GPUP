@@ -187,6 +187,12 @@ public class TaskController {
     private ProgressBar progressBar;
 
     @FXML
+    private Spinner<Integer> ParallelismSpinner;
+
+    @FXML
+    private ListView<String> TargetInfoListView;
+
+    @FXML
     void addButtonClicked(ActionEvent event) {
         for(String str: currentSelectedList)
             if(!addedTargetsList.contains(str))

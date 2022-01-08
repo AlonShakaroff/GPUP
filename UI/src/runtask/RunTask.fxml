@@ -53,7 +53,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.25, 0.55" focusTraversable="true" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="runtask.TaskController">
+<SplitPane dividerPositions="0.23, 0.56" focusTraversable="true" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="runtask.TaskController">
 <items>
       <ScrollPane fitToHeight="true" fitToWidth="true">
          <content>
@@ -70,11 +70,11 @@
                         <Insets left="15.0" top="15.0" />
                      </VBox.margin>
                   </Label>
-                  <SplitPane dividerPositions="0.85" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="SOMETIMES">
+                  <SplitPane dividerPositions="0.47, 0.85" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="SOMETIMES">
                     <items>
-                        <VBox styleClass="primaryBackground">
+                        <VBox spacing="5.0" styleClass="primaryBackground">
                            <children>
-                              <Accordion minHeight="80.0" minWidth="120.0">
+                              <Accordion maxHeight="210.0" minHeight="80.0" minWidth="120.0">
                                 <panes>
                                   <TitledPane fx:id="simulationTitledPane" animated="false" text="simulation task">
                                        <content>
@@ -176,12 +176,51 @@
                                   </TitledPane>
                                 </panes>
                               </Accordion>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label text="parallelism " HBox.hgrow="SOMETIMES">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Spinner fx:id="ParallelismSpinner" editable="true" maxWidth="100.0" minHeight="30.0" minWidth="30.0" prefHeight="20.0" prefWidth="40.0" HBox.hgrow="SOMETIMES" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="10.0" />
+                                 </VBox.margin>
+                              </HBox>
                               <CheckBox fx:id="incrementalCheckBox" alignment="CENTER" disable="true" mnemonicParsing="false" text="incremental">
                                  <padding>
                                     <Insets left="5.0" right="5.0" />
                                  </padding>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="5.0" />
+                                 </VBox.margin>
                               </CheckBox>
                            </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label alignment="CENTER" style="&#10;" styleClass="headLines" text="Selected targets" textAlignment="CENTER" wrapText="false">
+                                 <textFill>
+                                    <Color blue="0.624" green="0.624" red="0.624" fx:id="x22" />
+                                 </textFill>
+                                 <font>
+                                    <Font size="18.0" fx:id="x12" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="15.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <ScrollPane fitToHeight="true" fitToWidth="true">
+                                 <content>
+                                    <ListView fx:id="AddedTargetsListView" />
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
                         </VBox>
                         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" styleClass="primaryBackground">
                            <children>
@@ -204,68 +243,73 @@
       </ScrollPane>
   <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="-1.0" prefWidth="-1.0">
     <content>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="175.0" spacing="5.0" styleClass="primaryBackground">
-               <children>
-          <Label alignment="CENTER" style="&#10;" styleClass="headLines" text="Choose targets" textAlignment="CENTER" wrapText="false" VBox.vgrow="ALWAYS">
-                     <textFill>
-                <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
-                     </textFill>
-                     <font>
-                <Font size="18.0" fx:id="x1" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="15.0" />
-                     </VBox.margin>
-                  </Label>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                     <content>
-                        <ListView fx:id="TargetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-                     </content>
-                  </ScrollPane>
-                  <Label alignment="CENTER" layoutX="30.0" layoutY="25.0" style="&#10;" styleClass="headLines" text="Selected targets" textAlignment="CENTER" wrapText="false">
-                     <textFill>
-                        <Color blue="0.624" green="0.624" red="0.624" fx:id="x22" />
-                     </textFill>
-                     <font>
-                        <Font size="18.0" fx:id="x12" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" />
-                     </VBox.margin>
-                  </Label>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
-                     <content>
-                        <ListView fx:id="AddedTargetsListView" />
-                     </content>
-                  </ScrollPane>
-                  <HBox alignment="TOP_CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+               <items>
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>
-                        <Button fx:id="selectAllButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#selectAllButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="select all" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="deSelectAllButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deSelectAllButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="deselect all" HBox.hgrow="ALWAYS" />
+                        <Label text="Target information" textFill="#9f9f9f">
+                           <VBox.margin>
+                              <Insets left="15.0" top="15.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <ListView fx:id="TargetInfoListView" disable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                      </children>
-                  </HBox>
-                  <HBox alignment="TOP_CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" />
+                     </padding>
+                  </VBox>
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="175.0" spacing="5.0" styleClass="primaryBackground">
                      <children>
-                        <Button fx:id="allTargetsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#allTargetsButtonSelected" prefWidth="110.0" styleClass="selectionButton" text="all targets" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="requiredForButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#requiredForButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="required for" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="dependsOnButton" disable="true" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#dependsOnButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="depends on" HBox.hgrow="ALWAYS" />
+                        <VBox spacing="5.0">
+                           <children>
+                      <Label alignment="CENTER" style="&#10;" styleClass="headLines" text="Choose targets" textAlignment="CENTER" wrapText="false">
+                                 <textFill>
+                            <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+                                 </textFill>
+                                 <font>
+                            <Font size="18.0" fx:id="x1" />
+                                 </font>
+                              </Label>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                                 <content>
+                                    <ListView fx:id="TargetsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                 </content>
+                              </ScrollPane>
+                              <HBox alignment="TOP_CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Button fx:id="selectAllButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#selectAllButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="select all" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="deSelectAllButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deSelectAllButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="deselect all" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Button fx:id="allTargetsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#allTargetsButtonSelected" prefWidth="110.0" styleClass="selectionButton" text="all targets" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="requiredForButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#requiredForButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="required for" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="dependsOnButton" disable="true" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#dependsOnButtonClicked" prefWidth="110.0" styleClass="selectionButton" text="depends on" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Button fx:id="addButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Add" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="removeButton" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removeButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Remove" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#clearButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Clear" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
                      </children>
-                  </HBox>
-                  <HBox spacing="5.0" VBox.vgrow="ALWAYS">
-                     <children>
-                        <Button fx:id="addButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Add" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="removeButton" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removeButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Remove" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#clearButtonClicked" prefWidth="225.0" styleClass="selectionButton" text="Clear" />
-                     </children>
-                  </HBox>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="5.0" right="5.0" />
-               </padding>
-            </VBox>
+                     <padding>
+                        <Insets bottom="10.0" left="5.0" right="5.0" />
+                     </padding>
+                  </VBox>
+               </items>
+            </SplitPane>
     </content>
   </ScrollPane>
-      <VBox prefHeight="671.0" prefWidth="667.0" styleClass="primaryBackground">
+      <VBox prefHeight="671.0" prefWidth="667.0" spacing="5.0" styleClass="primaryBackground">
          <children>
       <Label alignment="CENTER" font="$x1" style="&#10;" styleClass="headLines" text="Details" textAlignment="CENTER" textFill="$x2" wrapText="false">
                <VBox.margin>
