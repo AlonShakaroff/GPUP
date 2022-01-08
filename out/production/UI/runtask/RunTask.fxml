@@ -183,7 +183,7 @@
                                           <Insets />
                                        </HBox.margin>
                                     </Label>
-                                    <Spinner fx:id="ParallelismSpinner" editable="true" maxWidth="100.0" minHeight="30.0" minWidth="30.0" prefHeight="20.0" prefWidth="40.0" HBox.hgrow="SOMETIMES" />
+                                    <Spinner fx:id="ParallelismSpinner" editable="true" maxWidth="100.0" minHeight="30.0" minWidth="30.0" onInputMethodTextChanged="#parallelismTextInputEntered" prefHeight="20.0" prefWidth="40.0" HBox.hgrow="SOMETIMES" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="10.0" />

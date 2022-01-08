@@ -375,4 +375,10 @@ public class TargetGraph implements Serializable {
         }
         return StringPath;
     }
+
+    public void markTargetsAsChosen(List<String> chosenTargets) {
+        for (String curTarget : chosenTargets) {
+            getTarget(curTarget).setIsChosen(true);
+        }
+    }
 }

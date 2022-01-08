@@ -27,6 +27,7 @@ public class Target implements Serializable {
     private Instant targetTaskBegin,targetTaskEnd;
     private boolean isVisited;
     private boolean didSucceedInPrevRuns;
+    private boolean isChosen;
     private Set<String> serialSets;
 
     public Target(String name, String extraData)
@@ -41,6 +42,7 @@ public class Target implements Serializable {
         this.runStatus = Status.WAITING;
         this.serialSets = new HashSet<>();
         this.resetTarget();
+        this.isChosen = false;
     }
 
     public Target(String name)
@@ -58,6 +60,11 @@ public class Target implements Serializable {
     public Target(GPUPTarget gpupTarget){
         this(gpupTarget.getName(),gpupTarget.getGPUPUserData());
     }
+
+
+    public boolean isChosen() { return isChosen; }
+
+    public void setIsChosen(boolean isChosen) { this.isChosen = isChosen; }
 
     public Set<String> getSerialSets() {
         return serialSets;

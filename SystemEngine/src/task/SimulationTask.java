@@ -10,11 +10,11 @@ import java.util.Random;
 public class SimulationTask extends Task{
     private final int processTimeInMS;
     private final boolean isRandom;
-    private final float successChance;
-    private final float warningChance;
+    private final double successChance;
+    private final double warningChance;
     private final Random random;
 
-    public SimulationTask(int processTimeInMS,boolean isRandom,float successChance,float warningChance/*, Communicator communicator*/){
+    public SimulationTask(int processTimeInMS, boolean isRandom, double successChance, double warningChance/*, Communicator communicator*/){
         super(/*communicator,*/"Simulation task" );
         this.isRandom  = isRandom;
         this.processTimeInMS = processTimeInMS;
@@ -25,8 +25,8 @@ public class SimulationTask extends Task{
     @Override
     public void runTaskOnTarget(Target target) {
         int runTime;
-        float randSuccess = random.nextFloat();
-        float randWarning = random.nextFloat();
+        double randSuccess = random.nextDouble();
+        double randWarning = random.nextDouble();
         if (isRandom)
             runTime = random.nextInt(processTimeInMS);
         else

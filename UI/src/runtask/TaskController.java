@@ -1,12 +1,7 @@
 package runtask;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
-import graph.tableview.TargetTableItem;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -17,21 +12,22 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import runtask.tableview.TargetInfoTableItem;
 import target.TargetGraph;
+import task.SimulationTask;
+import task.Task;
 
-import java.awt.*;
 import java.io.File;
-import java.util.Optional;
 import java.util.Set;
 
 public class TaskController {
 
     private TargetGraph targetGraph;
+    private Task currentTask;
     private String lastVisitedDirectory = System.getProperty("user.home");
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final ObservableList<String> TargetsNameList = FXCollections.observableArrayList();
@@ -43,6 +39,12 @@ public class TaskController {
     private final SimpleIntegerProperty howManyTargetsAdded;
     private final ListChangeListener<String> currentSelectedListListener;
     private final ListChangeListener<String> currentAddedListListener;
+
+    private final ObservableList<String> frozenTargetsNameList = FXCollections.observableArrayList();
+    private final ObservableList<String> skippedTargetsNameList = FXCollections.observableArrayList();
+    private final ObservableList<String> waitingTargetsNameList = FXCollections.observableArrayList();
+    private final ObservableList<String> inProcessTargetsNameList = FXCollections.observableArrayList();
+    private final ObservableList<String> finishedTargetsNameList = FXCollections.observableArrayList();
 
     private final SpinnerValueFactory<Double> successRateValueFactory =
             new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0 , 1.0, 0.50, 0.01);
@@ -278,7 +280,11 @@ public class TaskController {
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
-
+        targetGraph.markTargetsAsChosen(addedTargetsList);
+        if(simulationTitledPane.isExpanded())
+            currentTask = new SimulationTask(simulationTimeSpinner.getValue(),
+                    simulationRandomCheckBox.isSelected(), simulationSuccessRateSpinner.getValue(),WarningRateValueFactory.getValue());
+        currentTask.runTaskOnGraph(targetGraph);
     }
 
     @FXML
@@ -289,6 +295,11 @@ public class TaskController {
     @FXML
     void stopTaskButtonClicked(ActionEvent event) {
 
+    }
+
+    @FXML
+    void parallelismTextInputEntered(InputMethodEvent event) {
+        System.out.println(event.getCommitted());
     }
 
     public void setTargetGraph(TargetGraph targetGraph) {

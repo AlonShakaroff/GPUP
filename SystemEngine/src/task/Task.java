@@ -30,6 +30,8 @@ public abstract class Task {
         targetGraph.setTaskStartTime(Instant.now());
         while (!targetGraph.isTaskFinished()){
             for (Target target: targetGraph.getWaitingSet()){
+                if(!target.isChosen())
+                    break;
                 target.setStatus(Target.Status.IN_PROCESS);
 
                 //communicator.printStartTask(this,target);
