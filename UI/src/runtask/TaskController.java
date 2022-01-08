@@ -35,18 +35,19 @@ public class TaskController {
     private final ObservableList<String> filteredTargetsNameList = FXCollections.observableArrayList();
     private  ObservableList<String> currentSelectedList = FXCollections.observableArrayList();
     private  ObservableList<String> currentSelectedInAddedTargetsList = FXCollections.observableArrayList();
-    private  ObservableList<String> addedTargetsList = FXCollections.observableArrayList();
-    private  SimpleIntegerProperty howManyTargetsSelected;
-    private  SimpleIntegerProperty howManyTargetsAdded;
+    private final ObservableList<String> addedTargetsList = FXCollections.observableArrayList();
+    private final SimpleIntegerProperty howManyTargetsSelected;
+    private final SimpleIntegerProperty howManyTargetsAdded;
     private final ListChangeListener<String> currentSelectedListListener;
     private final ListChangeListener<String> currentAddedListListener;
 
     private final SpinnerValueFactory<Double> successRateValueFactory =
-            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0 , 1.0, 0.5, 0.01);
+            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0 , 1.0, 0.50, 0.01);
     private final SpinnerValueFactory<Double> WarningRateValueFactory =
-            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0 , 1.0, 0.5, 0.01);
+            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0 , 1.0, 0.50, 0.01);
     private final SpinnerValueFactory<Integer> TimeValueFactory =
             new SpinnerValueFactory.IntegerSpinnerValueFactory(0,Integer.MAX_VALUE, 1000);
+    private SpinnerValueFactory<Integer> ParallelValueFactory;
 
    public TaskController() {
         howManyTargetsSelected = new SimpleIntegerProperty(0);
@@ -85,6 +86,10 @@ public class TaskController {
         simulationTimeSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 simulationTimeSpinner.getValueFactory().setValue(0);
+        });
+        ParallelismSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null)
+                ParallelismSpinner.getValueFactory().setValue(1);
         });
     }
     @FXML
@@ -256,6 +261,8 @@ public class TaskController {
     public void setTargetGraph(TargetGraph targetGraph) {
         this.targetGraph = targetGraph;
         setAllTargetsNameList();
+        ParallelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,targetGraph.getMaxParallelism(), 1);
+        ParallelismSpinner.setValueFactory(ParallelValueFactory);
     }
 
     private void setAllTargetsNameList() {

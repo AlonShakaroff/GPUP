@@ -33,6 +33,10 @@ public class TargetGraph implements Serializable {
         return SerialSets;
     }
 
+    public int getMaxParallelism() {
+        return maxParallelism;
+    }
+
     static public enum pathDirection {DEPENDS_ON, REQUIRED_FOR}
 
     public TargetGraph(String name, String directory, int maxParallelism) {
