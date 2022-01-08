@@ -37,7 +37,7 @@ public class TaskController {
     private  ObservableList<String> currentSelectedInAddedTargetsList = FXCollections.observableArrayList();
     private  ObservableList<String> addedTargetsList = FXCollections.observableArrayList();
     private  SimpleIntegerProperty howManyTargetsSelected;
-    private final SimpleIntegerProperty howManyTargetsAdded;
+    private  SimpleIntegerProperty howManyTargetsAdded;
     private final ListChangeListener<String> currentSelectedListListener;
     private final ListChangeListener<String> currentAddedListListener;
 
@@ -51,8 +51,8 @@ public class TaskController {
    public TaskController() {
         howManyTargetsSelected = new SimpleIntegerProperty(0);
         currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
-       howManyTargetsAdded = new SimpleIntegerProperty(0);
-       currentAddedListListener = change -> howManyTargetsAdded.set(change.getList().size());
+        howManyTargetsAdded = new SimpleIntegerProperty(0);
+        currentAddedListListener = change -> howManyTargetsAdded.set(change.getList().size());
     }
 
     @FXML
@@ -64,11 +64,13 @@ public class TaskController {
         currentSelectedList.addListener(currentSelectedListListener);
         addedTargetsList.addListener(currentAddedListListener);
         addedTargetsList.clear();
-        runTaskButton.disableProperty().bind(Bindings.not(
-                Bindings.or(simulationTitledPane.expandedProperty(),Bindings.and(howManyTargetsAdded.isNotEqualTo(0),
-                Bindings.and(compileTaskTitledPane.expandedProperty(), Bindings.and(
-                        compileTaskSourceTextField.textProperty().isNotEqualTo(""),
-                        compileTaskDestTextField.textProperty().isNotEqualTo("")))))));
+
+        runTaskButton.disableProperty().bind(Bindings.and(howManyTargetsAdded.isNotEqualTo(0),
+                Bindings.or(simulationTitledPane.expandedProperty(),
+                        Bindings.and(compileTaskTitledPane.expandedProperty(),
+                                Bindings.and(compileTaskSourceTextField.textProperty().isNotEqualTo(""),
+                                        compileTaskDestTextField.textProperty().isNotEqualTo(""))))).not());
+
         simulationSuccessRateSpinner.setValueFactory(successRateValueFactory);
         simulationWarningRateSpinner.setValueFactory(WarningRateValueFactory);
         simulationTimeSpinner.setValueFactory(TimeValueFactory);
