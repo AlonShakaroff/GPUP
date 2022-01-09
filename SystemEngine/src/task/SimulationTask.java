@@ -7,23 +7,27 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
 
-public class SimulationTask extends Task{
+public class SimulationTask extends Task {
+
+
     private final int processTimeInMS;
     private final boolean isRandom;
     private final double successChance;
     private final double warningChance;
     private final Random random;
 
-    public SimulationTask(int processTimeInMS, boolean isRandom, double successChance, double warningChance/*, Communicator communicator*/){
-        super(/*communicator,*/"Simulation task" );
-        this.isRandom  = isRandom;
+    public SimulationTask(String taskName, int processTimeInMS, boolean isRandom,
+                          double successChance, double warningChance, Target target) {
+        super(taskName, target);
         this.processTimeInMS = processTimeInMS;
+        this.isRandom = isRandom;
         this.successChance = successChance;
         this.warningChance = warningChance;
-        random = new Random();
+        this.random = new Random();
     }
+
     @Override
-    public void runTaskOnTarget(Target target) {
+    public void run() {
         int runTime;
         double randSuccess = random.nextDouble();
         double randWarning = random.nextDouble();
@@ -33,15 +37,12 @@ public class SimulationTask extends Task{
             runTime = processTimeInMS;
 
         target.setTargetTaskBegin(Instant.now());
-        //communicator.printTaskIsStarting(this,target);
-        //fileSaver.printTaskIsStarting(target.getName(),getTaskName());
 
+        System.out.println("target " + target.getName() + " is going to sleep");
         try { Thread.sleep(runTime);
         } catch (InterruptedException ignored) { }
         target.setTargetTaskEnd(Instant.now());
-
-        //communicator.printTaskIsEnding(this,target ,runTime*0.001f);
-        //fileSaver.printTaskIsEnding(target.getName(),getTaskName() ,runTime*0.001f);
+        System.out.println("target " + target.getName() + " woke up");
 
         if (randSuccess > successChance){
             target.setResult(Target.Result.FAILURE);
@@ -50,8 +51,9 @@ public class SimulationTask extends Task{
             target.setResult(Target.Result.WARNING);
         else
             target.setResult(Target.Result.SUCCESS);
-
         target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(),
                 target.getTargetTaskEnd()));
+
+        target.setStatus(Target.Status.FINISHED);
     }
 }

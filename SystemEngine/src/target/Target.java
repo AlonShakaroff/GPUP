@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Target implements Serializable {
 
@@ -30,6 +31,9 @@ public class Target implements Serializable {
     private boolean isChosen;
     private Set<String> serialSets;
 
+
+    private Set<Target> responsibleTargets;
+
     public Target(String name, String extraData)
     {
         this.name = name;
@@ -41,8 +45,8 @@ public class Target implements Serializable {
         this.requiredForSet = new HashSet<Target>();
         this.runStatus = Status.WAITING;
         this.serialSets = new HashSet<>();
+        determineInitialType();
         this.resetTarget();
-        this.isChosen = false;
     }
 
     public Target(String name)
@@ -53,18 +57,22 @@ public class Target implements Serializable {
     public void resetTarget(){
         this.isVisited = false;
         this.didSucceedInPrevRuns = false;
-        determineInitialType();
         this.runResult = Result.SKIPPED;
+        this.isChosen = false;
+        this.responsibleTargets = new HashSet<>();
     }
 
     public Target(GPUPTarget gpupTarget){
         this(gpupTarget.getName(),gpupTarget.getGPUPUserData());
     }
 
-
     public boolean isChosen() { return isChosen; }
 
     public void setIsChosen(boolean isChosen) { this.isChosen = isChosen; }
+
+    public Set<Target> getResponsibleTargets() {
+        return responsibleTargets;
+    }
 
     public Set<String> getSerialSets() {
         return serialSets;
@@ -145,7 +153,6 @@ public class Target implements Serializable {
                 otherTarget.dependsOnSet.add(this);
             }
         }
-
     }
 
     public boolean didSucceedInPrevRuns() {
@@ -156,35 +163,42 @@ public class Target implements Serializable {
         this.didSucceedInPrevRuns = didSucceedInPrevRuns;
     }
 
-
     public void determineInitialType() {
         if (dependsOnSet.isEmpty() && requiredForSet.isEmpty()) {
             nodeType = Type.INDEPENDENT;
-            runStatus = Status.WAITING;
         }
         else if (dependsOnSet.isEmpty() && !requiredForSet.isEmpty()) {
             nodeType = Type.LEAF;
-            runStatus = Status.WAITING;
         }
         else if (!dependsOnSet.isEmpty() && requiredForSet.isEmpty()) {
             nodeType = Type.ROOT;
-            runStatus = Status.FROZEN;
         }
         else {
             nodeType = Type.MIDDLE;
-            runStatus = Status.FROZEN;
         }
     }
 
-    public void determineIfStatusIsWaiting() {
-        int successCounter = 0;
-        for (Target target : dependsOnSet) {
-            if (target.runResult == Result.SUCCESS || target.runResult == Result.WARNING) {
-                successCounter++;
-            }
+    public void setStatusWaitingIfNeeded() {
+        if (getAllDependsOnTargets().stream().filter(Target::isChosen).allMatch(target ->
+                (target.getRunStatus().equals(Status.FINISHED) || target.getRunStatus().equals(Status.SKIPPED)))) {
+            this.setStatus(Status.WAITING);
         }
-        if (successCounter == dependsOnSet.size())
-            this.runStatus = Status.WAITING;
+    }
+    public void checkIfNeedsToBeSkipped() {
+        this.responsibleTargets = getAllDependsOnTargets().stream()
+                .filter(Target::isChosen)
+                    .filter(target -> (getRunResult().equals(Result.FAILURE))).collect(Collectors.toSet());
+        if(!responsibleTargets.isEmpty()) {
+            this.setStatus(Status.SKIPPED);
+        }
+    }
+
+
+    public void determineStatusBeforeTask() {
+        if (getAllDependsOnTargets().stream().noneMatch(Target::isChosen))
+            this.setStatus(Status.WAITING);
+        else
+            this.setStatus(Status.FROZEN);
     }
 
     /**
