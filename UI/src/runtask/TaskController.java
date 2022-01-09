@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,22 +24,22 @@ import javafx.stage.DirectoryChooser;
 import runtask.tableview.TargetInfoTableItem;
 import target.Target;
 import target.TargetGraph;
-import task.Task;
+import task.GPUPTask;
 import task.SimulationExecutorThread;
 
 import java.io.File;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TaskController {
 
     private TargetGraph targetGraph;
-    private Task currentTask;
+    private GPUPTask currentGPUPTask;
     private String lastVisitedDirectory = System.getProperty("user.home");
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private Thread taskThread;
     private Thread dataRefreshThread;
+    private Task<Void> task;
 
     private final SimpleIntegerProperty howManyTargetsSelected;
     private final SimpleIntegerProperty howManyTargetsAdded;
@@ -61,6 +62,7 @@ public class TaskController {
     private final ObservableList<String> waitingTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> inProcessTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> finishedTargetsNameList = FXCollections.observableArrayList();
+    private final ObservableList<TargetInfoTableItem> targetInfoTableList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedInAddedTargetsList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedFrozenList = FXCollections.observableArrayList();
@@ -68,6 +70,7 @@ public class TaskController {
     private ObservableList<String> currentSelectedWaitingList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedInProcessList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedFinishedList = FXCollections.observableArrayList();
+
 
     private final SpinnerValueFactory<Double> successRateValueFactory =
             new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, 1.0, 0.50, 0.01);
@@ -85,49 +88,92 @@ public class TaskController {
         isATargetSelected = new SimpleBooleanProperty(false);
         currentSelectedFrozenListener = change -> {
             if (!change.getList().isEmpty()) {
+                updateTargetDetailsTableAndTextArea(change.getList().get(0));
                 isATargetSelected.set(true);
-                currentSelectedSkippedList.clear();
-                currentSelectedWaitingList.clear();
-                currentSelectedInProcessList.clear();
-                currentSelectedFinishedList.clear();
+                SkippedListView.getSelectionModel().clearSelection();
+                WaitingListView.getSelectionModel().clearSelection();
+                InProcessListView.getSelectionModel().clearSelection();
+                FinishedListView.getSelectionModel().clearSelection();
             }
         };
         currentSelectedSkippedListener = change -> {
             if (!change.getList().isEmpty()) {
+                updateTargetDetailsTableAndTextArea(change.getList().get(0));
                 isATargetSelected.set(true);
-                currentSelectedFrozenList.clear();
-                currentSelectedWaitingList.clear();
-                currentSelectedInProcessList.clear();
-                currentSelectedFinishedList.clear();
+                FrozenListView.getSelectionModel().clearSelection();
+                WaitingListView.getSelectionModel().clearSelection();
+                InProcessListView.getSelectionModel().clearSelection();
+                FinishedListView.getSelectionModel().clearSelection();
             }
         };
         currentSelectedWaitingListener = change -> {
             if (!change.getList().isEmpty()) {
+                updateTargetDetailsTableAndTextArea(change.getList().get(0));
                 isATargetSelected.set(true);
-                currentSelectedSkippedList.clear();
-                currentSelectedFrozenList.clear();
-                currentSelectedInProcessList.clear();
-                currentSelectedFinishedList.clear();
+                FrozenListView.getSelectionModel().clearSelection();
+                SkippedListView.getSelectionModel().clearSelection();
+                InProcessListView.getSelectionModel().clearSelection();
+                FinishedListView.getSelectionModel().clearSelection();
             }
         };
         currentSelectedInProcessListener = change -> {
             if (!change.getList().isEmpty()) {
+                updateTargetDetailsTableAndTextArea(change.getList().get(0));
                 isATargetSelected.set(true);
-                currentSelectedSkippedList.clear();
-                currentSelectedWaitingList.clear();
-                currentSelectedFrozenList.clear();
-                currentSelectedFinishedList.clear();
+                FrozenListView.getSelectionModel().clearSelection();
+                SkippedListView.getSelectionModel().clearSelection();
+                WaitingListView.getSelectionModel().clearSelection();
+                FinishedListView.getSelectionModel().clearSelection();
             }
         };
         currentSelectedFinishedListener = change -> {
             if (!change.getList().isEmpty()) {
+                updateTargetDetailsTableAndTextArea(change.getList().get(0));
                 isATargetSelected.set(true);
-                currentSelectedSkippedList.clear();
-                currentSelectedWaitingList.clear();
-                currentSelectedInProcessList.clear();
-                currentSelectedFrozenList.clear();
+                FrozenListView.getSelectionModel().clearSelection();
+                SkippedListView.getSelectionModel().clearSelection();
+                WaitingListView.getSelectionModel().clearSelection();
+                InProcessListView.getSelectionModel().clearSelection();
             }
         };
+    }
+
+    private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
+        Target selectedTarget = targetGraph.getTarget(selectedTargetString);
+        targetInfoTableList.clear();
+        targetInfoTableList.add(new TargetInfoTableItem(selectedTarget));
+        TargetInfoTableView.setItems(targetInfoTableList);
+
+        TargetInfoTextArea.clear();
+        statusUniqueDataDisplay(selectedTarget, selectedTarget.getRunStatus());
+    }
+
+    private void statusUniqueDataDisplay(Target selectedTarget, Target.Status status) {
+        String uniqueData = "";
+        switch(status) {
+            case FROZEN:
+                uniqueData = "Waiting for targets: \n" + selectedTarget.getDependsOnSet().stream()
+                        .filter(Target::isChosen)
+                            .filter(target ->  (target.getRunStatus().equals(Target.Status.FROZEN) ||
+                                    target.getRunStatus().equals(Target.Status.WAITING) || target.getRunStatus().equals(Target.Status.IN_PROCESS)))
+                                        .collect(Collectors.toList()).toString() + "\nto finish running successfully.";
+
+                break;
+            case SKIPPED:
+                uniqueData = "Skipped because targets:\n" + selectedTarget.getResponsibleTargets().toString() + "\nfailed.";
+                break;
+            case WAITING:
+                break;
+            case IN_PROCESS:
+                break;
+            case FINISHED:
+                if(selectedTarget.getRunResult().equals(Target.Result.SUCCESS))
+                    uniqueData = "Target finished running successfully.";
+                else
+                    uniqueData = "Target finished running successfully\nwith warning.";
+                break;
+        }
+        TargetInfoTextArea.appendText(uniqueData);
     }
 
     @FXML
@@ -302,6 +348,9 @@ public class TaskController {
     private ProgressBar progressBar;
 
     @FXML
+    private Label progressBarLabel;
+
+    @FXML
     private Spinner<Integer> ParallelismSpinner;
 
     @FXML
@@ -397,6 +446,7 @@ public class TaskController {
         }
         taskThread.start();
         dataRefresherThread.start();
+        createNewProgressBar();
         pauseTaskButton.setDisable(false);
         stopTaskButton.setDisable(false);
     }
@@ -475,7 +525,7 @@ public class TaskController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
+
         Platform.runLater(()->{
             clearTaskDataLists();
             updateTaskDataLists();
@@ -516,5 +566,29 @@ public class TaskController {
         waitingTargetsNameList.clear();
         inProcessTargetsNameList.clear();
         finishedTargetsNameList.clear();
+    }
+
+    private void createNewProgressBar()
+    {
+        task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                int maxSize = addedTargetsList.size();
+                while(taskThread.isAlive())
+                {
+                    Thread.sleep(200);
+                    updateProgress(finishedTargetsNameList.size(), maxSize);
+                }
+                updateProgress(maxSize,maxSize);
+                return null;
+            }
+        };
+        this.progressBar.progressProperty().bind(task.progressProperty());
+        this.progressBarLabel.textProperty().bind
+                (Bindings.concat(Bindings.format("%.0f", Bindings.multiply(task.progressProperty(), 100)), " %"));
+
+        Thread progressBarThread = new Thread(task);
+        progressBarThread.setDaemon(true);
+        progressBarThread.start();
     }
 }

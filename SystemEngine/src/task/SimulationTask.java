@@ -7,7 +7,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
 
-public class SimulationTask extends Task {
+public class SimulationTask extends GPUPTask {
 
 
     private final int processTimeInMS;
