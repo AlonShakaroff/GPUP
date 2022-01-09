@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -14,6 +15,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
@@ -170,6 +172,23 @@ public class TaskController {
         ParallelismSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null)
                 ParallelismSpinner.getValueFactory().setValue(1);
+        });
+
+        TargetsListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent click) {
+
+                if (click.getClickCount() == 2)
+                    addButton.fire();
+            }
+        });
+        AddedTargetsListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent click) {
+
+                if (click.getClickCount() == 2)
+                    removeButton.fire();
+            }
         });
     }
     @FXML
@@ -374,6 +393,7 @@ public class TaskController {
     void parallelismTextInputEntered(InputMethodEvent event) {
         System.out.println(event.getCommitted());
     }
+
 
     public void setTargetGraph(TargetGraph targetGraph) {
         this.targetGraph = targetGraph;
