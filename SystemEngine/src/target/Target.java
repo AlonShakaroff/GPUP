@@ -16,8 +16,8 @@ public class Target implements Serializable {
     static public enum Result {SUCCESS, WARNING, FAILURE, SKIPPED};
     static public enum Type {LEAF, MIDDLE, ROOT, INDEPENDENT};
 
-    private String name;
-    private String ExtraData;
+    private final String name;
+    private final String ExtraData;
     private Set<Target> requiredForSet;
     private Set<Target> dependsOnSet;
     private Status runStatus;

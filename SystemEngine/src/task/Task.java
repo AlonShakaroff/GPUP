@@ -24,9 +24,6 @@ public abstract class Task {
         return sdfDate.format(now);
     }
     public void runTaskOnGraph(TargetGraph targetGraph){
-        String dirPath = calcPath(targetGraph.getDirectory(),getDate());
-        new File(dirPath).mkdirs();
-
         targetGraph.setTaskStartTime(Instant.now());
         while (!targetGraph.isTaskFinished()){
             for (Target target: targetGraph.getWaitingSet()){
