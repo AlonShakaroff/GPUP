@@ -1,5 +1,6 @@
 package runtask;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -20,12 +21,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import runtask.tableview.TargetInfoTableItem;
+import target.Target;
 import target.TargetGraph;
 import task.Task;
 import task.SimulationExecutorThread;
 
 import java.io.File;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TaskController {
 
@@ -33,6 +37,8 @@ public class TaskController {
     private Task currentTask;
     private String lastVisitedDirectory = System.getProperty("user.home");
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
+    private Thread taskThread;
+    private Thread dataRefreshThread;
 
     private final SimpleIntegerProperty howManyTargetsSelected;
     private final SimpleIntegerProperty howManyTargetsAdded;
@@ -47,7 +53,6 @@ public class TaskController {
     private final ListChangeListener<String> currentSelectedFinishedListener;
 
 
-
     private final ObservableList<String> TargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> filteredTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> addedTargetsList = FXCollections.observableArrayList();
@@ -56,73 +61,73 @@ public class TaskController {
     private final ObservableList<String> waitingTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> inProcessTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> finishedTargetsNameList = FXCollections.observableArrayList();
-    private  ObservableList<String> currentSelectedList = FXCollections.observableArrayList();
-    private  ObservableList<String> currentSelectedInAddedTargetsList = FXCollections.observableArrayList();
-    private  ObservableList<String> currentSelectedFrozenList = FXCollections.observableArrayList();
-    private  ObservableList<String> currentSelectedSkippedList = FXCollections.observableArrayList();
-    private  ObservableList<String> currentSelectedWaitingList = FXCollections.observableArrayList();
-    private  ObservableList<String> currentSelectedInProcessList = FXCollections.observableArrayList();
-    private  ObservableList<String> currentSelectedFinishedList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedInAddedTargetsList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedFrozenList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedSkippedList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedWaitingList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedInProcessList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedFinishedList = FXCollections.observableArrayList();
 
     private final SpinnerValueFactory<Double> successRateValueFactory =
-            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0 , 1.0, 0.50, 0.01);
+            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, 1.0, 0.50, 0.01);
     private final SpinnerValueFactory<Double> WarningRateValueFactory =
-            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0 , 1.0, 0.50, 0.01);
+            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, 1.0, 0.50, 0.01);
     private final SpinnerValueFactory<Integer> TimeValueFactory =
-            new SpinnerValueFactory.IntegerSpinnerValueFactory(0,Integer.MAX_VALUE, 1000);
+            new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 1000);
     private SpinnerValueFactory<Integer> ParallelValueFactory;
 
-   public TaskController() {
-       howManyTargetsSelected = new SimpleIntegerProperty(0);
-       currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
-       howManyTargetsAdded = new SimpleIntegerProperty(0);
-       currentAddedListListener = change -> howManyTargetsAdded.set(change.getList().size());
-       isATargetSelected = new SimpleBooleanProperty(false);
-       currentSelectedFrozenListener = change -> {
-           if(!change.getList().isEmpty()) {
-               isATargetSelected.set(true);
-               currentSelectedSkippedList.clear();
-               currentSelectedWaitingList.clear();
-               currentSelectedInProcessList.clear();
-               currentSelectedFinishedList.clear();
-           }
-       };
-       currentSelectedSkippedListener = change -> {
-           if(!change.getList().isEmpty()) {
-               isATargetSelected.set(true);
-               currentSelectedFrozenList.clear();
-               currentSelectedWaitingList.clear();
-               currentSelectedInProcessList.clear();
-               currentSelectedFinishedList.clear();
-           }
-       };
-       currentSelectedWaitingListener = change -> {
-           if(!change.getList().isEmpty()) {
-               isATargetSelected.set(true);
-               currentSelectedSkippedList.clear();
-               currentSelectedFrozenList.clear();
-               currentSelectedInProcessList.clear();
-               currentSelectedFinishedList.clear();
-           }
-       };
-       currentSelectedInProcessListener = change -> {
-           if(!change.getList().isEmpty()) {
-               isATargetSelected.set(true);
-               currentSelectedSkippedList.clear();
-               currentSelectedWaitingList.clear();
-               currentSelectedFrozenList.clear();
-               currentSelectedFinishedList.clear();
-           }
-       };
-       currentSelectedFinishedListener = change -> {
-           if(!change.getList().isEmpty()) {
-               isATargetSelected.set(true);
-               currentSelectedSkippedList.clear();
-               currentSelectedWaitingList.clear();
-               currentSelectedInProcessList.clear();
-               currentSelectedFrozenList.clear();
-           }
-       };
+    public TaskController() {
+        howManyTargetsSelected = new SimpleIntegerProperty(0);
+        currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
+        howManyTargetsAdded = new SimpleIntegerProperty(0);
+        currentAddedListListener = change -> howManyTargetsAdded.set(change.getList().size());
+        isATargetSelected = new SimpleBooleanProperty(false);
+        currentSelectedFrozenListener = change -> {
+            if (!change.getList().isEmpty()) {
+                isATargetSelected.set(true);
+                currentSelectedSkippedList.clear();
+                currentSelectedWaitingList.clear();
+                currentSelectedInProcessList.clear();
+                currentSelectedFinishedList.clear();
+            }
+        };
+        currentSelectedSkippedListener = change -> {
+            if (!change.getList().isEmpty()) {
+                isATargetSelected.set(true);
+                currentSelectedFrozenList.clear();
+                currentSelectedWaitingList.clear();
+                currentSelectedInProcessList.clear();
+                currentSelectedFinishedList.clear();
+            }
+        };
+        currentSelectedWaitingListener = change -> {
+            if (!change.getList().isEmpty()) {
+                isATargetSelected.set(true);
+                currentSelectedSkippedList.clear();
+                currentSelectedFrozenList.clear();
+                currentSelectedInProcessList.clear();
+                currentSelectedFinishedList.clear();
+            }
+        };
+        currentSelectedInProcessListener = change -> {
+            if (!change.getList().isEmpty()) {
+                isATargetSelected.set(true);
+                currentSelectedSkippedList.clear();
+                currentSelectedWaitingList.clear();
+                currentSelectedFrozenList.clear();
+                currentSelectedFinishedList.clear();
+            }
+        };
+        currentSelectedFinishedListener = change -> {
+            if (!change.getList().isEmpty()) {
+                isATargetSelected.set(true);
+                currentSelectedSkippedList.clear();
+                currentSelectedWaitingList.clear();
+                currentSelectedInProcessList.clear();
+                currentSelectedFrozenList.clear();
+            }
+        };
     }
 
     @FXML
@@ -150,11 +155,11 @@ public class TaskController {
 
         runTaskButton.disableProperty().bind(Bindings.and(stopTaskButton.disableProperty(),
                 Bindings.and(pauseTaskButton.disableProperty()
-                ,Bindings.and(howManyTargetsAdded.isNotEqualTo(0),
-                Bindings.or(simulationTitledPane.expandedProperty(),
-                        Bindings.and(compileTaskTitledPane.expandedProperty(),
-                                Bindings.and(compileTaskSourceTextField.textProperty().isNotEqualTo(""),
-                                        compileTaskDestTextField.textProperty().isNotEqualTo(""))))))).not());
+                        , Bindings.and(howManyTargetsAdded.isNotEqualTo(0),
+                                Bindings.or(simulationTitledPane.expandedProperty(),
+                                        Bindings.and(compileTaskTitledPane.expandedProperty(),
+                                                Bindings.and(compileTaskSourceTextField.textProperty().isNotEqualTo(""),
+                                                        compileTaskDestTextField.textProperty().isNotEqualTo(""))))))).not());
 
         simulationSuccessRateSpinner.setValueFactory(successRateValueFactory);
         simulationWarningRateSpinner.setValueFactory(WarningRateValueFactory);
@@ -192,7 +197,14 @@ public class TaskController {
                     removeButton.fire();
             }
         });
+
+        FrozenListView.setItems(frozenTargetsNameList);
+        SkippedListView.setItems(skippedTargetsNameList);
+        WaitingListView.setItems(waitingTargetsNameList);
+        InProcessListView.setItems(inProcessTargetsNameList);
+        FinishedListView.setItems(finishedTargetsNameList);
     }
+
     @FXML
     private Color x21;
 
@@ -328,8 +340,8 @@ public class TaskController {
 
     @FXML
     void addButtonClicked(ActionEvent event) {
-        for(String str: currentSelectedList)
-            if(!addedTargetsList.contains(str))
+        for (String str : currentSelectedList)
+            if (!addedTargetsList.contains(str))
                 addedTargetsList.add(str);
         AddedTargetsListView.setItems(addedTargetsList);
     }
@@ -375,14 +387,16 @@ public class TaskController {
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
         targetGraph.markTargetsAsChosen(addedTargetsList);
-        if(simulationTitledPane.isExpanded()){
-            new SimulationExecutorThread(targetGraph, "Simulation",simulationWarningRateSpinner.getValue(),
+        Thread dataRefresherThread = new Thread(this::refreshTaskData);
+        if (simulationTitledPane.isExpanded()) {
+            taskThread = new SimulationExecutorThread(targetGraph, "Simulation", simulationWarningRateSpinner.getValue(),
                     simulationSuccessRateSpinner.getValue(), simulationRandomCheckBox.isSelected(),
-                    simulationTimeSpinner.getValue(), ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled()&&incrementalCheckBox.isSelected())).start();
+                    simulationTimeSpinner.getValue(), ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()));
         }
         else {
-
         }
+        taskThread.start();
+        dataRefresherThread.start();
         pauseTaskButton.setDisable(false);
         stopTaskButton.setDisable(false);
     }
@@ -406,7 +420,7 @@ public class TaskController {
     public void setTargetGraph(TargetGraph targetGraph) {
         this.targetGraph = targetGraph;
         setAllTargetsNameList();
-        ParallelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,targetGraph.getMaxParallelism(), 1);
+        ParallelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, targetGraph.getMaxParallelism(), 1);
         ParallelismSpinner.setValueFactory(ParallelValueFactory);
     }
 
@@ -417,6 +431,7 @@ public class TaskController {
         TargetsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         AddedTargetsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
+
     @FXML
     void compileTaskDestSearchButtonClicked(ActionEvent event) {
         directoryChooser.setInitialDirectory(new File(lastVisitedDirectory));
@@ -438,9 +453,68 @@ public class TaskController {
     }
 
     public void initializeTargetInfoTable() {
-        name.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem,String>("Name"));
-        type.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem,String>("Type"));
-        serialSets.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem,Set<String>>("SerialSets"));
-        status.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem,String>("Status"));
+        name.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Name"));
+        type.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Type"));
+        serialSets.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, Set<String>>("SerialSets"));
+        status.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Status"));
+    }
+
+
+    /*-------------------------------------------------data refreshing thread------------------------------------------------------------------------------------*/
+
+    private void refreshTaskData() {
+        while(taskThread.isAlive()){
+            refreshTaskDataLists();
+        }
+        refreshTaskDataLists();
+    }
+
+    private void refreshTaskDataLists() {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        Platform.runLater(()->{
+            clearTaskDataLists();
+            updateTaskDataLists();
+            this.FrozenListView.refresh();
+            this.SkippedListView.refresh();
+            this.WaitingListView.refresh();
+            this.InProcessListView.refresh();
+            this.FinishedListView.refresh();
+        });
+    }
+
+    private void updateTaskDataLists() {
+        for (Target target: targetGraph.getAllTargets().values().stream().
+                filter(target -> target.getRunStatus().equals(Target.Status.FROZEN)).collect(Collectors.toSet())) {
+            frozenTargetsNameList.add(target.getName());
+        }
+        for (Target target: targetGraph.getAllTargets().values().stream().
+                filter(target -> target.getRunStatus().equals(Target.Status.SKIPPED)).collect(Collectors.toSet())) {
+            skippedTargetsNameList.add(target.getName());
+        }
+        for (Target target: targetGraph.getAllTargets().values().stream().
+                filter(target -> target.getRunStatus().equals(Target.Status.WAITING)).collect(Collectors.toSet())) {
+            waitingTargetsNameList.add(target.getName());
+        }
+        for (Target target: targetGraph.getAllTargets().values().stream().
+                filter(target -> target.getRunStatus().equals(Target.Status.IN_PROCESS)).collect(Collectors.toSet())) {
+            inProcessTargetsNameList.add(target.getName());
+        }
+        for (Target target: targetGraph.getAllTargets().values().stream().
+                filter(target -> target.getRunStatus().equals(Target.Status.FINISHED)).collect(Collectors.toSet())) {
+            finishedTargetsNameList.add(target.getName());
+        }
+    }
+
+    private void clearTaskDataLists() {
+        frozenTargetsNameList.clear();
+        skippedTargetsNameList.clear();
+        waitingTargetsNameList.clear();
+        inProcessTargetsNameList.clear();
+        finishedTargetsNameList.clear();
     }
 }
