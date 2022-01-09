@@ -148,11 +148,13 @@ public class TaskController {
         addedTargetsList.clear();
 
 
-        runTaskButton.disableProperty().bind(Bindings.and(howManyTargetsAdded.isNotEqualTo(0),
+        runTaskButton.disableProperty().bind(Bindings.and(stopTaskButton.disableProperty(),
+                Bindings.and(pauseTaskButton.disableProperty()
+                ,Bindings.and(howManyTargetsAdded.isNotEqualTo(0),
                 Bindings.or(simulationTitledPane.expandedProperty(),
                         Bindings.and(compileTaskTitledPane.expandedProperty(),
                                 Bindings.and(compileTaskSourceTextField.textProperty().isNotEqualTo(""),
-                                        compileTaskDestTextField.textProperty().isNotEqualTo(""))))).not());
+                                        compileTaskDestTextField.textProperty().isNotEqualTo(""))))))).not());
 
         simulationSuccessRateSpinner.setValueFactory(successRateValueFactory);
         simulationWarningRateSpinner.setValueFactory(WarningRateValueFactory);
@@ -381,9 +383,8 @@ public class TaskController {
         else {
 
         }
-//        runTaskButton.setDisable(true);
-//        pauseTaskButton.setDisable(false);
-//        stopTaskButton.setDisable(false);
+        pauseTaskButton.setDisable(false);
+        stopTaskButton.setDisable(false);
     }
 
     @FXML

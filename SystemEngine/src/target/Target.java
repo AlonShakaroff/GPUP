@@ -27,11 +27,8 @@ public class Target implements Serializable {
     private Duration targetTaskTime;
     private Instant targetTaskBegin,targetTaskEnd;
     private boolean isVisited;
-    private boolean didSucceedInPrevRuns;
     private boolean isChosen;
     private Set<String> serialSets;
-
-
     private Set<Target> responsibleTargets;
 
     public Target(String name, String extraData)
@@ -56,7 +53,6 @@ public class Target implements Serializable {
 
     public void resetTarget(){
         this.isVisited = false;
-        this.didSucceedInPrevRuns = false;
         this.runResult = Result.SKIPPED;
         this.isChosen = false;
         this.responsibleTargets = new HashSet<>();
@@ -155,14 +151,6 @@ public class Target implements Serializable {
         }
     }
 
-    public boolean didSucceedInPrevRuns() {
-        return didSucceedInPrevRuns;
-    }
-
-    public void setDidSucceedInPrevRuns(boolean didSucceedInPrevRuns) {
-        this.didSucceedInPrevRuns = didSucceedInPrevRuns;
-    }
-
     public void determineInitialType() {
         if (dependsOnSet.isEmpty() && requiredForSet.isEmpty()) {
             nodeType = Type.INDEPENDENT;
@@ -185,11 +173,17 @@ public class Target implements Serializable {
         }
     }
     public void checkIfNeedsToBeSkipped() {
-        this.responsibleTargets = getAllDependsOnTargets().stream()
-                .filter(Target::isChosen)
-                    .filter(target -> (getRunResult().equals(Result.FAILURE))).collect(Collectors.toSet());
+//        this.responsibleTargets = getAllDependsOnTargets().stream()
+//                .filter(Target::isChosen)
+//                    .filter(target -> (getRunResult().equals(Result.FAILURE))).collect(Collectors.toSet());
+        this.responsibleTargets.clear();
+        for (Target target : this.getAllDependsOnTargets()) {
+            if (target.isChosen && target.getRunResult() == Result.FAILURE)
+                responsibleTargets.add(target);
+        }
         if(!responsibleTargets.isEmpty()) {
             this.setStatus(Status.SKIPPED);
+            this.setResult(Result.SKIPPED);
         }
     }
 
@@ -259,12 +253,6 @@ public class Target implements Serializable {
 
     public void setStatus(Status st){
         this.runStatus = st;
-    }
-
-    public void setAllAboveSkipped(){
-        for (Target target: this.getAllRequiredForTargets()){
-            target.setStatus(Status.SKIPPED);
-        }
     }
 
     @Override
@@ -341,5 +329,9 @@ public class Target implements Serializable {
                 return "In process";
         }
         return "";
+    }
+    @Override
+    public String toString(){
+        return getName();
     }
 }

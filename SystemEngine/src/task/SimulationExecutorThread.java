@@ -18,8 +18,8 @@ public class SimulationExecutorThread extends Thread{
     private int processTimeInMS;
     private ExecutorService threadExecutor;
 
-    public SimulationExecutorThread(TargetGraph targetGraph, String taskName,
-                                    double warningChance, double successChance, boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental){
+    public SimulationExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
+                                    boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental){
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.warningChance = warningChance;
@@ -28,19 +28,16 @@ public class SimulationExecutorThread extends Thread{
         this.processTimeInMS = processTimeInMS;
         this.tasksList = new LinkedList<>();
         this.threadExecutor = Executors.newFixedThreadPool(numOfThreads);
-//        if(isIncremental)
-//            this.targetGraph.prepareGraphForIncremental();
-        initTasksList();
+        initTasksList(isIncremental);
     }
-    private void initTasksList(){
-       for(Target target : targetGraph.getTargetsToRunOn()){
-           if (target.getRunStatus().equals(Target.Status.WAITING)) {
-               tasksList.addFirst(new SimulationTask(taskName,processTimeInMS,isRandom,successChance,warningChance,target));
-           }
-           else {
-               tasksList.addLast(new SimulationTask(taskName,processTimeInMS,isRandom,successChance,warningChance,target));
-           }
-       }
+    private void initTasksList(boolean isIncremental){
+        for(Target target : targetGraph.getTargetsToRunOn(isIncremental)) {
+            if (target.getRunStatus().equals(Target.Status.WAITING)) {
+                tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
+            } else {
+                tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
+            }
+        }
     }
 
     @Override
@@ -58,7 +55,7 @@ public class SimulationExecutorThread extends Thread{
                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + "failed \n");
                }
                else{  // target is waiting to run!
-                   System.out.println("Adding task on target" + curTask.getTarget().getName() + " to thread pool.");
+                   System.out.println("Adding task on target " + curTask.getTarget().getName() + " to thread pool.");
                    threadExecutor.execute(curTask);
                }
            }

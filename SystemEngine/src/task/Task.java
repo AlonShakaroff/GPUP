@@ -18,4 +18,7 @@ public abstract class Task implements Runnable{
     public  String getTaskName() {
         return taskName;
     }
+
+    @Override
+    public String toString(){return target.getName();}
 }

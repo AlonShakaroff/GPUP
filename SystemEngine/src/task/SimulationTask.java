@@ -38,11 +38,11 @@ public class SimulationTask extends Task {
 
         target.setTargetTaskBegin(Instant.now());
 
-        System.out.println("target " + target.getName() + " is going to sleep");
+        System.out.println("target " + target.getName() + " is going to sleep for "  + runTime + " milliseconds");
+        target.setStatus(Target.Status.IN_PROCESS);
         try { Thread.sleep(runTime);
         } catch (InterruptedException ignored) { }
         target.setTargetTaskEnd(Instant.now());
-        System.out.println("target " + target.getName() + " woke up");
 
         if (randSuccess > successChance){
             target.setResult(Target.Result.FAILURE);
@@ -51,8 +51,11 @@ public class SimulationTask extends Task {
             target.setResult(Target.Result.WARNING);
         else
             target.setResult(Target.Result.SUCCESS);
+
         target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(),
                 target.getTargetTaskEnd()));
+
+        System.out.println("target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n");
 
         target.setStatus(Target.Status.FINISHED);
     }

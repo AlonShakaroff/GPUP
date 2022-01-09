@@ -53,12 +53,16 @@ public class TargetGraph implements Serializable {
         }
     }
 
-    public Set<Target> getTargetsToRunOn(){
-       Set<Target> ChosenTargets =  allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
-       for (Target target : ChosenTargets){
-           target.determineStatusBeforeTask();
-       }
-       return ChosenTargets;
+    public Set<Target> getTargetsToRunOn(boolean isIncremental) {
+        if (isIncremental) {
+            allTargets.values().stream().filter(Target::isChosen).filter
+                    (target -> (target.getRunResult().equals(Target.Result.SUCCESS) ||
+                            target.getRunResult().equals(Target.Result.WARNING))).forEach(target -> {target.setIsChosen(false);});
+        }
+        Set<Target> ChosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
+        for (Target target : ChosenTargets)
+            target.determineStatusBeforeTask();
+        return ChosenTargets;
     }
 
     public void resetGraph() {
@@ -349,20 +353,7 @@ public class TargetGraph implements Serializable {
         Set<Target> chosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
         for (Target target : chosenTargets) {
             target.setResult(Target.Result.SKIPPED);
-            target.setDidSucceedInPrevRuns(false);
             target.determineStatusBeforeTask();
-        }
-    }
-
-    public void prepareGraphForIncremental() {
-        Set<Target> chosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
-        for (Target target : chosenTargets) {
-            if (target.getRunResult() == Target.Result.FAILURE)
-                target.setStatus(Target.Status.WAITING);
-            else if (target.getRunResult() == Target.Result.SKIPPED)
-                target.setStatus(Target.Status.FROZEN);
-            else
-                target.setDidSucceedInPrevRuns(true);
         }
     }
 }
