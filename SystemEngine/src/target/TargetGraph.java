@@ -15,17 +15,16 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TargetGraph implements Serializable {
 
-    private final Map<Target.Status, Set<Target>> statusGraph;
-    private final Map<Target.Type, Set<Target>> typeSetMap;
     private final Map<String, Target> allTargets;
     private Duration totalTaskDuration;
     private Instant taskStartTime, taskEndTime;
     private Boolean canRunIncrementally;
     private String graphName;
-    private String directory;
+    private final String directory;
     private Map<String, Set<String>> SerialSets;
     private int maxParallelism;
 
@@ -45,48 +44,39 @@ public class TargetGraph implements Serializable {
         this.maxParallelism = maxParallelism;
         this.SerialSets = new HashMap<>();
         allTargets = new HashMap<>();
-        statusGraph = new HashMap<>();
-        typeSetMap = new HashMap<>();
-        statusGraph.put(Target.Status.WAITING, new HashSet<>());
-        statusGraph.put(Target.Status.FINISHED, new HashSet<>());
-        statusGraph.put(Target.Status.FROZEN, new HashSet<>());
-        statusGraph.put(Target.Status.IN_PROCESS, new HashSet<>());
-        statusGraph.put(Target.Status.SKIPPED, new HashSet<>());
-        typeSetMap.put(Target.Type.INDEPENDENT, new HashSet<>());
-        typeSetMap.put(Target.Type.LEAF, new HashSet<>());
-        typeSetMap.put(Target.Type.MIDDLE, new HashSet<>());
-        typeSetMap.put(Target.Type.ROOT, new HashSet<>());
         canRunIncrementally = false;
     }
 
     public void InitializeTypes() {
         for (Target target : allTargets.values()) {
-            target.resetTarget();
-            statusGraph.get(target.getRunStatus()).add(target);
-            typeSetMap.get(target.getNodeType()).add(target);
+            target.determineInitialType();
         }
+    }
+
+    public Set<Target> getTargetsToRunOn(){
+       Set<Target> ChosenTargets =  allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
+       for (Target target : ChosenTargets){
+           target.determineStatusBeforeTask();
+       }
+       return ChosenTargets;
     }
 
     public void resetGraph() {
-        for (Target target : allTargets.values()) {
-            target.resetTarget();
-            statusGraph.get(target.getRunStatus()).add(target);
-        }
+        InitializeTypes();
+        resetTargets();
         canRunIncrementally = false;
     }
 
-    public void recalculateStatusGraph() {
-        clearStatusGraph();
-        for (Target target : allTargets.values())
-            statusGraph.get(target.getRunStatus()).add(target);
+    private void resetTargets() {
+        for (Target target : allTargets.values()) {
+            target.resetTarget();
+        }
     }
 
-    public void clearStatusGraph() {
-        statusGraph.get(Target.Status.WAITING).clear();
-        statusGraph.get(Target.Status.FINISHED).clear();
-        statusGraph.get(Target.Status.FROZEN).clear();
-        statusGraph.get(Target.Status.IN_PROCESS).clear();
-        statusGraph.get(Target.Status.SKIPPED).clear();
+    public void refreshWaiting(){
+        allTargets.values().stream().filter(Target::isChosen).
+                filter(target -> (target.getRunStatus().equals(Target.Status.FROZEN))).
+                forEach(Target::setStatusWaitingIfNeeded);
     }
 
     public void addTargetToGraph(Target target) {
@@ -94,33 +84,23 @@ public class TargetGraph implements Serializable {
         allTargets.put(target.getName().toUpperCase(), target);
     }
 
-    public void MoveTargetTo(Target target, Target.Status from, Target.Status to) {
-        statusGraph.get(from).remove(target);
-        statusGraph.get(to).add(target);
-    }
-
-
     /**
      * Checks if the task finished running on all the target graph, all targets are frozen or finished.
-     *
      * @return
      */
     public boolean isTaskFinished() {
-        return (statusGraph.get(Target.Status.IN_PROCESS).isEmpty() &&
-                statusGraph.get(Target.Status.WAITING).isEmpty() &&
-                statusGraph.get(Target.Status.FROZEN).isEmpty());
+        return getAllTargets().values().stream().filter(Target::isChosen).allMatch(target ->
+                (target.getRunStatus() == Target.Status.FINISHED || target.getRunStatus() == Target.Status.SKIPPED));
     }
 
     public boolean didAllTargetsSucceed(){
-        return allTargets.values().stream().allMatch(target -> (target.getRunResult() == Target.Result.SUCCESS ||  target.getRunResult() == Target.Result.WARNING));
+        return allTargets.values().stream().filter(Target::isChosen).allMatch(target ->
+                (target.getRunResult() == Target.Result.SUCCESS || target.getRunResult() == Target.Result.WARNING));
     }
 
     public Set<Target> getWaitingSet() {
-        return statusGraph.get(Target.Status.WAITING);
-    }
-
-    public Set<Target> getSetByType(Target.Type type) {
-        return typeSetMap.get(type);
+        return allTargets.values().stream().filter(target ->
+                (target.getRunStatus().equals(Target.Status.WAITING))).collect(Collectors.toSet());
     }
 
     public Map<String, Target> getAllTargets() {
@@ -156,32 +136,18 @@ public class TargetGraph implements Serializable {
     }
 
     public void canRunIncrementally() {
-        if (didATargetFail())
-            this.canRunIncrementally = true;
-        else
-            this.canRunIncrementally = false;
-    }
-
-    private boolean didATargetFail() {
-        for (Target target : allTargets.values()) {
-            if (target.getRunResult() == Target.Result.FAILURE)
-                return true;
-        }
-        return false;
+        canRunIncrementally = !didAllTargetsSucceed();
     }
 
     public void prepareGraphForIncremental() {
-        for (Target target : allTargets.values()) {
-            if (target.getRunResult() == Target.Result.FAILURE) {
-                MoveTargetTo(target, Target.Status.FINISHED, Target.Status.WAITING);
+        Set<Target> chosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
+        for (Target target : chosenTargets) {
+            if (target.getRunResult() == Target.Result.FAILURE)
                 target.setStatus(Target.Status.WAITING);
-            } else if (target.getRunResult() == Target.Result.SKIPPED) {
-                MoveTargetTo(target, Target.Status.SKIPPED, Target.Status.FROZEN);
+            else if (target.getRunResult() == Target.Result.SKIPPED)
                 target.setStatus(Target.Status.FROZEN);
-            }
-            else{
+            else
                 target.setDidSucceedInPrevRuns(true);
-            }
         }
     }
 
@@ -306,7 +272,7 @@ public class TargetGraph implements Serializable {
                 targetGraph.getTarget(gpupTarget.getName()).addDependencies(gpupTarget.getGPUPTargetDependencies().getGPUGDependency(), targetGraph.allTargets);
             }
         }
-        targetGraph.InitializeTypes();
+        targetGraph.resetGraph();
         return targetGraph;
     }
 
@@ -332,18 +298,20 @@ public class TargetGraph implements Serializable {
     }
 
     public int getAmountOfRoots() {
-        return typeSetMap.get(Target.Type.ROOT).size();
+        return (int) allTargets.values().stream().filter(target -> (target.getNodeType()) == Target.Type.ROOT).count();
     }
 
     public int getAmountOfMiddles() {
-        return typeSetMap.get(Target.Type.MIDDLE).size();
+        return (int) allTargets.values().stream().filter(target -> (target.getNodeType()) == Target.Type.MIDDLE).count();
     }
 
-    public int getAmountOfLeafs() {
-        return typeSetMap.get(Target.Type.LEAF).size();
+    public int getAmountOfLeaves() {
+        return (int) allTargets.values().stream().filter(target -> (target.getNodeType()) == Target.Type.LEAF).count();
     }
 
-    public int getAmountOfIndependent() { return typeSetMap.get(Target.Type.INDEPENDENT).size(); }
+    public int getAmountOfIndependent() {
+        return (int) allTargets.values().stream().filter(target -> (target.getNodeType()) == Target.Type.INDEPENDENT).count();
+    }
 
     public ArrayList<String> getAllPathsFromTwoTargetsAsStrings (String source, String destination, pathDirection direction) {
         Set<List<Target>> paths = getAllPathsFromTwoTargets(getTarget(source),getTarget(destination),direction);
@@ -377,8 +345,15 @@ public class TargetGraph implements Serializable {
     }
 
     public void markTargetsAsChosen(List<String> chosenTargets) {
+        clearChosenTargets();
         for (String curTarget : chosenTargets) {
             getTarget(curTarget).setIsChosen(true);
+        }
+    }
+
+    private void clearChosenTargets(){
+        for (Target target: allTargets.values()){
+            target.setIsChosen(false);
         }
     }
 }

@@ -13,7 +13,7 @@ public class TargetTypeSummery {
     {
         this.totalAmountOfTargets = graph.getAmountOfTargets();
         this.independent = graph.getAmountOfIndependent();
-        this.leaf = graph.getAmountOfLeafs();
+        this.leaf = graph.getAmountOfLeaves();
         this.middle = graph.getAmountOfMiddles();
         this.root = graph.getAmountOfRoots();
     }

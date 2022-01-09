@@ -18,8 +18,8 @@ import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import runtask.tableview.TargetInfoTableItem;
 import target.TargetGraph;
-import task.SimulationTask;
 import task.Task;
+import task.SimulationExecutorThread;
 
 import java.io.File;
 import java.util.Set;
@@ -281,10 +281,17 @@ public class TaskController {
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
         targetGraph.markTargetsAsChosen(addedTargetsList);
-        if(simulationTitledPane.isExpanded())
-            currentTask = new SimulationTask(simulationTimeSpinner.getValue(),
-                    simulationRandomCheckBox.isSelected(), simulationSuccessRateSpinner.getValue(),WarningRateValueFactory.getValue());
-        currentTask.runTaskOnGraph(targetGraph);
+        if(simulationTitledPane.isExpanded()){
+            new SimulationExecutorThread(targetGraph, "Simulation",simulationWarningRateSpinner.getValue(),
+                    simulationSuccessRateSpinner.getValue(), simulationRandomCheckBox.isSelected(),
+                    simulationTimeSpinner.getValue(), ParallelismSpinner.getValue()).start();
+        }
+        else {
+
+        }
+//        runTaskButton.setDisable(true);
+//        pauseTaskButton.setDisable(false);
+//        stopTaskButton.setDisable(false);
     }
 
     @FXML
