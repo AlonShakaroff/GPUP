@@ -139,18 +139,6 @@ public class TargetGraph implements Serializable {
         canRunIncrementally = !didAllTargetsSucceed();
     }
 
-    public void prepareGraphForIncremental() {
-        Set<Target> chosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
-        for (Target target : chosenTargets) {
-            if (target.getRunResult() == Target.Result.FAILURE)
-                target.setStatus(Target.Status.WAITING);
-            else if (target.getRunResult() == Target.Result.SKIPPED)
-                target.setStatus(Target.Status.FROZEN);
-            else
-                target.setDidSucceedInPrevRuns(true);
-        }
-    }
-
     public Target getTarget(String targetName) {
         return allTargets.get(targetName.toUpperCase());
     }
@@ -354,6 +342,27 @@ public class TargetGraph implements Serializable {
     private void clearChosenTargets(){
         for (Target target: allTargets.values()){
             target.setIsChosen(false);
+        }
+    }
+
+    public void prepareGraphForNewRun() {
+        Set<Target> chosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
+        for (Target target : chosenTargets) {
+            target.setResult(Target.Result.SKIPPED);
+            target.setDidSucceedInPrevRuns(false);
+            target.determineStatusBeforeTask();
+        }
+    }
+
+    public void prepareGraphForIncremental() {
+        Set<Target> chosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
+        for (Target target : chosenTargets) {
+            if (target.getRunResult() == Target.Result.FAILURE)
+                target.setStatus(Target.Status.WAITING);
+            else if (target.getRunResult() == Target.Result.SKIPPED)
+                target.setStatus(Target.Status.FROZEN);
+            else
+                target.setDidSucceedInPrevRuns(true);
         }
     }
 }

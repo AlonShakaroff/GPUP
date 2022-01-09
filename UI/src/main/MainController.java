@@ -65,35 +65,32 @@ public class MainController {
         connectionsButton.disableProperty().bind(isFileSelected.not());
         runTaskButton.disableProperty().bind(isFileSelected.not());
 
+        refreshComponentsAndControllers();
 
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        URL url = getClass().getResource(ABOUT_FXML_RESOURCE);
+        fxmlLoader.setLocation(url);
+        aboutComponent = fxmlLoader.load(url.openStream());
+    }
+
+    private void refreshComponentsAndControllers() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(CONNECTIONS_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
         connectionsComponent = fxmlLoader.load(url.openStream());
         connectionsController = fxmlLoader.getController();
 
-        refreshGraphComponentAndController();
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource(GRAPH_FXML_RESOURCE);
+        fxmlLoader.setLocation(url);
+        graphComponent = fxmlLoader.load(url.openStream());
+        graphController = fxmlLoader.getController();
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(RUNTASK_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
         runTaskComponent = fxmlLoader.load(url.openStream());
         taskController = fxmlLoader.getController();
-
-        fxmlLoader = new FXMLLoader();
-        url = getClass().getResource(ABOUT_FXML_RESOURCE);
-        fxmlLoader.setLocation(url);
-        aboutComponent = fxmlLoader.load(url.openStream());
-    }
-
-    private void refreshGraphComponentAndController() throws IOException {
-        URL url;
-        FXMLLoader fxmlLoader;
-        fxmlLoader = new FXMLLoader();
-        url = getClass().getResource(GRAPH_FXML_RESOURCE);
-        fxmlLoader.setLocation(url);
-        graphComponent = fxmlLoader.load(url.openStream());
-        graphController = fxmlLoader.getController();
     }
 
     @FXML
@@ -233,7 +230,7 @@ public class MainController {
             lastVisitedDirectory = file.getParent();
             try {
                 TargetGraph targetGraph = TargetGraph.createTargetGraphFromXml(file);
-                refreshGraphComponentAndController();
+                refreshComponentsAndControllers();
                 graphController.setTargetGraph(targetGraph);
                 connectionsController.setTargetGraph(targetGraph);
                 taskController.setTargetGraph(targetGraph);

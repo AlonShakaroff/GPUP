@@ -19,7 +19,7 @@ public class SimulationExecutorThread extends Thread{
     private ExecutorService threadExecutor;
 
     public SimulationExecutorThread(TargetGraph targetGraph, String taskName,
-                                    double warningChance, double successChance, boolean isRandom, int processTimeInMS, int numOfThreads){
+                                    double warningChance, double successChance, boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental){
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.warningChance = warningChance;
@@ -28,6 +28,8 @@ public class SimulationExecutorThread extends Thread{
         this.processTimeInMS = processTimeInMS;
         this.tasksList = new LinkedList<>();
         this.threadExecutor = Executors.newFixedThreadPool(numOfThreads);
+//        if(isIncremental)
+//            this.targetGraph.prepareGraphForIncremental();
         initTasksList();
     }
     private void initTasksList(){

@@ -266,7 +266,7 @@
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
                         </TableView>
-                        <TextArea fx:id="TargetInfoTextArea" prefHeight="200.0" prefWidth="200.0" />
+                        <TextArea fx:id="TargetInfoTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" />
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" />

@@ -376,7 +376,7 @@ public class TaskController {
         if(simulationTitledPane.isExpanded()){
             new SimulationExecutorThread(targetGraph, "Simulation",simulationWarningRateSpinner.getValue(),
                     simulationSuccessRateSpinner.getValue(), simulationRandomCheckBox.isSelected(),
-                    simulationTimeSpinner.getValue(), ParallelismSpinner.getValue()).start();
+                    simulationTimeSpinner.getValue(), ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled()&&incrementalCheckBox.isSelected())).start();
         }
         else {
 
