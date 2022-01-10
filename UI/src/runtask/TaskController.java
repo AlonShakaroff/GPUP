@@ -6,7 +6,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -24,17 +23,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
-import org.omg.PortableInterceptor.SUCCESSFUL;
 import runtask.tableview.TargetInfoTableItem;
 import target.Target;
 import target.TargetGraph;
 import task.GPUPTask;
-import task.SimulationExecutorThread;
+import task.ExecutorThread;
 
-import javax.xml.ws.spi.http.HttpExchange;
 import java.io.File;
 import java.util.Set;
-import java.util.concurrent.Delayed;
 import java.util.stream.Collectors;
 
 public class TaskController {
@@ -482,7 +478,7 @@ public class TaskController {
         targetGraph.markTargetsAsChosen(addedTargetsList);
         Thread dataRefresherThread = new Thread(this::refreshTaskData);
         if (simulationTitledPane.isExpanded()) {
-            taskThread = new SimulationExecutorThread(targetGraph, "Simulation", simulationWarningRateSpinner.getValue(),
+            taskThread = new ExecutorThread(targetGraph, "Simulation", simulationWarningRateSpinner.getValue(),
                     simulationSuccessRateSpinner.getValue(), simulationRandomCheckBox.isSelected(),
                     simulationTimeSpinner.getValue(), ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()));
         }

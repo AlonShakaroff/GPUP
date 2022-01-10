@@ -1,5 +1,6 @@
 package task;
 
+import javafx.scene.shape.Path;
 import target.Target;
 import target.TargetGraph;
 
@@ -9,18 +10,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.TimeUnit;
 
-public class SimulationExecutorThread extends Thread{
+public class ExecutorThread extends Thread{
     private TargetGraph targetGraph;
-    private LinkedList<SimulationTask> tasksList;
+    private LinkedList<GPUPTask> tasksList;
     private String taskName;
+    /*---------------------Simulation parameters-----------------------------*/
     private double warningChance;
     private double successChance;
     private boolean isRandom;
     private int processTimeInMS;
     private ExecutorService threadExecutor;
+    /*---------------------Compilation parameters----------------------------*/
+    private String SourceFolderPath;
+    private String DestFolderPath;
+    /*-----------------------------------------------------------------------*/
 
-    public SimulationExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
-                                    boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental){
+    public ExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
+                          boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental){
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.warningChance = warningChance;
@@ -31,12 +37,28 @@ public class SimulationExecutorThread extends Thread{
         this.threadExecutor = Executors.newFixedThreadPool(numOfThreads);
         initTasksList(isIncremental);
     }
+
+    public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath,int numOfThreads, boolean isIncremental) {
+        this.targetGraph = targetGraph;
+        this.taskName = taskName;
+        this.SourceFolderPath = SourceFolderPath;
+        this.DestFolderPath = DestFolderPath;
+        this.threadExecutor = Executors.newFixedThreadPool(numOfThreads);
+        initTasksList(isIncremental);
+    }
     private void initTasksList(boolean isIncremental){
         for(Target target : targetGraph.getTargetsToRunOnAndResetExtraData(isIncremental)) {
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
-                tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
-            } else {
-                tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
+                if(this.taskName.equalsIgnoreCase("simulation"))
+                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
+                else /*compilation*/
+                    tasksList.addFirst(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target));
+            }
+            else {
+                if(this.taskName.equalsIgnoreCase("simulation"))
+                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
+                else /*compilation*/
+                    tasksList.addLast(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target));
             }
         }
     }
@@ -45,7 +67,7 @@ public class SimulationExecutorThread extends Thread{
     public void run(){
 
        while (!tasksList.isEmpty()){
-           SimulationTask curTask = tasksList.poll();
+           GPUPTask curTask = tasksList.poll();
            if (curTask.target.getRunStatus().equals(Target.Status.FROZEN)) { ///target is frozen
                tasksList.addLast(curTask);
            }
