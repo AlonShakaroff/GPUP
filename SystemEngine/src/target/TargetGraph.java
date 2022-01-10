@@ -367,6 +367,8 @@ public class TargetGraph implements Serializable {
     }
 
     public boolean DoesHaveSerialMemberInProgress(Target target){
+        if (SerialSets == null)
+            return false;
          return !SerialSets.values().stream().filter(serialSet -> (serialSet.contains(target.getName()))).
                 allMatch(serialSet -> serialSet.stream().allMatch
                         (TargetName -> allTargets.get(TargetName).getRunStatus() !=  Target.Status.IN_PROCESS));

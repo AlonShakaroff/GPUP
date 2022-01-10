@@ -121,4 +121,17 @@ public class GraphViz {
     }
 
 
+    public void saveImage(String name) {
+        File dotFile = new File(tempPath + "/" +name + ".dot");
+        if (createDotFile(dotFile)) return;
+
+        try {
+            Process process = Runtime.getRuntime().exec(
+                    "cmd /c start /wait cmd.exe /K \"cd \\ && cd " + tempPath + " && dot -Tpng "
+                            + name+".dot" + " -o " + name+".png" + " && exit");
+            process.waitFor();
+        }catch (Exception exception) {
+            System.out.println("could not generate png from graph - problem with GraphViz in cmd");
+        }
+    }
 }

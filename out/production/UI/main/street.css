@@ -250,6 +250,10 @@
  -fx-max-width: 0;
 }
 
+.text-area{
+ -fx-text-fill: text-primary-color;
+}
+
 .table-view > .virtual-flow > .scroll-bar:horizontal > .increment-button,
 .table-view > .virtual-flow > .scroll-bar:horizontal > .decrement-button {
  -fx-opacity: 0;

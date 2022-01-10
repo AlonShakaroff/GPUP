@@ -4,14 +4,19 @@ import graph.tableview.TargetTableItem;
 import graph.tableview.TargetTypeSummery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import target.Target;
 import target.TargetGraph;
+
+import java.io.File;
 
 public class GraphController {
 
@@ -73,6 +78,9 @@ public class GraphController {
     private ImageView graphImageView;
 
     @FXML
+    private Button saveGraphButton;
+
+    @FXML
     private Pane ImagePane;
 
     @FXML
@@ -83,35 +91,34 @@ public class GraphController {
     }
 
     public void initializeTargetTable() {
-        name.setCellValueFactory(new PropertyValueFactory<TargetTableItem,String>("Name"));
-        type.setCellValueFactory(new PropertyValueFactory<TargetTableItem,String>("Type"));
-        dependsOnDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("DependsOnDirectly"));
-        dependsOnTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("DependsOnTotal"));
-        requiredForDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("RequiredForDirectly"));
-        requiredForTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("RequiredForTotal"));
-        serialSetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTableItem,Integer>("AmountOfSerialSets"));
+        name.setCellValueFactory(new PropertyValueFactory<TargetTableItem, String>("Name"));
+        type.setCellValueFactory(new PropertyValueFactory<TargetTableItem, String>("Type"));
+        dependsOnDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("DependsOnDirectly"));
+        dependsOnTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("DependsOnTotal"));
+        requiredForDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("RequiredForDirectly"));
+        requiredForTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("RequiredForTotal"));
+        serialSetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("AmountOfSerialSets"));
     }
 
     public void initializeTypeSummeryTable() {
-        targetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("TotalAmountOfTargets"));
-        rootAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Root"));
-        middleAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Middle"));
-        leafAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Leaf"));
-        independentAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery,Integer>("Independent"));
+        targetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery, Integer>("TotalAmountOfTargets"));
+        rootAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery, Integer>("Root"));
+        middleAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery, Integer>("Middle"));
+        leafAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery, Integer>("Leaf"));
+        independentAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery, Integer>("Independent"));
     }
 
     public void initializeSerialSetComboBox() {
         serialSetComboBox.setOnAction((event) -> {
             serialSetInfoList.clear();
-            if(!targetGraph.getSerialSets().isEmpty()) {
+            if (!targetGraph.getSerialSets().isEmpty()) {
                 serialSetInfoList.addAll(targetGraph.getSerialSets().get(serialSetComboBox.getValue()));
                 serialSetsListView.setItems(serialSetInfoList.sorted());
             }
         });
     }
 
-    public void setTargetGraph(TargetGraph targetGraph)
-    {
+    public void setTargetGraph(TargetGraph targetGraph) {
         this.targetGraph = targetGraph;
         initialize();
         setDependenciesTable();
@@ -125,7 +132,7 @@ public class GraphController {
     private void setDependenciesTable() {
         TargetTableItem currentItem;
         targetTableList.clear();
-        for (Target target: targetGraph.getAllTargets().values()) {
+        for (Target target : targetGraph.getAllTargets().values()) {
             currentItem = new TargetTableItem(target);
             targetTableList.add(currentItem);
         }
@@ -143,13 +150,12 @@ public class GraphController {
     private void setSerialSetComboBox() {
         serialSetNameList.clear();
         serialSetInfoList.clear();
-        if(targetGraph.getSerialSets() != null) {
+        if (targetGraph.getSerialSets() != null) {
             serialSetComboBox.setDisable(false);
             serialSetsListView.setDisable(false);
             serialSetNameList.addAll(targetGraph.getSerialSets().keySet());
             serialSetComboBox.setItems(serialSetNameList.sorted());
-        }
-        else {
+        } else {
             serialSetComboBox.setDisable(true);
             serialSetInfoList.add("No serial sets");
             serialSetsListView.setItems(serialSetInfoList);
@@ -161,23 +167,43 @@ public class GraphController {
 
     //--------------------------------------------graphviz-----------------------------------------------------
 
-    private void setGraphImageView()
-    {
+    private void setGraphImageView() {
         Image image = generateGraphImage();
         if (image != null)
-             graphImageView.setImage(image);
+            graphImageView.setImage(image);
     }
 
     public Image generateGraphImage() {
         GraphViz graphViz = new GraphViz(targetGraph.getDirectory(),
-                "yellow","blue","orange", "pink");
+                "yellow", "blue", "orange", "pink");
         graphViz.openGraph();
-        for (Target target: targetGraph.getAllTargets().values()){
+        for (Target target : targetGraph.getAllTargets().values()) {
             graphViz.addNode(target);
-            graphViz.addConnections(target,"black");
+            graphViz.addConnections(target, "black");
         }
         graphViz.closeGraph();
         return graphViz.generateImage();
+    }
+
+
+    @FXML
+    void saveGraphButtonClicked(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("png file",".png"));
+        File chosenFile = fileChooser.showSaveDialog(saveGraphButton.getScene().getWindow());
+        if (chosenFile != null) {
+            GraphViz graphViz = new GraphViz(chosenFile.getParent(),
+                    "yellow", "blue", "orange", "pink");
+            graphViz.openGraph();
+            for (Target target : targetGraph.getAllTargets().values()) {
+                graphViz.addNode(target);
+                graphViz.addConnections(target, "black");
+            }
+            graphViz.closeGraph();
+            String name = chosenFile.getName();
+
+            graphViz.saveImage(name.substring(0, name.lastIndexOf(".")));
+        }
     }
 }
 

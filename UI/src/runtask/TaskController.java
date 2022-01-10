@@ -18,8 +18,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
@@ -30,6 +32,7 @@ import task.GPUPTask;
 import task.ExecutorThread;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -83,7 +86,7 @@ public class TaskController {
     private final SpinnerValueFactory<Double> WarningRateValueFactory =
             new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, 1.0, 0.50, 0.01);
     private final SpinnerValueFactory<Integer> TimeValueFactory =
-            new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 1000);
+            new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 5000);
     private SpinnerValueFactory<Integer> ParallelValueFactory;
 
    public TaskController() {
@@ -163,15 +166,17 @@ public class TaskController {
            }
        };
        isPausedListener = (observable, oldValue, newValue) -> {
-           if (newValue == true)
+           if (newValue)
                pauseTaskButton.setText("resume");
            else
                pauseTaskButton.setText("pause");
        };
        isPaused.addListener(isPausedListener);
+
        incrementalCheckboxInvalidListener = change -> {
            incrementalCheckBox.setSelected(false);
        };
+
    }
 
     private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
@@ -196,7 +201,10 @@ public class TaskController {
 
                 break;
             case SKIPPED:
-                uniqueData = "Skipped because targets:\n" + selectedTarget.getResponsibleTargets().toString() + "\nfailed.";
+                if (selectedTarget.getResponsibleTargets().isEmpty())
+                    uniqueData = "Target was Interrupted!\n";
+                else
+                    uniqueData = "Skipped because targets:\n" + selectedTarget.getResponsibleTargets().toString() + "\nfailed.";
                 break;
             case WAITING:
                 break;
@@ -205,8 +213,10 @@ public class TaskController {
             case FINISHED:
                 if(selectedTarget.getRunResult().equals(Target.Result.SUCCESS))
                     uniqueData = "Target finished running successfully.";
-                else
+                else if (selectedTarget.getRunResult().equals(Target.Result.WARNING))
                     uniqueData = "Target finished running successfully\nwith warning.";
+                else
+                    uniqueData = "Target FAILED.";
                 break;
         }
         TargetInfoTextArea.appendText(uniqueData);
@@ -288,6 +298,7 @@ public class TaskController {
         WaitingListView.setItems(waitingTargetsNameList);
         InProcessListView.setItems(inProcessTargetsNameList);
         FinishedListView.setItems(finishedTargetsNameList);
+
     }
 
     @FXML
@@ -501,6 +512,7 @@ public class TaskController {
         taskThread.setStopped(true);
         stopTaskButton.setDisable(true);
         pauseTaskButton.setDisable(true);
+        isPaused.setValue(false);
         isIncrementalPossible.set(true);
         if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
                 (target -> (target.getRunResult() == Target.Result.SUCCESS ||
@@ -511,13 +523,8 @@ public class TaskController {
 
     @FXML
     void pauseResumeTaskButtonClicked(ActionEvent event) {
-        isPaused.setValue(false);
-        if(isPaused.getValue()) {
-            isPaused.setValue(false);
-        }
-        else {
-            isPaused.setValue(true);
-        }
+        isPaused.setValue(!isPaused.getValue());
+        taskThread.setPaused(isPaused.getValue());
     }
 
     @FXML
@@ -577,7 +584,14 @@ public class TaskController {
         }
         refreshTaskDataLists();
         pauseTaskButton.setDisable(true);
+        isPaused.setValue(false);
         stopTaskButton.setDisable(true);
+        isIncrementalPossible.set(true);
+        if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
+                (target -> (target.getRunResult() == Target.Result.SUCCESS ||
+                        target.getRunResult() == Target.Result.WARNING))) {
+            isIncrementalPossible.set(false);
+        }
     }
 
     private void refreshTaskDataLists() {
