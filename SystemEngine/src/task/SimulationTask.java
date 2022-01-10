@@ -27,7 +27,7 @@ public class SimulationTask extends GPUPTask {
     }
 
     @Override
-    public void run() {
+    public void run() {;
         int runTime;
         double randSuccess = random.nextDouble();
         double randWarning = random.nextDouble();
@@ -39,7 +39,6 @@ public class SimulationTask extends GPUPTask {
         target.setTargetTaskBegin(Instant.now());
 
         System.out.println("target " + target.getName() + " is going to sleep for "  + runTime + " milliseconds");
-        target.setStatus(Target.Status.IN_PROCESS);
         try { Thread.sleep(runTime);
         } catch (InterruptedException ignored) { }
         target.setTargetTaskEnd(Instant.now());

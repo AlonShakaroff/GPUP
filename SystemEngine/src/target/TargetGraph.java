@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -363,5 +364,11 @@ public class TargetGraph implements Serializable {
         for (Target target: allTargets.values()){
             target.setIsChosen(false);
         }
+    }
+
+    public boolean DoesHaveSerialMemberInProgress(Target target){
+         return !SerialSets.values().stream().filter(serialSet -> (serialSet.contains(target.getName()))).
+                allMatch(serialSet -> serialSet.stream().allMatch
+                        (TargetName -> allTargets.get(TargetName).getRunStatus() !=  Target.Status.IN_PROCESS));
     }
 }

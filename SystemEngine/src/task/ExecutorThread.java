@@ -71,18 +71,23 @@ public class ExecutorThread extends Thread{
 
        while (!tasksList.isEmpty()){
            GPUPTask curTask = tasksList.poll();
-           if (curTask.target.getRunStatus().equals(Target.Status.FROZEN)) { ///target is frozen
+           if (curTask.target.getRunStatus().equals(Target.Status.FROZEN)) { // target is frozen
                tasksList.addLast(curTask);
            }
-           else{    /// target is waiting (but maybe needs to be skipped)
+           else{    // target is waiting (but maybe needs to be skipped)
                curTask.getTarget().checkIfNeedsToBeSkipped();
                if (curTask.getTarget().getRunStatus().equals(Target.Status.SKIPPED)){
                    System.out.println("Target " + curTask.getTarget().getName() +
                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + "failed \n");
                }
-               else{  // target is waiting to run!
-                   System.out.println("Adding task on target " + curTask.getTarget().getName() + " to thread pool.");
-                   threadExecutor.execute(curTask);
+               else{  // target is waiting to run, but maybe can't run due to a serial set
+                   if (targetGraph.DoesHaveSerialMemberInProgress(curTask.target))
+                       tasksList.addLast(curTask);
+                   else {   // target is waiting to run!!!
+                       System.out.println("Adding task on target " + curTask.getTarget().getName() + " to thread pool.");
+                       curTask.getTarget().setStatus(Target.Status.IN_PROCESS);
+                       threadExecutor.execute(curTask);
+                   }
                }
            }
            targetGraph.refreshWaiting();
@@ -90,7 +95,5 @@ public class ExecutorThread extends Thread{
 
            threadExecutor.shutdown();
            while(!threadExecutor.isTerminated()) {}
-           //System.out.println("now interrupting task");
-           //this.interrupt();
     }
 }
