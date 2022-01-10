@@ -49,6 +49,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
@@ -225,7 +226,9 @@
                         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" styleClass="primaryBackground">
                            <children>
                               <Button id="playbutton" fx:id="runTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#runTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="run" HBox.hgrow="ALWAYS" />
-                              <Button id="pausebutton" fx:id="pauseTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#pauseTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="pause" HBox.hgrow="ALWAYS" />
+
+                              <Button id="pausebutton" fx:id="pauseTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#pauseResumeTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="pause" HBox.hgrow="ALWAYS" />
+
                               <Button id="stopbutton" fx:id="stopTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#stopTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="stop" HBox.hgrow="ALWAYS" />
                            </children>
                            <padding>
@@ -407,11 +410,15 @@
                </content>
             </ScrollPane>
             <TextArea fx:id="runDetailsTextArea" editable="false" prefHeight="100.0" prefWidth="200.0" />
-            <ProgressBar id="bar" fx:id="progressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="20.0" progress="0.0" VBox.vgrow="ALWAYS">
+            <StackPane VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>
-            </ProgressBar>
+               <children>
+                  <ProgressBar id="bar" fx:id="progressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="20.0" progress="0.0" />
+                  <Label fx:id="progressBarLabel" textFill="#9f9f9f" />
+               </children>
+            </StackPane>
          </children>
          <padding>
             <Insets bottom="10.0" left="5.0" right="5.0" />

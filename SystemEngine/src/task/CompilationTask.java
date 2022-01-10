@@ -4,7 +4,7 @@ import target.Target;
 
 import java.io.File;
 
-public class CompilationTask extends Task {
+public class CompilationTask extends GPUPTask {
 
     private final File sourceFolder;
     private final File destinationFolder;

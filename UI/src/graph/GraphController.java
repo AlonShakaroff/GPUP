@@ -15,11 +15,11 @@ import target.TargetGraph;
 
 public class GraphController {
 
-    ObservableList<TargetTableItem> targetTableList = FXCollections.observableArrayList();
-    ObservableList<TargetTypeSummery> typeSummeryList = FXCollections.observableArrayList();
-    ObservableList<String> serialSetNameList = FXCollections.observableArrayList();
-    ObservableList<String> serialSetInfoList = FXCollections.observableArrayList();
-    TargetGraph targetGraph;
+    private final ObservableList<TargetTableItem> targetTableList = FXCollections.observableArrayList();
+    private final ObservableList<TargetTypeSummery> typeSummeryList = FXCollections.observableArrayList();
+    private final ObservableList<String> serialSetNameList = FXCollections.observableArrayList();
+    private final ObservableList<String> serialSetInfoList = FXCollections.observableArrayList();
+    private TargetGraph targetGraph;
 
     @FXML
     private TableView<TargetTableItem> dependenciesTableView;
