@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -41,10 +43,12 @@ public class TaskController {
     private Thread dataRefreshThread;
     private Task<Void> task;
 
+    private SimpleBooleanProperty isPaused;
     private final SimpleIntegerProperty howManyTargetsSelected;
     private final SimpleIntegerProperty howManyTargetsAdded;
     private final SimpleBooleanProperty isATargetSelected;
 
+    private final ChangeListener<Boolean> isPausedListener;
     private final ListChangeListener<String> currentSelectedListListener;
     private final ListChangeListener<String> currentAddedListListener;
     private final ListChangeListener<String> currentSelectedFrozenListener;
@@ -81,6 +85,7 @@ public class TaskController {
     private SpinnerValueFactory<Integer> ParallelValueFactory;
 
     public TaskController() {
+        isPaused = new SimpleBooleanProperty(false);
         howManyTargetsSelected = new SimpleIntegerProperty(0);
         currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
         howManyTargetsAdded = new SimpleIntegerProperty(0);
@@ -136,6 +141,13 @@ public class TaskController {
                 InProcessListView.getSelectionModel().clearSelection();
             }
         };
+        isPausedListener = (observable, oldValue, newValue) -> {
+            if(newValue == true)
+                pauseTaskButton.setText("resume");
+            else
+                pauseTaskButton.setText("pause");
+        };
+        isPaused.addListener(isPausedListener);
     }
 
     private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
@@ -435,7 +447,9 @@ public class TaskController {
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
+        clearTaskDataLists();
         targetGraph.markTargetsAsChosen(addedTargetsList);
+        targetGraph.prepareGraphForNewRun();
         Thread dataRefresherThread = new Thread(this::refreshTaskData);
         if (simulationTitledPane.isExpanded()) {
             taskThread = new SimulationExecutorThread(targetGraph, "Simulation", simulationWarningRateSpinner.getValue(),
@@ -458,7 +472,22 @@ public class TaskController {
 
     @FXML
     void stopTaskButtonClicked(ActionEvent event) {
+        isPaused.setValue(false);
+        pauseTaskButton.disableProperty().setValue(true);
+        stopTaskButton.disableProperty().setValue(true);
+        runTaskButton.disableProperty().setValue(false);
+    }
 
+    @FXML
+    void pauseResumeTaskButtonClicked(ActionEvent event) {
+        if(isPaused.getValue()) {
+            isPaused.setValue(false);
+            taskThread.resume();
+        }
+        else {
+            isPaused.setValue(true);
+            taskThread.suspend();
+        }
     }
 
     @FXML
