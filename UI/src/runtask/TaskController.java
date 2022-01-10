@@ -39,7 +39,7 @@ public class TaskController {
     private GPUPTask currentGPUPTask;
     private String lastVisitedDirectory = System.getProperty("user.home");
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
-    private Thread taskThread;
+    private ExecutorThread taskThread;
     private Thread dataRefreshThread;
     private Task<Void> task;
 
@@ -498,6 +498,7 @@ public class TaskController {
 
     @FXML
     void stopTaskButtonClicked(ActionEvent event) {
+        taskThread.setStopped(true);
         stopTaskButton.setDisable(true);
         pauseTaskButton.setDisable(true);
         isIncrementalPossible.set(true);
@@ -513,11 +514,9 @@ public class TaskController {
         isPaused.setValue(false);
         if(isPaused.getValue()) {
             isPaused.setValue(false);
-            taskThread.resume();
         }
         else {
             isPaused.setValue(true);
-            taskThread.suspend();
         }
     }
 
@@ -576,8 +575,9 @@ public class TaskController {
         while(taskThread.isAlive()){
             refreshTaskDataLists();
         }
-        System.out.println("task died");
         refreshTaskDataLists();
+        pauseTaskButton.setDisable(true);
+        stopTaskButton.setDisable(true);
     }
 
     private void refreshTaskDataLists() {
@@ -634,11 +634,13 @@ public class TaskController {
         task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                int maxSize = addedTargetsList.size();
+                int maxSize = targetGraph.getAllTargets().values().stream().filter(Target::isChosen).collect(Collectors.toSet()).size();
                 while(taskThread.isAlive())
                 {
                     Thread.sleep(200);
-                    updateProgress(finishedTargetsNameList.size() + skippedTargetsNameList.size(), maxSize);
+                    updateProgress(targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
+                            .filter(target -> target.getRunStatus().equals(Target.Status.FINISHED) ||
+                                    target.getRunStatus().equals(Target.Status.SKIPPED)).collect(Collectors.toSet()).size(), maxSize);
                 }
                 updateProgress(maxSize,maxSize);
                 return null;
