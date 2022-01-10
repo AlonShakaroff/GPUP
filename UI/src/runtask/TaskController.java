@@ -1,5 +1,6 @@
 package runtask;
 
+import javafx.beans.InvalidationListener;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -23,14 +24,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
+import org.omg.PortableInterceptor.SUCCESSFUL;
 import runtask.tableview.TargetInfoTableItem;
 import target.Target;
 import target.TargetGraph;
 import task.GPUPTask;
 import task.SimulationExecutorThread;
 
+import javax.swing.event.ChangeListener;
+import javax.xml.ws.spi.http.HttpExchange;
 import java.io.File;
 import java.util.Set;
+import java.util.concurrent.Delayed;
 import java.util.stream.Collectors;
 
 public class TaskController {
@@ -47,6 +52,7 @@ public class TaskController {
     private final SimpleIntegerProperty howManyTargetsSelected;
     private final SimpleIntegerProperty howManyTargetsAdded;
     private final SimpleBooleanProperty isATargetSelected;
+    private final SimpleBooleanProperty isIncrementalPossible;
 
     private final ChangeListener<Boolean> isPausedListener;
     private final ListChangeListener<String> currentSelectedListListener;
@@ -56,6 +62,7 @@ public class TaskController {
     private final ListChangeListener<String> currentSelectedWaitingListener;
     private final ListChangeListener<String> currentSelectedInProcessListener;
     private final ListChangeListener<String> currentSelectedFinishedListener;
+    private final InvalidationListener incrementalCheckboxInvalidListener;
 
 
     private final ObservableList<String> TargetsNameList = FXCollections.observableArrayList();
@@ -84,13 +91,32 @@ public class TaskController {
             new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 1000);
     private SpinnerValueFactory<Integer> ParallelValueFactory;
 
-    public TaskController() {
-        isPaused = new SimpleBooleanProperty(false);
-        howManyTargetsSelected = new SimpleIntegerProperty(0);
-        currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
-        howManyTargetsAdded = new SimpleIntegerProperty(0);
-        currentAddedListListener = change -> howManyTargetsAdded.set(change.getList().size());
-        isATargetSelected = new SimpleBooleanProperty(false);
+   public TaskController() {
+       isPaused = new SimpleBooleanProperty(false);
+       howManyTargetsSelected = new SimpleIntegerProperty(0);
+       currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
+       howManyTargetsAdded = new SimpleIntegerProperty(0);
+       isATargetSelected = new SimpleBooleanProperty(false);
+       isIncrementalPossible = new SimpleBooleanProperty(false);
+       currentAddedListListener = change -> {
+           howManyTargetsAdded.set(change.getList().size());
+           isIncrementalPossible.set(true);
+           if (change.getList().isEmpty()){
+               isIncrementalPossible.set(false);
+           }else {
+               if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).count() != change.getList().size())
+                   isIncrementalPossible.set(false);
+               else for (String targetName : change.getList()) {
+                   if (!targetGraph.getAllTargets().get(targetName).isChosen())
+                       isIncrementalPossible.set(false);
+               }
+               if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
+                       (target -> (target.getRunResult() == Target.Result.SUCCESS ||
+                               target.getRunResult() == Target.Result.WARNING))) {
+                   isIncrementalPossible.set(false);
+               }
+           }
+       };
         currentSelectedFrozenListener = change -> {
             if (!change.getList().isEmpty()) {
                 updateTargetDetailsTableAndTextArea(change.getList().get(0));
@@ -148,7 +174,9 @@ public class TaskController {
                 pauseTaskButton.setText("pause");
         };
         isPaused.addListener(isPausedListener);
-    }
+       incrementalCheckboxInvalidListener = change -> {
+           incrementalCheckBox.setSelected(false);
+       };
 
     private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
         Target selectedTarget = targetGraph.getTarget(selectedTargetString);
@@ -192,6 +220,10 @@ public class TaskController {
     public void initialize() {
         initializeTargetInfoTable();
 
+        TargetsListView.disableProperty().bind(pauseTaskButton.disableProperty().not());
+        AddedTargetsListView.disableProperty().bind(pauseTaskButton.disableProperty().not());
+        incrementalCheckBox.disableProperty().bind(isIncrementalPossible.not());
+        incrementalCheckBox.disableProperty().addListener(incrementalCheckboxInvalidListener);
         requiredForButton.disableProperty().bind(howManyTargetsSelected.isEqualTo(1).not());
         dependsOnButton.disableProperty().bind(howManyTargetsSelected.isEqualTo(1).not());
         currentSelectedList = TargetsListView.getSelectionModel().getSelectedItems();
@@ -209,7 +241,6 @@ public class TaskController {
         currentSelectedInProcessList.addListener(currentSelectedInProcessListener);
         currentSelectedFinishedList.addListener(currentSelectedFinishedListener);
         addedTargetsList.clear();
-
 
         runTaskButton.disableProperty().bind(Bindings.and(stopTaskButton.disableProperty(),
                 Bindings.and(pauseTaskButton.disableProperty()
@@ -472,14 +503,19 @@ public class TaskController {
 
     @FXML
     void stopTaskButtonClicked(ActionEvent event) {
-        isPaused.setValue(false);
-        pauseTaskButton.disableProperty().setValue(true);
-        stopTaskButton.disableProperty().setValue(true);
-        runTaskButton.disableProperty().setValue(false);
+        stopTaskButton.setDisable(true);
+        pauseTaskButton.setDisable(true);
+        isIncrementalPossible.set(true);
+        if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
+                (target -> (target.getRunResult() == Target.Result.SUCCESS ||
+                        target.getRunResult() == Target.Result.WARNING))) {
+            isIncrementalPossible.set(false);
+        }
     }
 
     @FXML
     void pauseResumeTaskButtonClicked(ActionEvent event) {
+        isPaused.setValue(false);
         if(isPaused.getValue()) {
             isPaused.setValue(false);
             taskThread.resume();

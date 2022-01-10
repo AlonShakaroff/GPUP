@@ -32,7 +32,7 @@ public class SimulationExecutorThread extends Thread{
         initTasksList(isIncremental);
     }
     private void initTasksList(boolean isIncremental){
-        for(Target target : targetGraph.getTargetsToRunOn(isIncremental)) {
+        for(Target target : targetGraph.getTargetsToRunOnAndResetExtraData(isIncremental)) {
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
                 tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
             } else {
