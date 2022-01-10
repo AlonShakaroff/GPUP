@@ -577,7 +577,7 @@ public class TaskController {
                 while(taskThread.isAlive())
                 {
                     Thread.sleep(200);
-                    updateProgress(finishedTargetsNameList.size(), maxSize);
+                    updateProgress(finishedTargetsNameList.size() + skippedTargetsNameList.size(), maxSize);
                 }
                 updateProgress(maxSize,maxSize);
                 return null;

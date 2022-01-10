@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.TimeUnit;
 
 public class SimulationExecutorThread extends Thread{
     private TargetGraph targetGraph;
@@ -61,6 +62,13 @@ public class SimulationExecutorThread extends Thread{
            }
            targetGraph.refreshWaiting();
        }
-       threadExecutor.shutdown();
+       try {
+           while (!threadExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
+           }
+           threadExecutor.shutdown();
+       }
+       catch(InterruptedException e) {
+           threadExecutor.shutdown();
+       }
     }
 }
