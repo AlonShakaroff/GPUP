@@ -40,7 +40,7 @@ public class Target implements Serializable {
             this.ExtraData = "";
         this.dependsOnSet = new HashSet<Target>();
         this.requiredForSet = new HashSet<Target>();
-        this.runStatus = Status.WAITING;
+        this.responsibleTargets = new HashSet<>();
         this.serialSets = new HashSet<>();
         determineInitialType();
         this.resetTarget();
@@ -54,8 +54,8 @@ public class Target implements Serializable {
     public void resetTarget(){
         this.isVisited = false;
         this.runResult = Result.SKIPPED;
-        this.isChosen = false;
-        this.responsibleTargets = new HashSet<>();
+        this.runStatus = Status.WAITING;
+        this.responsibleTargets.clear();
     }
 
     public Target(GPUPTarget gpupTarget){

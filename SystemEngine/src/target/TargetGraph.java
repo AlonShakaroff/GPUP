@@ -53,15 +53,31 @@ public class TargetGraph implements Serializable {
         }
     }
 
-    public Set<Target> getTargetsToRunOn(boolean isIncremental) {
+    public Set<Target> getTargetsToRunOnAndResetExtraData(boolean isIncremental) {
+        Set<Target> ChosenTargets;
         if (isIncremental) {
-            allTargets.values().stream().filter(Target::isChosen).filter
+            ChosenTargets = allTargets.values().stream().filter(Target::isChosen).filter
+                    (target -> (target.getRunResult().equals(Target.Result.FAILURE) ||
+                            target.getRunResult().equals(Target.Result.SKIPPED))).collect(Collectors.toSet());
+
+            Set<Target> SuccessedTargets = allTargets.values().stream().filter(Target::isChosen).filter
                     (target -> (target.getRunResult().equals(Target.Result.SUCCESS) ||
-                            target.getRunResult().equals(Target.Result.WARNING))).forEach(target -> {target.setIsChosen(false);});
+                            target.getRunResult().equals(Target.Result.WARNING))).collect(Collectors.toSet());
+
+            SuccessedTargets.forEach(target -> {target.setIsChosen(false);});
+
+            for (Target target : ChosenTargets)
+                target.determineStatusBeforeTask();
+
+            SuccessedTargets.forEach(target -> {target.setIsChosen(true);});
+
         }
-        Set<Target> ChosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
-        for (Target target : ChosenTargets)
-            target.determineStatusBeforeTask();
+        else {
+            allTargets.values().forEach(Target::resetTarget);
+            ChosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
+            for (Target target : ChosenTargets)
+                target.determineStatusBeforeTask();
+        }
         return ChosenTargets;
     }
 
@@ -346,14 +362,6 @@ public class TargetGraph implements Serializable {
     private void clearChosenTargets(){
         for (Target target: allTargets.values()){
             target.setIsChosen(false);
-        }
-    }
-
-    public void prepareGraphForNewRun() {
-        Set<Target> chosenTargets = allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
-        for (Target target : chosenTargets) {
-            target.setResult(Target.Result.SKIPPED);
-            target.determineStatusBeforeTask();
         }
     }
 }

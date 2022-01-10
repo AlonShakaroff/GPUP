@@ -225,7 +225,7 @@
                         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" styleClass="primaryBackground">
                            <children>
                               <Button id="playbutton" fx:id="runTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#runTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="run" HBox.hgrow="ALWAYS" />
-                              <Button id="pausebutton" fx:id="pauseTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#runTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="pause" HBox.hgrow="ALWAYS" />
+                              <Button id="pausebutton" fx:id="pauseTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#pauseTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="pause" HBox.hgrow="ALWAYS" />
                               <Button id="stopbutton" fx:id="stopTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#stopTaskButtonClicked" prefHeight="60.0" prefWidth="60.0" text="stop" HBox.hgrow="ALWAYS" />
                            </children>
                            <padding>
