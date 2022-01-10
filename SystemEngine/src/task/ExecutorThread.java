@@ -26,10 +26,12 @@ public class ExecutorThread extends Thread{
     /*-----------------------------------------------------------------------*/
     private Boolean isPaused;
     private Boolean isPausedRightNow;
+    private Boolean isStopped;
     /*-----------------------------------------------------------------------*/
 
     public ExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
                           boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental){
+        this.isStopped = false;
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.warningChance = warningChance;
@@ -42,6 +44,7 @@ public class ExecutorThread extends Thread{
     }
 
     public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath,int numOfThreads, boolean isIncremental) {
+        this.isStopped = false;
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.SourceFolderPath = SourceFolderPath;
@@ -70,6 +73,8 @@ public class ExecutorThread extends Thread{
     public void run(){
 
        while (!tasksList.isEmpty()){
+           if(getStopped())
+               shutdown();
            GPUPTask curTask = tasksList.poll();
            if (curTask.target.getRunStatus().equals(Target.Status.FROZEN)) { // target is frozen
                tasksList.addLast(curTask);
@@ -92,8 +97,44 @@ public class ExecutorThread extends Thread{
            }
            targetGraph.refreshWaiting();
        }
+       shutdown();
+    }
 
-           threadExecutor.shutdown();
-           while(!threadExecutor.isTerminated()) {}
+    public void shutdown() {
+        threadExecutor.shutdown();
+        while(!threadExecutor.isTerminated()) {}
+    }
+
+    public void pauseTask() {
+        setPaused(true);
+
+    }
+
+    public void stopTask() {
+        setStopped(true);
+    }
+
+    public Boolean getPaused() {
+        return isPaused;
+    }
+
+    public void setPaused(Boolean paused) {
+        isPaused = paused;
+    }
+
+    public Boolean getPausedRightNow() {
+        return isPausedRightNow;
+    }
+
+    public void setPausedRightNow(Boolean pausedRightNow) {
+        isPausedRightNow = pausedRightNow;
+    }
+
+    public Boolean getStopped() {
+        return isStopped;
+    }
+
+    public void setStopped(Boolean stopped) {
+        isStopped = stopped;
     }
 }
