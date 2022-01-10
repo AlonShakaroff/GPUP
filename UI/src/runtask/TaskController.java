@@ -31,7 +31,6 @@ import target.TargetGraph;
 import task.GPUPTask;
 import task.SimulationExecutorThread;
 
-import javax.swing.event.ChangeListener;
 import javax.xml.ws.spi.http.HttpExchange;
 import java.io.File;
 import java.util.Set;
@@ -101,9 +100,9 @@ public class TaskController {
        currentAddedListListener = change -> {
            howManyTargetsAdded.set(change.getList().size());
            isIncrementalPossible.set(true);
-           if (change.getList().isEmpty()){
+           if (change.getList().isEmpty()) {
                isIncrementalPossible.set(false);
-           }else {
+           } else {
                if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).count() != change.getList().size())
                    isIncrementalPossible.set(false);
                else for (String targetName : change.getList()) {
@@ -117,66 +116,67 @@ public class TaskController {
                }
            }
        };
-        currentSelectedFrozenListener = change -> {
-            if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
-                isATargetSelected.set(true);
-                SkippedListView.getSelectionModel().clearSelection();
-                WaitingListView.getSelectionModel().clearSelection();
-                InProcessListView.getSelectionModel().clearSelection();
-                FinishedListView.getSelectionModel().clearSelection();
-            }
-        };
-        currentSelectedSkippedListener = change -> {
-            if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
-                isATargetSelected.set(true);
-                FrozenListView.getSelectionModel().clearSelection();
-                WaitingListView.getSelectionModel().clearSelection();
-                InProcessListView.getSelectionModel().clearSelection();
-                FinishedListView.getSelectionModel().clearSelection();
-            }
-        };
-        currentSelectedWaitingListener = change -> {
-            if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
-                isATargetSelected.set(true);
-                FrozenListView.getSelectionModel().clearSelection();
-                SkippedListView.getSelectionModel().clearSelection();
-                InProcessListView.getSelectionModel().clearSelection();
-                FinishedListView.getSelectionModel().clearSelection();
-            }
-        };
-        currentSelectedInProcessListener = change -> {
-            if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
-                isATargetSelected.set(true);
-                FrozenListView.getSelectionModel().clearSelection();
-                SkippedListView.getSelectionModel().clearSelection();
-                WaitingListView.getSelectionModel().clearSelection();
-                FinishedListView.getSelectionModel().clearSelection();
-            }
-        };
-        currentSelectedFinishedListener = change -> {
-            if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
-                isATargetSelected.set(true);
-                FrozenListView.getSelectionModel().clearSelection();
-                SkippedListView.getSelectionModel().clearSelection();
-                WaitingListView.getSelectionModel().clearSelection();
-                InProcessListView.getSelectionModel().clearSelection();
-            }
-        };
-        isPausedListener = (observable, oldValue, newValue) -> {
-            if(newValue == true)
-                pauseTaskButton.setText("resume");
-            else
-                pauseTaskButton.setText("pause");
-        };
-        isPaused.addListener(isPausedListener);
+       currentSelectedFrozenListener = change -> {
+           if (!change.getList().isEmpty()) {
+               updateTargetDetailsTableAndTextArea(change.getList().get(0));
+               isATargetSelected.set(true);
+               SkippedListView.getSelectionModel().clearSelection();
+               WaitingListView.getSelectionModel().clearSelection();
+               InProcessListView.getSelectionModel().clearSelection();
+               FinishedListView.getSelectionModel().clearSelection();
+           }
+       };
+       currentSelectedSkippedListener = change -> {
+           if (!change.getList().isEmpty()) {
+               updateTargetDetailsTableAndTextArea(change.getList().get(0));
+               isATargetSelected.set(true);
+               FrozenListView.getSelectionModel().clearSelection();
+               WaitingListView.getSelectionModel().clearSelection();
+               InProcessListView.getSelectionModel().clearSelection();
+               FinishedListView.getSelectionModel().clearSelection();
+           }
+       };
+       currentSelectedWaitingListener = change -> {
+           if (!change.getList().isEmpty()) {
+               updateTargetDetailsTableAndTextArea(change.getList().get(0));
+               isATargetSelected.set(true);
+               FrozenListView.getSelectionModel().clearSelection();
+               SkippedListView.getSelectionModel().clearSelection();
+               InProcessListView.getSelectionModel().clearSelection();
+               FinishedListView.getSelectionModel().clearSelection();
+           }
+       };
+       currentSelectedInProcessListener = change -> {
+           if (!change.getList().isEmpty()) {
+               updateTargetDetailsTableAndTextArea(change.getList().get(0));
+               isATargetSelected.set(true);
+               FrozenListView.getSelectionModel().clearSelection();
+               SkippedListView.getSelectionModel().clearSelection();
+               WaitingListView.getSelectionModel().clearSelection();
+               FinishedListView.getSelectionModel().clearSelection();
+           }
+       };
+       currentSelectedFinishedListener = change -> {
+           if (!change.getList().isEmpty()) {
+               updateTargetDetailsTableAndTextArea(change.getList().get(0));
+               isATargetSelected.set(true);
+               FrozenListView.getSelectionModel().clearSelection();
+               SkippedListView.getSelectionModel().clearSelection();
+               WaitingListView.getSelectionModel().clearSelection();
+               InProcessListView.getSelectionModel().clearSelection();
+           }
+       };
+       isPausedListener = (observable, oldValue, newValue) -> {
+           if (newValue == true)
+               pauseTaskButton.setText("resume");
+           else
+               pauseTaskButton.setText("pause");
+       };
+       isPaused.addListener(isPausedListener);
        incrementalCheckboxInvalidListener = change -> {
            incrementalCheckBox.setSelected(false);
        };
+   }
 
     private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
         Target selectedTarget = targetGraph.getTarget(selectedTargetString);
@@ -478,9 +478,7 @@ public class TaskController {
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
-        clearTaskDataLists();
         targetGraph.markTargetsAsChosen(addedTargetsList);
-        targetGraph.prepareGraphForNewRun();
         Thread dataRefresherThread = new Thread(this::refreshTaskData);
         if (simulationTitledPane.isExpanded()) {
             taskThread = new SimulationExecutorThread(targetGraph, "Simulation", simulationWarningRateSpinner.getValue(),
