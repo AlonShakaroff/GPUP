@@ -24,6 +24,9 @@ public class ExecutorThread extends Thread{
     private String SourceFolderPath;
     private String DestFolderPath;
     /*-----------------------------------------------------------------------*/
+    private Boolean isPaused;
+    private Boolean isPausedRightNow;
+    /*-----------------------------------------------------------------------*/
 
     public ExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
                           boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental){
@@ -84,13 +87,10 @@ public class ExecutorThread extends Thread{
            }
            targetGraph.refreshWaiting();
        }
-       try {
-           while (!threadExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
-           }
+
            threadExecutor.shutdown();
-       }
-       catch(InterruptedException e) {
-           threadExecutor.shutdown();
-       }
+           while(!threadExecutor.isTerminated()) {}
+           //System.out.println("now interrupting task");
+           //this.interrupt();
     }
 }

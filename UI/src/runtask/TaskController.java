@@ -576,6 +576,7 @@ public class TaskController {
         while(taskThread.isAlive()){
             refreshTaskDataLists();
         }
+        System.out.println("task died");
         refreshTaskDataLists();
     }
 
