@@ -478,6 +478,7 @@ public class TaskController {
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
+        resetDataLists();
         targetGraph.markTargetsAsChosen(addedTargetsList);
         Thread dataRefresherThread = new Thread(this::refreshTaskData);
         if (simulationTitledPane.isExpanded()) {
@@ -601,24 +602,24 @@ public class TaskController {
     }
 
     private void updateTaskDataLists() {
-        for (Target target: targetGraph.getAllTargets().values().stream().
-                filter(target -> target.getRunStatus().equals(Target.Status.FROZEN)).collect(Collectors.toSet())) {
+        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
+                .filter(target -> target.getRunStatus().equals(Target.Status.FROZEN)).collect(Collectors.toSet())) {
             frozenTargetsNameList.add(target.getName());
         }
-        for (Target target: targetGraph.getAllTargets().values().stream().
-                filter(target -> target.getRunStatus().equals(Target.Status.SKIPPED)).collect(Collectors.toSet())) {
+        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
+                .filter(target -> target.getRunStatus().equals(Target.Status.SKIPPED)).collect(Collectors.toSet())) {
             skippedTargetsNameList.add(target.getName());
         }
-        for (Target target: targetGraph.getAllTargets().values().stream().
-                filter(target -> target.getRunStatus().equals(Target.Status.WAITING)).collect(Collectors.toSet())) {
+        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
+                .filter(target -> target.getRunStatus().equals(Target.Status.WAITING)).collect(Collectors.toSet())) {
             waitingTargetsNameList.add(target.getName());
         }
-        for (Target target: targetGraph.getAllTargets().values().stream().
-                filter(target -> target.getRunStatus().equals(Target.Status.IN_PROCESS)).collect(Collectors.toSet())) {
+        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
+                .filter(target -> target.getRunStatus().equals(Target.Status.IN_PROCESS)).collect(Collectors.toSet())) {
             inProcessTargetsNameList.add(target.getName());
         }
-        for (Target target: targetGraph.getAllTargets().values().stream().
-                filter(target -> target.getRunStatus().equals(Target.Status.FINISHED)).collect(Collectors.toSet())) {
+        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
+                .filter(target -> target.getRunStatus().equals(Target.Status.FINISHED)).collect(Collectors.toSet())) {
             finishedTargetsNameList.add(target.getName());
         }
     }
@@ -653,5 +654,18 @@ public class TaskController {
         Thread progressBarThread = new Thread(task);
         progressBarThread.setDaemon(true);
         progressBarThread.start();
+    }
+
+    private void resetDataLists() {
+        frozenTargetsNameList.clear();
+        skippedTargetsNameList.clear();
+        waitingTargetsNameList.clear();
+        inProcessTargetsNameList.clear();
+        finishedTargetsNameList.clear();
+        FrozenListView.setItems(frozenTargetsNameList);
+        SkippedListView.setItems(skippedTargetsNameList);
+        WaitingListView.setItems(waitingTargetsNameList);
+        InProcessListView.setItems(inProcessTargetsNameList);
+        FinishedListView.setItems(finishedTargetsNameList);
     }
 }
