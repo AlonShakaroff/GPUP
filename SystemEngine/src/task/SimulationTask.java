@@ -35,6 +35,7 @@ public class SimulationTask extends GPUPTask {
                 while(this.taskManager.getPaused()) {
                     this.taskManager.getIsPauseDummy().wait();
                 }
+                taskManager.refreshChosenParallelism();
             }
             catch(Exception e){
                 e.printStackTrace();

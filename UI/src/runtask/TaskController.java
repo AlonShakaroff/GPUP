@@ -274,8 +274,12 @@ public class TaskController {
                 simulationTimeSpinner.getValueFactory().setValue(0);
         });
         ParallelismSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null)
+            if (newValue == null) {
                 ParallelismSpinner.getValueFactory().setValue(1);
+                targetGraph.setChosenParallelism(1);
+            }
+            else if(newValue <=targetGraph.getMaxParallelism() && newValue>=1)
+                targetGraph.setChosenParallelism(newValue);
         });
 
         TargetsListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -487,6 +491,7 @@ public class TaskController {
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
+        ParallelismSpinner.setDisable(true);
         resetDataLists();
         runDetailsTextArea.setText("");
         targetGraph.markTargetsAsChosen(addedTargetsList);
@@ -528,6 +533,7 @@ public class TaskController {
     @FXML
     void pauseResumeTaskButtonClicked(ActionEvent event) {
         isPaused.setValue(!isPaused.getValue());
+        ParallelismSpinner.setDisable(!isPaused.get());
         taskThread.setPaused(isPaused.getValue());
     }
 
@@ -594,6 +600,7 @@ public class TaskController {
                 isPaused.setValue(false);
                 stopTaskButton.setDisable(true);
                 isIncrementalPossible.set(true);
+                ParallelismSpinner.setDisable(false);
         });
 
         if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch

@@ -21,7 +21,7 @@ public class ExecutorThread extends Thread{
     private boolean isRandom;
     private int processTimeInMS;
     private int numOfThreads;
-    private ExecutorService threadExecutor;
+    private ThreadPoolExecutor threadExecutor;
     /*---------------------Compilation parameters----------------------------*/
     private String SourceFolderPath;
     private String DestFolderPath;
@@ -41,7 +41,7 @@ public class ExecutorThread extends Thread{
         this.processTimeInMS = processTimeInMS;
         this.tasksList = new LinkedList<>();
         this.numOfThreads = numOfThreads;
-        this.threadExecutor = Executors.newFixedThreadPool(numOfThreads);
+        this.threadExecutor = new ThreadPoolExecutor(numOfThreads,targetGraph.getMaxParallelism(),1000,TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
         this.runLogTextArea = runLogTextArea;
         initTasksList(isIncremental);
     }
@@ -54,7 +54,7 @@ public class ExecutorThread extends Thread{
         this.SourceFolderPath = SourceFolderPath;
         this.DestFolderPath = DestFolderPath;
         this.numOfThreads = numOfThreads;
-        this.threadExecutor = Executors.newFixedThreadPool(numOfThreads);
+        this.threadExecutor = new ThreadPoolExecutor(numOfThreads,targetGraph.getMaxParallelism(),1000,TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
         this.runLogTextArea = runLogTextArea;
         initTasksList(isIncremental);
     }
@@ -155,5 +155,9 @@ public class ExecutorThread extends Thread{
 
     public TargetGraph getTargetGraph() {
         return targetGraph;
+    }
+
+    public void refreshChosenParallelism() {
+        threadExecutor.setCorePoolSize(targetGraph.getChosenParallelism());
     }
 }

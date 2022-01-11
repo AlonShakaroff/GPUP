@@ -29,6 +29,7 @@ public class TargetGraph implements Serializable {
     private Map<String, Set<String>> SerialSets;
     private int maxParallelism;
     public String currentTaskLog;
+    private Integer chosenParallelism;
 
     public String getCurrentTaskLog() { return currentTaskLog; }
 
@@ -46,9 +47,18 @@ public class TargetGraph implements Serializable {
                                              duration.getSeconds() - (duration.toHours() * 3600));
     }
 
+    public Integer getChosenParallelism() {
+        return chosenParallelism;
+    }
+
+    public void setChosenParallelism(Integer chosenParallelism) {
+        this.chosenParallelism = chosenParallelism;
+    }
+
     static public enum pathDirection {DEPENDS_ON, REQUIRED_FOR}
 
     public TargetGraph(String name, String directory, int maxParallelism) {
+        this.chosenParallelism = 1;
         this.graphName = name;
         this.directory = directory;
         this.maxParallelism = maxParallelism;
