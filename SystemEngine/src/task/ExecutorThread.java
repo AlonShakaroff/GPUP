@@ -82,18 +82,7 @@ public class ExecutorThread extends Thread{
                 targetGraph.currentTaskLog += "Run stopped!\n";
                 return;
             }
-//            if (isPaused) { // while paused
-//                System.out.println("Paused");
-//                while (isPaused || !threadExecutor.isTerminated()) {
-//                    try {
-//                        Thread.sleep(200);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                initTasksList(true);
-//                threadExecutor = Executors.newFixedThreadPool(numOfThreads);
-//            }
+
             GPUPTask curTask = tasksList.poll();
             if (curTask.target.getRunStatus().equals(Target.Status.FROZEN)) { // target is frozen
                 tasksList.addLast(curTask);
