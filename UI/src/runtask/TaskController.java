@@ -556,7 +556,7 @@ public class TaskController {
     void compileTaskDestSearchButtonClicked(ActionEvent event) {
         directoryChooser.setInitialDirectory(new File(lastVisitedDirectory));
         File dir = directoryChooser.showDialog(compileTaskDestSearchButton.getScene().getWindow());
-        if (dir != null) {
+        if (dir != null && dir.isDirectory()) {
             lastVisitedDirectory = dir.getPath();
             compileTaskDestTextField.textProperty().setValue(dir.getPath());
         }
@@ -566,7 +566,7 @@ public class TaskController {
     void compileTaskSourceSearchButtonClicked(ActionEvent event) {
         directoryChooser.setInitialDirectory(new File(lastVisitedDirectory));
         File dir = directoryChooser.showDialog(compileTaskSourceSearchButton.getScene().getWindow());
-        if (dir != null) {
+        if (dir != null && dir.isDirectory()) {
             lastVisitedDirectory = dir.getPath();
             compileTaskSourceTextField.textProperty().setValue(dir.getPath());
         }
