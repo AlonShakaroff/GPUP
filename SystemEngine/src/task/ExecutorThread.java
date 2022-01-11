@@ -79,6 +79,7 @@ public class ExecutorThread extends Thread{
     @Override
     public void run() {
         targetGraph.setTaskStartTime(Instant.now());
+        targetGraph.getAllTargets().values().forEach(Target::setStartTimeInCurState);
         while (!tasksList.isEmpty()) {
             if (isStopped) { // break if stopped
                 threadExecutor.shutdownNow();

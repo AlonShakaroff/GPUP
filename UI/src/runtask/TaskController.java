@@ -209,8 +209,10 @@ public class TaskController {
                     uniqueData = "Skipped because targets:\n" + selectedTarget.getResponsibleTargets().toString() + "\nfailed.";
                 break;
             case WAITING:
+                uniqueData = "target is waiting for: " + selectedTarget.getTimeInState() + " MS";
                 break;
             case IN_PROCESS:
+                uniqueData = "target is in process for: " + selectedTarget.getTimeInState() + " MS";
                 break;
             case FINISHED:
                 if(selectedTarget.getRunResult().equals(Target.Result.SUCCESS))
@@ -556,7 +558,7 @@ public class TaskController {
     void compileTaskDestSearchButtonClicked(ActionEvent event) {
         directoryChooser.setInitialDirectory(new File(lastVisitedDirectory));
         File dir = directoryChooser.showDialog(compileTaskDestSearchButton.getScene().getWindow());
-        if (dir != null) {
+        if (dir != null && dir.isDirectory()) {
             lastVisitedDirectory = dir.getPath();
             compileTaskDestTextField.textProperty().setValue(dir.getPath());
         }
@@ -566,7 +568,7 @@ public class TaskController {
     void compileTaskSourceSearchButtonClicked(ActionEvent event) {
         directoryChooser.setInitialDirectory(new File(lastVisitedDirectory));
         File dir = directoryChooser.showDialog(compileTaskSourceSearchButton.getScene().getWindow());
-        if (dir != null) {
+        if (dir != null && dir.isDirectory()) {
             lastVisitedDirectory = dir.getPath();
             compileTaskSourceTextField.textProperty().setValue(dir.getPath());
         }

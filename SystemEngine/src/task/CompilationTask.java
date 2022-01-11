@@ -36,11 +36,14 @@ public class CompilationTask extends GPUPTask {
                 e.printStackTrace();
             }
         }
-        target.setStatus(Target.Status.IN_PROCESS);
-        target.setTargetTaskBegin(Instant.now());
+
         String FQNToPath = "\\" + target.getExtraData().replace(".","\\");
         String javaFilePath = sourceFolderPath + FQNToPath + ".java";
         try {
+            target.setStatus(Target.Status.IN_PROCESS);
+            target.setStartTimeInCurState();
+            target.setTargetTaskBegin(Instant.now());
+
             System.out.println("Target " + target.getName() + " is starting compilation\n\n");
             Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " is starting compilation\n\n"); });
 
