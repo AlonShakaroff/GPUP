@@ -642,7 +642,7 @@ public class TaskController {
         }
         for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
                 .filter(target -> target.getRunStatus().equals(Target.Status.FINISHED)).collect(Collectors.toSet())) {
-            finishedTargetsNameList.add(target.getName());
+            finishedTargetsNameList.add(target.getName() + " - " +  target.getRunResultAsString());
         }
     }
 

@@ -20,6 +20,7 @@ import java.io.File;
 
 public class GraphController {
 
+    private static final int CHAR_WIDTH=8;
     private final ObservableList<TargetTableItem> targetTableList = FXCollections.observableArrayList();
     private final ObservableList<TargetTypeSummery> typeSummeryList = FXCollections.observableArrayList();
     private final ObservableList<String> serialSetNameList = FXCollections.observableArrayList();
@@ -49,6 +50,9 @@ public class GraphController {
 
     @FXML
     private TableColumn<TargetTableItem, Integer> serialSetsAmount;
+
+    @FXML
+    private TableColumn<TargetTableItem, String> extraData;
 
     @FXML
     private TableView<TargetTypeSummery> typeTableView;
@@ -98,6 +102,7 @@ public class GraphController {
         requiredForDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("RequiredForDirectly"));
         requiredForTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("RequiredForTotal"));
         serialSetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("AmountOfSerialSets"));
+        extraData.setCellValueFactory(new PropertyValueFactory<TargetTableItem, String>("ExtraData"));
     }
 
     public void initializeTypeSummeryTable() {
@@ -131,12 +136,15 @@ public class GraphController {
 
     private void setDependenciesTable() {
         TargetTableItem currentItem;
+        int prefWidth = 0;
         targetTableList.clear();
         for (Target target : targetGraph.getAllTargets().values()) {
+            prefWidth = Math.max(prefWidth,CHAR_WIDTH*target.getExtraData().length());
             currentItem = new TargetTableItem(target);
             targetTableList.add(currentItem);
         }
 
+        extraData.setPrefWidth(prefWidth);
         dependenciesTableView.setItems(targetTableList);
     }
 

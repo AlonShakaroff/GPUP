@@ -10,6 +10,7 @@ public class TargetTableItem {
     private int requiredForDirectly;
     private int requiredForTotal;
     private int amountOfSerialSets;
+    private String extraData;
 
     public TargetTableItem(Target target)
     {
@@ -20,6 +21,7 @@ public class TargetTableItem {
         this.requiredForDirectly = target.getAmountOfDirectlyRequiredFor();
         this.requiredForTotal = target.getAmountOfTotalRequiredFor();
         this.amountOfSerialSets = target.getAmountOfSerialSets();
+        this.extraData = target.getExtraData();
     }
 
     public String getName() {
@@ -76,5 +78,13 @@ public class TargetTableItem {
 
     public void setAmountOfSerialSets(int amountOfSerialSets) {
         this.amountOfSerialSets = amountOfSerialSets;
+    }
+
+    public String getExtraData() {
+        return extraData;
+    }
+
+    public void setExtraData(String extraData) {
+        this.extraData = extraData;
     }
 }

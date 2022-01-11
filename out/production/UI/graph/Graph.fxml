@@ -34,12 +34,13 @@
                               <TableView fx:id="dependenciesTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
                                  <columns>
                                     <TableColumn fx:id="name" minWidth="70.0" prefWidth="-1.0" text="Name" />
-                                    <TableColumn fx:id="type" minWidth="75.0" prefWidth="-1.0" text="Type" />
+                                    <TableColumn fx:id="type" minWidth="88.0" prefWidth="88.0" text="Type" />
                                     <TableColumn fx:id="dependsOnDirectly" minWidth="95.0" prefWidth="-1.0" text="Depends on &#10;directly" />
                                     <TableColumn fx:id="dependsOnTotal" minWidth="90.0" prefWidth="-1.0" text="Depends on&#10;total" />
                                     <TableColumn fx:id="requiredForDirectly" minWidth="95.0" text="Required for&#10;directly" />
                                     <TableColumn fx:id="requiredForTotal" minWidth="95.0" prefWidth="-1.0" text="Required for&#10;total" />
-                                    <TableColumn fx:id="serialSetsAmount" minWidth="75.0" prefWidth="-1.0" text="Serial sets" />
+                                    <TableColumn fx:id="serialSetsAmount" minWidth="75.0" prefWidth="-1.0" text="Serial &#10;sets" />
+                                    <TableColumn fx:id="extraData" minWidth="-1.0" prefWidth="-1.0" sortable="false" text="Extra data" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

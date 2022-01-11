@@ -334,4 +334,17 @@ public class Target implements Serializable {
     public String toString(){
         return getName();
     }
+
+    public String getRunResultAsString() {
+        switch (runResult){
+            case SUCCESS:
+                return "Success";
+            case WARNING:
+                return "Warning";
+            case FAILURE:
+                return "Failure";
+            default:
+                return "";
+        }
+    }
 }
