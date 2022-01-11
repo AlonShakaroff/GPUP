@@ -207,8 +207,10 @@ public class TaskController {
                     uniqueData = "Skipped because targets:\n" + selectedTarget.getResponsibleTargets().toString() + "\nfailed.";
                 break;
             case WAITING:
+                uniqueData = "target is waiting for: " + selectedTarget.getTimeInState() + " MS";
                 break;
             case IN_PROCESS:
+                uniqueData = "target is in process for: " + selectedTarget.getTimeInState() + " MS";
                 break;
             case FINISHED:
                 if(selectedTarget.getRunResult().equals(Target.Result.SUCCESS))
