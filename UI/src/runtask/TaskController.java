@@ -45,6 +45,7 @@ public class TaskController {
     private ExecutorThread taskThread;
     private Thread dataRefreshThread;
     private Task<Void> task;
+    private String lastTask = "";
 
     private SimpleBooleanProperty isPaused;
     private final SimpleIntegerProperty howManyTargetsSelected;
@@ -248,6 +249,14 @@ public class TaskController {
         currentSelectedWaitingList.addListener(currentSelectedWaitingListener);
         currentSelectedInProcessList.addListener(currentSelectedInProcessListener);
         currentSelectedFinishedList.addListener(currentSelectedFinishedListener);
+        compileTaskTitledPane.expandedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && lastTask.equals("Simulation"))
+                isIncrementalPossible.set(false);
+        });
+        simulationTitledPane.expandedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && lastTask.equals("Compilation"))
+                isIncrementalPossible.set(false);
+        });
         addedTargetsList.clear();
 
         runTaskButton.disableProperty().bind(Bindings.and(stopTaskButton.disableProperty(),
@@ -492,11 +501,14 @@ public class TaskController {
         targetGraph.markTargetsAsChosen(addedTargetsList);
         Thread dataRefresherThread = new Thread(this::refreshTaskData);
         if (simulationTitledPane.isExpanded()) {
+            lastTask = "Simulation";
             taskThread = new ExecutorThread(targetGraph, "Simulation", simulationWarningRateSpinner.getValue(),
                     simulationSuccessRateSpinner.getValue(), simulationRandomCheckBox.isSelected(),
                     simulationTimeSpinner.getValue(), ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()),runDetailsTextArea);
         }
-        else { taskThread = new ExecutorThread(targetGraph,"Compilation",compileTaskSourceTextField.getText(),
+        else {
+            lastTask = "Compilation";
+            taskThread = new ExecutorThread(targetGraph,"Compilation",compileTaskSourceTextField.getText(),
                 compileTaskDestTextField.getText(),ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()),runDetailsTextArea);
         }
         taskThread.start();
