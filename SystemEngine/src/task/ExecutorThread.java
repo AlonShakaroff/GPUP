@@ -47,6 +47,7 @@ public class ExecutorThread extends Thread{
     public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath,int numOfThreads, boolean isIncremental) {
         this.isStopped = false;
         this.targetGraph = targetGraph;
+        this.tasksList = new LinkedList<>();
         this.taskName = taskName;
         this.SourceFolderPath = SourceFolderPath;
         this.DestFolderPath = DestFolderPath;
