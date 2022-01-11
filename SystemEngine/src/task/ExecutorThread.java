@@ -5,6 +5,7 @@ import javafx.scene.shape.Path;
 import target.Target;
 import target.TargetGraph;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
@@ -26,6 +27,7 @@ public class ExecutorThread extends Thread{
     /*-----------------------------------------------------------------------*/
     private Boolean isPaused = false;
     private Boolean isStopped = false;
+    public Boolean isPauseDummy = false;
     /*-----------------------------------------------------------------------*/
 
     public ExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
@@ -57,15 +59,15 @@ public class ExecutorThread extends Thread{
         for(Target target : targetGraph.getTargetsToRunOnAndResetExtraData(isIncremental)) {
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
                 if(this.taskName.equalsIgnoreCase("simulation"))
-                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
+                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target,this));
                 else /*compilation*/
-                    tasksList.addFirst(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target));
+                    tasksList.addFirst(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target,this));
             }
             else {
                 if(this.taskName.equalsIgnoreCase("simulation"))
-                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target));
+                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target,this));
                 else /*compilation*/
-                    tasksList.addLast(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target));
+                    tasksList.addLast(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target,this));
             }
         }
     }
@@ -76,15 +78,22 @@ public class ExecutorThread extends Thread{
         while (!tasksList.isEmpty()) {
             if (isStopped) { // break if stopped
                 threadExecutor.shutdownNow();
-                break;
+                System.out.println("Run stopped!");
+                targetGraph.currentTaskLog += "Run stopped!\n";
+                return;
             }
-            if (isPaused) { // while paused
-                System.out.println("paused");
-                threadExecutor.shutdownNow();
-                while (isPaused) {}
-                initTasksList(true);
-                threadExecutor = Executors.newFixedThreadPool(numOfThreads);
-            }
+//            if (isPaused) { // while paused
+//                System.out.println("Paused");
+//                while (isPaused || !threadExecutor.isTerminated()) {
+//                    try {
+//                        Thread.sleep(200);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                initTasksList(true);
+//                threadExecutor = Executors.newFixedThreadPool(numOfThreads);
+//            }
             GPUPTask curTask = tasksList.poll();
             if (curTask.target.getRunStatus().equals(Target.Status.FROZEN)) { // target is frozen
                 tasksList.addLast(curTask);
@@ -92,7 +101,9 @@ public class ExecutorThread extends Thread{
                 curTask.getTarget().checkIfNeedsToBeSkipped();
                 if (curTask.getTarget().getRunStatus().equals(Target.Status.SKIPPED)) {
                     System.out.println("Target " + curTask.getTarget().getName() +
-                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + "failed \n");
+                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n");
+                    targetGraph.currentTaskLog += "Target " + curTask.getTarget().getName() +
+                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n\n";
                 } else {  // target is waiting to run, but maybe can't run due to a serial set
                     if (targetGraph.DoesHaveSerialMemberInProgress(curTask.target))
                         tasksList.addLast(curTask);
@@ -106,11 +117,17 @@ public class ExecutorThread extends Thread{
         }
         shutdown();
         targetGraph.setTaskEndTime(Instant.now());
+        targetGraph.setTotalTaskDuration(Duration.between(targetGraph.getTaskStartTime(), targetGraph.getTaskEndTime()));
+        targetGraph.currentTaskLog +="Total task runtime: " + targetGraph.getTotalTaskDurationAsString() + "\n\n";
+        System.out.println("Total task runtime: " + targetGraph.getTotalTaskDurationAsString() + "\n");
     }
 
     public void shutdown() {
+        targetGraph.currentTaskLog +=  "Run shutting down...\n\n";
         threadExecutor.shutdown();
         while(!threadExecutor.isTerminated()) {}
+        targetGraph.currentTaskLog +=  "Run finished.\n\n";
+        System.out.println("Run finished.");
     }
 
     public Boolean getPaused() {
@@ -118,7 +135,11 @@ public class ExecutorThread extends Thread{
     }
 
     public void setPaused(Boolean paused) {
-        isPaused = paused;
+        synchronized (this.isPauseDummy) {
+            isPaused = paused;
+            if(!paused)
+                this.isPauseDummy.notifyAll();
+        }
     }
 
     public Boolean getStopped() {
@@ -127,5 +148,13 @@ public class ExecutorThread extends Thread{
 
     public void setStopped(Boolean stopped) {
         isStopped = stopped;
+    }
+
+    public Boolean getIsPauseDummy() {
+        return isPauseDummy;
+    }
+
+    public TargetGraph getTargetGraph() {
+        return targetGraph;
     }
 }

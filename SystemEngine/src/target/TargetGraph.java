@@ -28,6 +28,9 @@ public class TargetGraph implements Serializable {
     private final String directory;
     private Map<String, Set<String>> SerialSets;
     private int maxParallelism;
+    public String currentTaskLog;
+
+    public String getCurrentTaskLog() { return currentTaskLog; }
 
     public Map<String, Set<String>> getSerialSets() {
         return SerialSets;
@@ -35,6 +38,12 @@ public class TargetGraph implements Serializable {
 
     public int getMaxParallelism() {
         return maxParallelism;
+    }
+
+    public String getTotalTaskDurationAsString() {
+        return String.format("%02d:%02d:%02d", totalTaskDuration.toHours(),
+                                            totalTaskDuration.toMinutes() % 60,
+                                                 totalTaskDuration.getSeconds() - (totalTaskDuration.toHours() * 3600));
     }
 
     static public enum pathDirection {DEPENDS_ON, REQUIRED_FOR}
@@ -46,6 +55,7 @@ public class TargetGraph implements Serializable {
         this.SerialSets = new HashMap<>();
         allTargets = new HashMap<>();
         canRunIncrementally = false;
+        currentTaskLog = "";
     }
 
     public void InitializeTypes() {
@@ -56,6 +66,7 @@ public class TargetGraph implements Serializable {
 
     public Set<Target> getTargetsToRunOnAndResetExtraData(boolean isIncremental) {
         Set<Target> ChosenTargets;
+        currentTaskLog = "";
         if (isIncremental) {
             ChosenTargets = allTargets.values().stream().filter(Target::isChosen).filter
                     (target -> (target.getRunResult().equals(Target.Result.FAILURE) ||

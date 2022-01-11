@@ -486,6 +486,7 @@ public class TaskController {
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
         resetDataLists();
+        runDetailsTextArea.clear();
         targetGraph.markTargetsAsChosen(addedTargetsList);
         Thread dataRefresherThread = new Thread(this::refreshTaskData);
         if (simulationTitledPane.isExpanded()) {
@@ -581,12 +582,16 @@ public class TaskController {
     private void refreshTaskData() {
         while(taskThread.isAlive()){
             refreshTaskDataLists();
+            refreshTaskRunLog();
         }
         refreshTaskDataLists();
-        pauseTaskButton.setDisable(true);
-        isPaused.setValue(false);
-        stopTaskButton.setDisable(true);
-        isIncrementalPossible.set(true);
+        Platform.runLater(()->{
+                pauseTaskButton.setDisable(true);
+                isPaused.setValue(false);
+                stopTaskButton.setDisable(true);
+                isIncrementalPossible.set(true);
+        });
+
         if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
                 (target -> (target.getRunResult() == Target.Result.SUCCESS ||
                         target.getRunResult() == Target.Result.WARNING))) {
@@ -609,6 +614,12 @@ public class TaskController {
             this.WaitingListView.refresh();
             this.InProcessListView.refresh();
             this.FinishedListView.refresh();
+        });
+    }
+
+    private void refreshTaskRunLog() {
+        Platform.runLater(()->{
+           this.runDetailsTextArea.setText(targetGraph.getCurrentTaskLog());
         });
     }
 

@@ -17,8 +17,8 @@ public class SimulationTask extends GPUPTask {
     private final Random random;
 
     public SimulationTask(String taskName, int processTimeInMS, boolean isRandom,
-                          double successChance, double warningChance, Target target) {
-        super(taskName, target);
+                          double successChance, double warningChance, Target target, ExecutorThread taskManager) {
+        super(taskName, target,taskManager);
         this.processTimeInMS = processTimeInMS;
         this.isRandom = isRandom;
         this.successChance = successChance;
@@ -28,19 +28,30 @@ public class SimulationTask extends GPUPTask {
 
     @Override
     public void run() {
-        target.setStatus(Target.Status.IN_PROCESS);
-        int runTime;
-        double randSuccess = random.nextDouble();
-        double randWarning = random.nextDouble();
-        if (isRandom)
-            runTime = random.nextInt(processTimeInMS);
-        else
-            runTime = processTimeInMS;
-
-        target.setTargetTaskBegin(Instant.now());
-
-        System.out.println("target " + target.getName() + " is going to sleep for "  + runTime + " milliseconds");
+        synchronized (this.taskManager.getIsPauseDummy()){
+            try {
+                while(this.taskManager.getPaused()) {
+                    this.taskManager.getIsPauseDummy().wait();
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
         try {
+            target.setStatus(Target.Status.IN_PROCESS);
+            int runTime;
+            double randSuccess = random.nextDouble();
+            double randWarning = random.nextDouble();
+            if (isRandom)
+                runTime = random.nextInt(processTimeInMS);
+            else
+                runTime = processTimeInMS;
+
+            target.setTargetTaskBegin(Instant.now());
+
+            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n";
+            System.out.println("target " + target.getName() + " is going to sleep for " + runTime + " milliseconds");
             Thread.sleep(runTime);
 
             target.setTargetTaskEnd(Instant.now());
@@ -55,7 +66,9 @@ public class SimulationTask extends GPUPTask {
             target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(),
                     target.getTargetTaskEnd()));
 
-            System.out.println("target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n");
+
+            System.out.println("Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n");
+            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n\n";
 
             target.setStatus(Target.Status.FINISHED);
 
