@@ -45,7 +45,6 @@ public class TaskController {
     private ExecutorThread taskThread;
     private Thread dataRefreshThread;
     private Task<Void> task;
-    private TextAreaConsumer runLogConsumer;
 
     private SimpleBooleanProperty isPaused;
     private final SimpleIntegerProperty howManyTargetsSelected;
@@ -91,7 +90,6 @@ public class TaskController {
     private SpinnerValueFactory<Integer> ParallelValueFactory;
 
    public TaskController() {
-       runLogConsumer = new TextAreaConsumer(runDetailsTextArea);
        isPaused = new SimpleBooleanProperty(false);
        howManyTargetsSelected = new SimpleIntegerProperty(0);
        currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
@@ -607,7 +605,7 @@ public class TaskController {
 
     private void refreshTaskDataLists() {
         try {
-            Thread.sleep(200);
+            Thread.sleep(20);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

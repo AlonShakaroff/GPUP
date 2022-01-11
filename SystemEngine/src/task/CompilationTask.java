@@ -2,7 +2,6 @@ package task;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
-import runtask.TextAreaConsumer;
 import target.Target;
 import target.TargetGraph;
 

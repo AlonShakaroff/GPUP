@@ -2,7 +2,6 @@ package task;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
-import runtask.TextAreaConsumer;
 import target.Target;
 //import userinterface.Communicator;
 
@@ -55,13 +54,10 @@ public class SimulationTask extends GPUPTask {
                 runTime = processTimeInMS;
 
 
-            target.setTargetTaskBegin(Instant.now());
-
             Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n"); });
 
             System.out.println("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds");
             Thread.sleep(runTime);
-
 
             if (randSuccess > successChance) {
                 target.setResult(Target.Result.FAILURE);

@@ -4,6 +4,10 @@ import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 import target.Target;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public abstract class GPUPTask implements Runnable{
     protected final String taskName;
     protected final Target target;
@@ -26,4 +30,14 @@ public abstract class GPUPTask implements Runnable{
 
     @Override
     public String toString(){return target.getName();}
+
+    private String calcPath(String curGraphPath,String curDate){
+        return( curGraphPath + "/" + taskName + " - " + curDate);
+    }
+
+    private String getDate(){
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy (HH;mm;ss)");
+        Date now = new Date();
+        return sdfDate.format(now);
+    }
 }
