@@ -2,6 +2,7 @@ package task;
 
 import com.sun.net.httpserver.Authenticator;
 import target.Target;
+import target.TargetGraph;
 
 import java.io.File;
 import java.time.Duration;
@@ -20,21 +21,36 @@ public class CompilationTask extends GPUPTask {
 
     @Override
     public void run() {
+        synchronized (this.taskManager.getIsPauseDummy()){
+            try {
+                while(this.taskManager.getPaused()) {
+                    this.taskManager.getIsPauseDummy().wait();
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
         target.setStatus(Target.Status.IN_PROCESS);
         target.setTargetTaskBegin(Instant.now());
         String FQNToPath = "\\" + target.getExtraData().replace(".","\\");
         String javaFilePath = sourceFolderPath + FQNToPath + ".java";
         try {
-            System.out.println("target " + target.getName() + "is starting compilation");
+            System.out.println("Target " + target.getName() + " is starting compilation\n\n");
+            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " is starting compilation\n\n";
             Process process = Runtime.getRuntime().exec("cmd /c start /wait " + " javac -d " + destinationPath
-                    + " -cp " + destinationPath + " " + javaFilePath + " && exit");
+                    + " -cp " + destinationPath + " " + javaFilePath);
             process.waitFor();
             target.setResult(Target.Result.SUCCESS);
-            System.out.println("task succeeded with compilation time of: " + Duration.between(target.getTargetTaskBegin(),Instant.now()));
+            System.out.println("Target " + target.getName() + " compiled successfully with compilation time of: " +
+                    TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(),Instant.now())) + "\n\n");
+            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " compiled successfully with compilation time of: " +
+                    TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(),Instant.now())) + "\n\n";
+
         }catch (Exception exception) {
             target.setResult(Target.Result.FAILURE);
-            System.out.println();
-            System.out.println("task Failed");
+            System.out.println("Target " + target.getName() + " compilation failed\n\n");
+            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " compilation failed\n\n";
         }
         finally {
             target.setStatus(Target.Status.FINISHED);

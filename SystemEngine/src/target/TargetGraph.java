@@ -40,10 +40,10 @@ public class TargetGraph implements Serializable {
         return maxParallelism;
     }
 
-    public String getTotalTaskDurationAsString() {
-        return String.format("%02d:%02d:%02d", totalTaskDuration.toHours(),
-                                            totalTaskDuration.toMinutes() % 60,
-                                                 totalTaskDuration.getSeconds() - (totalTaskDuration.toHours() * 3600));
+    public static String getDurationAsString(Duration duration) {
+        return String.format("%02d:%02d:%02d", duration.toHours(),
+                                    duration.toMinutes() % 60,
+                                             duration.getSeconds() - (duration.toHours() * 3600));
     }
 
     static public enum pathDirection {DEPENDS_ON, REQUIRED_FOR}

@@ -1,7 +1,5 @@
 package task;
 
-import com.sun.jmx.snmp.tasks.Task;
-import javafx.scene.shape.Path;
 import target.Target;
 import target.TargetGraph;
 
@@ -108,8 +106,8 @@ public class ExecutorThread extends Thread{
         shutdown();
         targetGraph.setTaskEndTime(Instant.now());
         targetGraph.setTotalTaskDuration(Duration.between(targetGraph.getTaskStartTime(), targetGraph.getTaskEndTime()));
-        targetGraph.currentTaskLog +="Total task runtime: " + targetGraph.getTotalTaskDurationAsString() + "\n\n";
-        System.out.println("Total task runtime: " + targetGraph.getTotalTaskDurationAsString() + "\n");
+        targetGraph.currentTaskLog +="Total task runtime: " + TargetGraph.getDurationAsString(targetGraph.getTotalTaskDuration()) + "\n\n";
+        System.out.println("Total task runtime: " + TargetGraph.getDurationAsString(targetGraph.getTotalTaskDuration()) + "\n");
     }
 
     public void shutdown() {

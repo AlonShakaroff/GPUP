@@ -63,8 +63,7 @@ public class SimulationTask extends GPUPTask {
             else
                 target.setResult(Target.Result.SUCCESS);
 
-            target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(),
-                    target.getTargetTaskEnd()));
+            target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(), target.getTargetTaskEnd()));
 
 
             System.out.println("Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n");
