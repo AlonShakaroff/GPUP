@@ -493,7 +493,8 @@ public class TaskController {
                     simulationSuccessRateSpinner.getValue(), simulationRandomCheckBox.isSelected(),
                     simulationTimeSpinner.getValue(), ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()));
         }
-        else {
+        else { taskThread = new ExecutorThread(targetGraph,"Compilation",compileTaskSourceTextField.getText(),
+                compileTaskDestTextField.getText(),ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()));
         }
         taskThread.start();
         dataRefresherThread.start();

@@ -5,6 +5,7 @@ import javafx.scene.shape.Path;
 import target.Target;
 import target.TargetGraph;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
@@ -43,7 +44,7 @@ public class ExecutorThread extends Thread{
     }
 
     public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath,int numOfThreads, boolean isIncremental) {
-        this.isStopped = false;
+        this.tasksList = new LinkedList<>();
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.SourceFolderPath = SourceFolderPath;
@@ -77,6 +78,7 @@ public class ExecutorThread extends Thread{
             if (isStopped) { // break if stopped
                 threadExecutor.shutdownNow();
                 break;
+
             }
             if (isPaused) { // while paused
                 System.out.println("paused");
@@ -105,7 +107,6 @@ public class ExecutorThread extends Thread{
             targetGraph.refreshWaiting();
         }
         shutdown();
-        targetGraph.setTaskEndTime(Instant.now());
     }
 
     public void shutdown() {
