@@ -53,8 +53,7 @@ public class SimulationTask extends GPUPTask {
             this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n";
             System.out.println("target " + target.getName() + " is going to sleep for " + runTime + " milliseconds");
             Thread.sleep(runTime);
-
-            target.setTargetTaskEnd(Instant.now());
+            
 
             if (randSuccess > successChance) {
                 target.setResult(Target.Result.FAILURE);
@@ -63,7 +62,6 @@ public class SimulationTask extends GPUPTask {
             else
                 target.setResult(Target.Result.SUCCESS);
 
-            target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(), target.getTargetTaskEnd()));
 
 
             System.out.println("Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n");
@@ -72,9 +70,14 @@ public class SimulationTask extends GPUPTask {
             target.setStatus(Target.Status.FINISHED);
 
         } catch (InterruptedException exception) {
-            System.out.println("target " + target.getName() + " was interrupted! \n");
+            System.out.println("Target " + target.getName() + " was interrupted! \n");
+            taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " was interrupted! \n\n";
             target.setStatus(Target.Status.SKIPPED);
             target.setResult(Target.Result.SKIPPED);
+        }
+        finally {
+            target.setTargetTaskEnd(Instant.now());
+            target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(),target.getTargetTaskEnd()));
         }
     }
 }

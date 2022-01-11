@@ -4,9 +4,12 @@ import com.sun.net.httpserver.Authenticator;
 import target.Target;
 import target.TargetGraph;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 public class CompilationTask extends GPUPTask {
 
@@ -31,33 +34,44 @@ public class CompilationTask extends GPUPTask {
                 e.printStackTrace();
             }
         }
-        destinationPath = destinationPath.replace(" ", "^ ");
         target.setStatus(Target.Status.IN_PROCESS);
         target.setTargetTaskBegin(Instant.now());
         String FQNToPath = "\\" + target.getExtraData().replace(".","\\");
         String javaFilePath = sourceFolderPath + FQNToPath + ".java";
-        javaFilePath = javaFilePath.replace(" ", "^ ");
         try {
             System.out.println("Target " + target.getName() + " is starting compilation\n\n");
             this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " is starting compilation\n\n";
-            Process process = Runtime.getRuntime().exec("cmd /c start /wait " + " javac -d " + destinationPath
-                    + " -cp " + destinationPath + " " + javaFilePath);
-            process.waitFor();
-            target.setResult(Target.Result.SUCCESS);
-            System.out.println("Target " + target.getName() + " compiled successfully with compilation time of: " +
-                    TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(),Instant.now())) + "\n\n");
-            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " compiled successfully with compilation time of: " +
-                    TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(),Instant.now())) + "\n\n";
 
-        }catch (Exception exception) {
-            target.setResult(Target.Result.FAILURE);
-            System.out.println("Target " + target.getName() + " compilation failed\n\n");
-            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " compilation failed\n\n";
-        }
-        finally {
+            ProcessBuilder processBuilder = new ProcessBuilder("javac", "-d", destinationPath, "-cp", destinationPath, javaFilePath);
+            Process process;
+
+            process = processBuilder.start();
+            int code = process.waitFor();
+
+            if (code == 0) {
+                target.setResult(Target.Result.SUCCESS);
+                System.out.println("Target " + target.getName() + " compiled successfully with compilation time of: " +
+                        TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(), Instant.now())) + "\n\n");
+                this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " compiled successfully with compilation time of: " +
+                        TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(), Instant.now())) + "\n\n";
+            } else {
+                target.setResult(Target.Result.FAILURE);
+                String errorMsg = "";
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                for (String errorLine:bufferedReader.lines().collect(Collectors.toList())) {
+                    errorMsg += errorLine + "\n";
+                }
+                System.out.println("Target " + target.getName() + " compilation failed\n\n");
+                this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " compilation failed!\n" +
+                        "error message:\n" + errorMsg + "\n\n";
+
+            }
             target.setStatus(Target.Status.FINISHED);
-            target.setTargetTaskEnd(Instant.now());
-            target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(),target.getTargetTaskEnd()));
+        }catch (Exception exception) {
+            System.out.println("Target " + target.getName() + " was interrupted! \n");
+            taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " was interrupted!\n\n";
+            target.setStatus(Target.Status.SKIPPED);
+            target.setResult(Target.Result.SKIPPED);
         }
     }
 }

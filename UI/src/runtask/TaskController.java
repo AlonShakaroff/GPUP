@@ -180,7 +180,7 @@ public class TaskController {
    }
 
     private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
-        Target selectedTarget = targetGraph.getTarget(selectedTargetString);
+        Target selectedTarget = targetGraph.getTarget(selectedTargetString.split(" ")[0]);
         targetInfoTableList.clear();
         targetInfoTableList.add(new TargetInfoTableItem(selectedTarget));
         TargetInfoTableView.setItems(targetInfoTableList);
