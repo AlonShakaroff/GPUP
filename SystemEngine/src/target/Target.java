@@ -2,6 +2,7 @@ package target;
 
 import exceptions.TargetNotExistException;
 import exceptions.TargetsDependsOnEachOtherException;
+import sun.security.jca.GetInstance;
 import xmlfiles.generated.GPUPTarget;
 import xmlfiles.generated.GPUPTargetDependencies;
 
@@ -26,6 +27,16 @@ public class Target implements Serializable {
     private Type nodeType;
     private Duration targetTaskTime;
     private Instant targetTaskBegin,targetTaskEnd;
+
+    public void setStartTimeInCurState() {
+        this.startTimeInCurState = Instant.now();
+    }
+
+    public long getTimeInState(){
+        return Duration.between(startTimeInCurState, Instant.now()).toMillis();
+    }
+
+    private Instant startTimeInCurState;
     private boolean isVisited;
     private boolean isChosen;
     private Set<String> serialSets;
@@ -170,12 +181,10 @@ public class Target implements Serializable {
         if (getAllDependsOnTargets().stream().filter(Target::isChosen).allMatch(target ->
                 (target.getRunStatus().equals(Status.FINISHED) || target.getRunStatus().equals(Status.SKIPPED)))) {
             this.setStatus(Status.WAITING);
+            this.setStartTimeInCurState();
         }
     }
     public void checkIfNeedsToBeSkipped() {
-//        this.responsibleTargets = getAllDependsOnTargets().stream()
-//                .filter(Target::isChosen)
-//                    .filter(target -> (getRunResult().equals(Result.FAILURE))).collect(Collectors.toSet());
         this.responsibleTargets.clear();
         for (Target target : this.getAllDependsOnTargets()) {
             if (target.isChosen && target.getRunResult() == Result.FAILURE)
