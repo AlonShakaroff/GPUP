@@ -11,7 +11,7 @@ import java.time.Instant;
 public class CompilationTask extends GPUPTask {
 
     private final String sourceFolderPath;
-    private final String destinationPath;
+    private String destinationPath;
 
     public CompilationTask(String taskName, String sourceFilePath, String destinationFilePath, Target target,ExecutorThread taskManager) {
         super(taskName, target,taskManager);
@@ -31,10 +31,12 @@ public class CompilationTask extends GPUPTask {
                 e.printStackTrace();
             }
         }
+        destinationPath = destinationPath.replace(" ", "^ ");
         target.setStatus(Target.Status.IN_PROCESS);
         target.setTargetTaskBegin(Instant.now());
         String FQNToPath = "\\" + target.getExtraData().replace(".","\\");
         String javaFilePath = sourceFolderPath + FQNToPath + ".java";
+        javaFilePath = javaFilePath.replace(" ", "^ ");
         try {
             System.out.println("Target " + target.getName() + " is starting compilation\n\n");
             this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " is starting compilation\n\n";
