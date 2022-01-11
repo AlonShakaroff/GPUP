@@ -1,5 +1,7 @@
 package task;
 
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
 import target.Target;
 import target.TargetGraph;
 
@@ -12,6 +14,7 @@ public class ExecutorThread extends Thread{
     private TargetGraph targetGraph;
     private LinkedList<GPUPTask> tasksList;
     private String taskName;
+    public TextArea runLogTextArea;
     /*---------------------Simulation parameters-----------------------------*/
     private double warningChance;
     private double successChance;
@@ -29,7 +32,7 @@ public class ExecutorThread extends Thread{
     /*-----------------------------------------------------------------------*/
 
     public ExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
-                          boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental){
+                          boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental, TextArea runLogTextArea){
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.warningChance = warningChance;
@@ -39,10 +42,11 @@ public class ExecutorThread extends Thread{
         this.tasksList = new LinkedList<>();
         this.numOfThreads = numOfThreads;
         this.threadExecutor = Executors.newFixedThreadPool(numOfThreads);
+        this.runLogTextArea = runLogTextArea;
         initTasksList(isIncremental);
     }
 
-    public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath,int numOfThreads, boolean isIncremental) {
+    public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath,int numOfThreads, boolean isIncremental, TextArea runLogTextArea) {
         this.isStopped = false;
         this.targetGraph = targetGraph;
         this.tasksList = new LinkedList<>();
@@ -51,6 +55,7 @@ public class ExecutorThread extends Thread{
         this.DestFolderPath = DestFolderPath;
         this.numOfThreads = numOfThreads;
         this.threadExecutor = Executors.newFixedThreadPool(numOfThreads);
+        this.runLogTextArea = runLogTextArea;
         initTasksList(isIncremental);
     }
     private void initTasksList(boolean isIncremental){
@@ -58,15 +63,15 @@ public class ExecutorThread extends Thread{
         for(Target target : targetGraph.getTargetsToRunOnAndResetExtraData(isIncremental)) {
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
                 if(this.taskName.equalsIgnoreCase("simulation"))
-                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target,this));
+                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target,this, runLogTextArea));
                 else /*compilation*/
-                    tasksList.addFirst(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target,this));
+                    tasksList.addFirst(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target,this, runLogTextArea));
             }
             else {
                 if(this.taskName.equalsIgnoreCase("simulation"))
-                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target,this));
+                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target,this, runLogTextArea));
                 else /*compilation*/
-                    tasksList.addLast(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target,this));
+                    tasksList.addLast(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target,this, runLogTextArea));
             }
         }
     }
@@ -78,7 +83,8 @@ public class ExecutorThread extends Thread{
             if (isStopped) { // break if stopped
                 threadExecutor.shutdownNow();
                 System.out.println("Run stopped!");
-                targetGraph.currentTaskLog += "Run stopped!\n";
+                Platform.runLater(()->{
+                    runLogTextArea.appendText("Run stopped!\n"); });
                 return;
             }
 
@@ -90,8 +96,9 @@ public class ExecutorThread extends Thread{
                 if (curTask.getTarget().getRunStatus().equals(Target.Status.SKIPPED)) {
                     System.out.println("Target " + curTask.getTarget().getName() +
                             " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n");
-                    targetGraph.currentTaskLog += "Target " + curTask.getTarget().getName() +
-                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n\n";
+                    Platform.runLater(()->{
+                        runLogTextArea.appendText("Target " + curTask.getTarget().getName() +
+                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n\n"); });
                 } else {  // target is waiting to run, but maybe can't run due to a serial set
                     if (targetGraph.DoesHaveSerialMemberInProgress(curTask.target))
                         tasksList.addLast(curTask);
@@ -106,15 +113,18 @@ public class ExecutorThread extends Thread{
         shutdown();
         targetGraph.setTaskEndTime(Instant.now());
         targetGraph.setTotalTaskDuration(Duration.between(targetGraph.getTaskStartTime(), targetGraph.getTaskEndTime()));
-        targetGraph.currentTaskLog +="Total task runtime: " + TargetGraph.getDurationAsString(targetGraph.getTotalTaskDuration()) + "\n\n";
+        Platform.runLater(()->{
+            runLogTextArea.appendText("Total task runtime: " + TargetGraph.getDurationAsString(targetGraph.getTotalTaskDuration()) + "\n\n"); });
         System.out.println("Total task runtime: " + TargetGraph.getDurationAsString(targetGraph.getTotalTaskDuration()) + "\n");
     }
 
     public void shutdown() {
-        targetGraph.currentTaskLog +=  "Run shutting down...\n\n";
+        Platform.runLater(()->{
+            runLogTextArea.appendText("Run shutting down...\n\n"); });
         threadExecutor.shutdown();
         while(!threadExecutor.isTerminated()) {}
-        targetGraph.currentTaskLog +=  "Run finished.\n\n";
+        Platform.runLater(()->{
+            runLogTextArea.appendText("Run finished.\n\n"); });
         System.out.println("Run finished.");
     }
 

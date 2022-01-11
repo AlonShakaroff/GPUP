@@ -1,5 +1,8 @@
 package task;
 
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
+import runtask.TextAreaConsumer;
 import target.Target;
 //import userinterface.Communicator;
 
@@ -17,8 +20,8 @@ public class SimulationTask extends GPUPTask {
     private final Random random;
 
     public SimulationTask(String taskName, int processTimeInMS, boolean isRandom,
-                          double successChance, double warningChance, Target target, ExecutorThread taskManager) {
-        super(taskName, target,taskManager);
+                          double successChance, double warningChance, Target target, ExecutorThread taskManager, TextArea runLogTextArea) {
+        super(taskName, target,taskManager,runLogTextArea);
         this.processTimeInMS = processTimeInMS;
         this.isRandom = isRandom;
         this.successChance = successChance;
@@ -50,10 +53,10 @@ public class SimulationTask extends GPUPTask {
 
             target.setTargetTaskBegin(Instant.now());
 
-            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n";
+            Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n"); });
             System.out.println("target " + target.getName() + " is going to sleep for " + runTime + " milliseconds");
             Thread.sleep(runTime);
-            
+
 
             if (randSuccess > successChance) {
                 target.setResult(Target.Result.FAILURE);
@@ -65,13 +68,13 @@ public class SimulationTask extends GPUPTask {
 
 
             System.out.println("Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n");
-            this.taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n\n";
+            Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n\n"); });
 
             target.setStatus(Target.Status.FINISHED);
 
         } catch (InterruptedException exception) {
             System.out.println("Target " + target.getName() + " was interrupted! \n");
-            taskManager.getTargetGraph().currentTaskLog += "Target " + target.getName() + " was interrupted! \n\n";
+            Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " was interrupted! \n\n"); });
             target.setStatus(Target.Status.SKIPPED);
             target.setResult(Target.Result.SKIPPED);
         }

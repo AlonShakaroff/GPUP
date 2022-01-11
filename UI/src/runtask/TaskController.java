@@ -45,6 +45,7 @@ public class TaskController {
     private ExecutorThread taskThread;
     private Thread dataRefreshThread;
     private Task<Void> task;
+    private TextAreaConsumer runLogConsumer;
 
     private SimpleBooleanProperty isPaused;
     private final SimpleIntegerProperty howManyTargetsSelected;
@@ -90,6 +91,7 @@ public class TaskController {
     private SpinnerValueFactory<Integer> ParallelValueFactory;
 
    public TaskController() {
+       runLogConsumer = new TextAreaConsumer(runDetailsTextArea);
        isPaused = new SimpleBooleanProperty(false);
        howManyTargetsSelected = new SimpleIntegerProperty(0);
        currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
@@ -486,16 +488,16 @@ public class TaskController {
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
         resetDataLists();
-        runDetailsTextArea.clear();
+        runDetailsTextArea.setText("");
         targetGraph.markTargetsAsChosen(addedTargetsList);
         Thread dataRefresherThread = new Thread(this::refreshTaskData);
         if (simulationTitledPane.isExpanded()) {
             taskThread = new ExecutorThread(targetGraph, "Simulation", simulationWarningRateSpinner.getValue(),
                     simulationSuccessRateSpinner.getValue(), simulationRandomCheckBox.isSelected(),
-                    simulationTimeSpinner.getValue(), ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()));
+                    simulationTimeSpinner.getValue(), ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()),runDetailsTextArea);
         }
         else { taskThread = new ExecutorThread(targetGraph,"Compilation",compileTaskSourceTextField.getText(),
-                compileTaskDestTextField.getText(),ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()));
+                compileTaskDestTextField.getText(),ParallelismSpinner.getValue(), (!incrementalCheckBox.isDisabled() && incrementalCheckBox.isSelected()),runDetailsTextArea);
         }
         taskThread.start();
         dataRefresherThread.start();
@@ -582,8 +584,9 @@ public class TaskController {
 
     private void refreshTaskData() {
         while(taskThread.isAlive()){
+            if(!isPaused.getValue()) {
             refreshTaskDataLists();
-            refreshTaskRunLog();
+            }
         }
         refreshTaskDataLists();
         Platform.runLater(()->{
@@ -618,11 +621,6 @@ public class TaskController {
         });
     }
 
-    private void refreshTaskRunLog() {
-        Platform.runLater(()->{
-           this.runDetailsTextArea.setText(targetGraph.getCurrentTaskLog());
-        });
-    }
 
     private void updateTaskDataLists() {
         for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
