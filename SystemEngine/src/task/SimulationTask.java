@@ -59,7 +59,7 @@ public class SimulationTask extends GPUPTask {
 
             Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n"); });
 
-            System.out.println("target " + target.getName() + " is going to sleep for " + runTime + " milliseconds");
+            System.out.println("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds");
             Thread.sleep(runTime);
 
 
