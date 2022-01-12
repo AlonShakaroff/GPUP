@@ -602,9 +602,7 @@ public class TaskController {
 
     private void refreshTaskData() {
         while(taskThread.isAlive()){
-            if(!isPaused.getValue()) {
             refreshTaskDataLists();
-            }
         }
         refreshTaskDataLists();
         Platform.runLater(()->{
