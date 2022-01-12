@@ -94,6 +94,7 @@ public class GraphController {
         initializeSerialSetComboBox();
     }
 
+
     public void initializeTargetTable() {
         name.setCellValueFactory(new PropertyValueFactory<TargetTableItem, String>("Name"));
         type.setCellValueFactory(new PropertyValueFactory<TargetTableItem, String>("Type"));
@@ -172,6 +173,7 @@ public class GraphController {
         serialSetComboBox.setTooltip
                 (new Tooltip("Choose a serial set to display all the targets that belong to it"));
     }
+
 
     //--------------------------------------------graphviz-----------------------------------------------------
 

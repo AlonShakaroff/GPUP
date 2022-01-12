@@ -2,6 +2,7 @@ package main;
 
 import connections.ConnectionsController;
 import graph.GraphController;
+import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,8 +18,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.HLineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.stage.*;
+import javafx.util.Duration;
 import runtask.TaskController;
 import target.TargetGraph;
 
@@ -27,8 +32,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.List;
 
 import static main.include.CommonResourcesPaths.*;
 
@@ -44,7 +49,8 @@ public class MainController {
     private Stage aboutStage = null;
     private Stage primaryStage;
     private static String lastVisitedDirectory = System.getProperty("user.home");
-
+    private RotateTransition rotate;
+    private ScaleTransition scale;
 
     private final FileChooser fileChooser = new FileChooser();
     private SimpleBooleanProperty isFileSelected;
@@ -71,6 +77,23 @@ public class MainController {
         URL url = getClass().getResource(ABOUT_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
         aboutComponent = fxmlLoader.load(url.openStream());
+        AnimationsOffButton.setDisable(true);
+
+        rotate = new RotateTransition(Duration.seconds(4), logoImageView);
+        rotate.setByAngle(360);
+        rotate.setCycleCount(Animation.INDEFINITE);
+        rotate.setInterpolator(Interpolator.LINEAR);
+        rotate.rateProperty().bind(rotationSlider.valueProperty());
+
+        scale = new ScaleTransition(Duration.seconds(4), newFileButton);
+        scale.setCycleCount(Animation.INDEFINITE);
+        scale.setByX(0.5);
+        scale.setByY(0.5);
+        scale.setAutoReverse(true);
+        scale.rateProperty().bind(sizeSlider.valueProperty());
+
+        SlideBox2.setVisible(false);
+        SlideBox1.setVisible(false);
     }
 
     private void refreshComponentsAndControllers() throws IOException {
@@ -153,6 +176,11 @@ public class MainController {
     @FXML
     private Color x4;
 
+    @FXML
+    private MenuItem AnimationsOnButton;
+
+    @FXML
+    private MenuItem AnimationsOffButton;
 
 
     @FXML
@@ -221,6 +249,19 @@ public class MainController {
         fileExplorerLoadXMLFile();
     }
 
+    @FXML
+    private VBox SlideBox1;
+
+    @FXML
+    private Slider rotationSlider;
+
+    @FXML
+    private VBox SlideBox2;
+
+    @FXML
+    private Slider sizeSlider;
+
+
     private void fileExplorerLoadXMLFile() {
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extensionFilter);
@@ -278,5 +319,28 @@ public class MainController {
     void classicSkinButtonClicked(ActionEvent event) {
         primaryStage.getScene().getStylesheets().remove(0,1);
         primaryStage.getScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
+    }
+
+    @FXML
+    void AnimationsOffButtonClicked(ActionEvent event) {
+        AnimationsOffButton.setDisable(true);
+        AnimationsOnButton.setDisable(false);
+        SlideBox2.setVisible(false);
+        SlideBox1.setVisible(false);
+        rotate.jumpTo(Duration.millis(0));
+        scale.jumpTo(Duration.millis(0));
+        rotate.stop();
+        scale.stop();
+
+    }
+
+    @FXML
+    void AnimationsOnButtonClicked(ActionEvent event) {
+        SlideBox2.setVisible(true);
+        SlideBox1.setVisible(true);
+        AnimationsOffButton.setDisable(false);
+        AnimationsOnButton.setDisable(true);
+        rotate.play();
+        scale.play();
     }
 }

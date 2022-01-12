@@ -39,6 +39,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
@@ -74,6 +75,12 @@
             <MenuItem fx:id="aboutGPUPButton" mnemonicParsing="false" onAction="#aboutGPUPButtonClicked" text="About G.P.U.P" />
           </items>
         </Menu>
+            <Menu mnemonicParsing="false" text="Animations">
+               <items>
+                  <MenuItem fx:id="AnimationsOnButton" mnemonicParsing="false" onAction="#AnimationsOnButtonClicked" text="Turn on" />
+                  <MenuItem fx:id="AnimationsOffButton" mnemonicParsing="false" onAction="#AnimationsOffButtonClicked" text="Turn off" />
+               </items>
+            </Menu>
       </menus>
     </MenuBar>
       <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
@@ -151,7 +158,23 @@
                       <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="30.0" />
                     </rowConstraints>
                      <children>
-                        <ImageView id="logo" fx:id="logoImageView" fitHeight="800.0" fitWidth="650.0" opacity="0.55" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
+                        <ImageView id="logo" fx:id="logoImageView" fitWidth="650.0" opacity="0.55" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
+                        <VBox fx:id="SlideBox1" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+                           <children>
+                              <Label alignment="CENTER" text="Logo rotation rate" underline="true" />
+                              <Slider fx:id="rotationSlider" max="10.0" min="1.0" value="5.5" />
+                           </children>
+                        </VBox>
+                        <VBox fx:id="SlideBox2" alignment="CENTER" layoutX="125.0" layoutY="472.0" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                           <children>
+                              <Label alignment="CENTER" text="Button scale rate" underline="true" />
+                              <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Slider fx:id="sizeSlider" max="10.0" maxHeight="1.7976931348623157E308" min="1.0" orientation="VERTICAL" value="5.5" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
                      </children>
                   </GridPane>
                </content>
