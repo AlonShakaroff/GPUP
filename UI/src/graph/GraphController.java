@@ -10,13 +10,17 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import target.Target;
 import target.TargetGraph;
 
+import javax.xml.ws.Holder;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GraphController {
 
@@ -26,6 +30,8 @@ public class GraphController {
     private final ObservableList<String> serialSetNameList = FXCollections.observableArrayList();
     private final ObservableList<String> serialSetInfoList = FXCollections.observableArrayList();
     private TargetGraph targetGraph;
+    private TreeItem<String> BigRootRoots;
+    private TreeItem<String> BigRootLeaves;
 
     @FXML
     private TableView<TargetTableItem> dependenciesTableView;
@@ -88,10 +94,55 @@ public class GraphController {
     private Pane ImagePane;
 
     @FXML
+    private TreeView<String> treeView;
+
+    @FXML
+    private RadioButton rootsRadioButton;
+
+    @FXML
+    private ToggleGroup View;
+
+    @FXML
+    private RadioButton LeavesRadioButton;
+
+    @FXML
+    private TextField nameTextField;
+
+    @FXML
+    private TextField TypeTextField;
+
+    @FXML
+    private TextField requierdTextField;
+
+    @FXML
+    private TextField dependsTextField;
+
+    @FXML
+    void selectItem(MouseEvent event) {
+        TreeItem<String> item = treeView.getSelectionModel().getSelectedItem();
+
+        if (item != null) {
+            try {
+                Target target = targetGraph.getAllTargets().get(item.getValue().split("  -  ")[0]);
+                nameTextField.setText(target.getName());
+                TypeTextField.setText(target.getNodeTypeAsString());
+                dependsTextField.setText(target.getAllDependsOnTargets().toString());
+                requierdTextField.setText(target.getAllRequiredForTargets().toString());
+            }
+            catch (Exception ignore){}
+        }
+    }
+
+    @FXML
     public void initialize() {
         initializeTargetTable();
         initializeTypeSummeryTable();
         initializeSerialSetComboBox();
+        rootsRadioButton.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (newValue.equals(true))
+                treeView.setRoot(BigRootRoots);
+            else
+                treeView.setRoot(BigRootLeaves);}));
     }
 
 
@@ -130,6 +181,10 @@ public class GraphController {
         setDependenciesTable();
         setTypeSummeryTable();
         setSerialSetComboBox();
+        treeViewRoots();
+        treeViewLeaves();
+        treeView.setShowRoot(false);
+        treeView.setRoot(BigRootRoots);
         graphImageView.fitWidthProperty().bind(ImagePane.widthProperty());
         graphImageView.fitHeightProperty().bind(ImagePane.heightProperty());
         setGraphImageView();
@@ -172,6 +227,59 @@ public class GraphController {
         }
         serialSetComboBox.setTooltip
                 (new Tooltip("Choose a serial set to display all the targets that belong to it"));
+    }
+
+    private void treeViewRoots(){
+        BigRootRoots = new TreeItem<>("root");
+        Set<Target> addedTargets = new HashSet<>();
+        targetGraph.getAllTargets().values().stream().filter(target -> (target.getNodeType().equals(Target.Type.ROOT)
+        || target.getNodeType().equals(Target.Type.INDEPENDENT))).forEach(target -> {
+            TreeItem<String> RootItem = new TreeItem<>(target.getName() + "  -  " + target.getNodeTypeAsString());
+            addedTargets.add(target);
+            addDependsTree(target, RootItem, addedTargets);
+            addedTargets.remove(target);
+            BigRootRoots.getChildren().add(RootItem);
+        });
+    }
+    private void addDependsTree(Target target, TreeItem<String> RootItem, Set<Target> addedTargets){
+        if (target.getDependsOnSet().isEmpty())
+            return;
+        target.getDependsOnSet().forEach(target1 -> {
+            if (!addedTargets.contains(target1)) {
+                TreeItem<String> MidItem = new TreeItem<>(target1.getName() + "  -  " + target1.getNodeTypeAsString());
+                addedTargets.add(target1);
+                addDependsTree(target1, MidItem, addedTargets);
+                addedTargets.remove(target1);
+                RootItem.getChildren().add(MidItem);
+            }
+        });
+    }
+
+    private void treeViewLeaves(){
+        BigRootLeaves = new TreeItem<>("root");
+        Set<Target> addedTargets = new HashSet<>();
+        targetGraph.getAllTargets().values().stream().filter(target -> (target.getNodeType().equals(Target.Type.LEAF)
+                || target.getNodeType().equals(Target.Type.INDEPENDENT))).forEach(target -> {
+            TreeItem<String> RootItem = new TreeItem<>(target.getName() + "  -  " + target.getNodeTypeAsString());
+            addedTargets.add(target);
+            addRequiredTree(target, RootItem,addedTargets);
+            addedTargets.remove(target);
+            BigRootLeaves.getChildren().add(RootItem);
+        });
+    }
+
+    private void addRequiredTree(Target target, TreeItem<String> RootItem, Set<Target> addedTargets){
+        if (target.getRequiredForSet().isEmpty())
+            return;
+        target.getRequiredForSet().forEach(target1 -> {
+            if (!addedTargets.contains(target1)) {
+                TreeItem<String> MidItem = new TreeItem<>(target1.getName() + "  -  " + target1.getNodeTypeAsString());
+                addedTargets.add(target1);
+                addRequiredTree(target1, MidItem, addedTargets);
+                addedTargets.remove(target1);
+                RootItem.getChildren().add(MidItem);
+            }
+        });
     }
 
 

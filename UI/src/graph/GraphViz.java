@@ -122,7 +122,6 @@ public class GraphViz {
         return false;
     }
 
-
     public void saveImage(String name) {
         File dotFile = new File(tempPath + "/" +name + ".dot");
         if (createDotFile(dotFile)) return;
@@ -133,7 +132,7 @@ public class GraphViz {
             processBuilder.directory(new File(tempPath));
             Process process = processBuilder.start();
             process.waitFor();
-            
+
         }catch (Exception exception) {
             System.out.println("could not generate png from graph - problem with GraphViz in cmd");
         }
