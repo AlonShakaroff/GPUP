@@ -17,7 +17,6 @@ public class GraphViz {
     private final String independentColor;
     private static final String fileNameDOT = "GeneratedGraph.dot";
     private static final String fileNamePNG = "GeneratedGraph.png";
-    private static final String createPNGFromDOT = "dot -Tpng "+ fileNameDOT + " -o " + fileNamePNG;
     private static final String nodeProperties = "node[style = filled fontsize=42 width=1.5 shape=circle fillcolor=white]\n";
     private static final String graphProperties = "graph[truecolor=true bgcolor = transparent nodesep = 1.3 ranksep = 1.3]\n";
     private static final String edgeProperties = "edge[color=black arrowsize=3.0 penwidth =3.0]\n";
@@ -98,9 +97,12 @@ public class GraphViz {
 
     private boolean createImageCMD() {
         try {
-            Process process = Runtime.getRuntime().exec(
-                    "cmd /c start /wait cmd.exe /K \"cd \\ && cd " + tempPath + " && " + createPNGFromDOT + "&& exit");
-                process.waitFor();
+
+            ProcessBuilder processBuilder = new ProcessBuilder("dot", "-Tpng", fileNameDOT, "-o", fileNamePNG);
+            processBuilder.directory(new File(tempPath));
+            Process process = processBuilder.start();
+            process.waitFor();
+
             }catch (Exception exception) {
                 System.out.println("could not generate png from graph - problem with GraphViz in cmd");
             return true;
@@ -126,10 +128,12 @@ public class GraphViz {
         if (createDotFile(dotFile)) return;
 
         try {
-            Process process = Runtime.getRuntime().exec(
-                    "cmd /c start /wait cmd.exe /K \"cd \\ && cd " + tempPath + " && dot -Tpng "
-                            + name+".dot" + " -o " + name+".png" + " && exit");
+
+            ProcessBuilder processBuilder = new ProcessBuilder("dot", "-Tpng", name+".dot", "-o", name+".png");
+            processBuilder.directory(new File(tempPath));
+            Process process = processBuilder.start();
             process.waitFor();
+            
         }catch (Exception exception) {
             System.out.println("could not generate png from graph - problem with GraphViz in cmd");
         }
