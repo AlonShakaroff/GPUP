@@ -32,9 +32,7 @@ public class CompilationTask extends GPUPTask {
                 }
                 taskManager.refreshChosenParallelism();
             }
-            catch(Exception e){
-                e.printStackTrace();
-            }
+            catch(Exception Ignore){}
         }
 
         String FQNToPath = "\\" + target.getExtraData().replace(".","\\");

@@ -402,7 +402,7 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </padding>
                               </Label>
-                              <ListView fx:id="FinishedListView" prefHeight="200.0" prefWidth="210.0" VBox.vgrow="ALWAYS" />
+                              <ListView fx:id="FinishedListView" prefHeight="200.0" prefWidth="235.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                      </children>
