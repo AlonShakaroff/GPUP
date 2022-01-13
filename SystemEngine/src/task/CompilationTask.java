@@ -44,7 +44,6 @@ public class CompilationTask extends GPUPTask {
             target.setStartTimeInCurState();
             target.setTargetTaskBegin(Instant.now());
 
-            System.out.println("Target " + target.getName() + " is starting compilation\n\n");
             Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " is starting compilation\n\n"); });
 
             ProcessBuilder processBuilder = new ProcessBuilder("javac", "-d", destinationPath, "-cp", destinationPath, javaFilePath);
@@ -55,8 +54,6 @@ public class CompilationTask extends GPUPTask {
 
             if (code == 0) {
                 target.setResult(Target.Result.SUCCESS);
-                System.out.println("Target " + target.getName() + " compiled successfully with compilation time of: " +
-                        TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(), Instant.now())) + "\n\n");
                 Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " compiled successfully with compilation time of: " +
                         TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(), Instant.now())) + "\n\n"); });
             } else {
@@ -66,7 +63,6 @@ public class CompilationTask extends GPUPTask {
                 for (String errorLine:bufferedReader.lines().collect(Collectors.toList())) {
                     errorMsg += errorLine + "\n";
                 }
-                System.out.println("Target " + target.getName() + " compilation failed\n\n");
                 String finalErrorMsg = errorMsg;
                 Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " compilation failed!\n" +
                         "error message:\n" + finalErrorMsg + "\n\n"); });
@@ -74,7 +70,6 @@ public class CompilationTask extends GPUPTask {
             }
             target.setStatus(Target.Status.FINISHED);
         }catch (Exception exception) {
-            System.out.println("Target " + target.getName() + " was interrupted! \n");
             Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " was interrupted!\n\n"); });
             target.setStatus(Target.Status.SKIPPED);
             target.setResult(Target.Result.SKIPPED);

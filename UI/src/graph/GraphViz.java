@@ -89,7 +89,6 @@ public class GraphViz {
             if (pngFile.exists())
                 pngFile.delete();
         } catch (Exception ex) {
-            System.out.println("could not generate png from graph");
             return null;
         }
         return img_stream;
@@ -104,7 +103,6 @@ public class GraphViz {
             process.waitFor();
 
             }catch (Exception exception) {
-                System.out.println("could not generate png from graph - problem with GraphViz in cmd");
             return true;
             }
         return false;
@@ -116,7 +114,6 @@ public class GraphViz {
                         new FileOutputStream(dotFile), "UTF-8"))) {
             out.write(dotText + "\r\n");
         } catch (Exception e) {
-            System.out.println("could not generate png from graph - problem with saving dot file");
             return true;
         }
         return false;
@@ -134,7 +131,6 @@ public class GraphViz {
             process.waitFor();
 
         }catch (Exception exception) {
-            System.out.println("could not generate png from graph - problem with GraphViz in cmd");
         }
     }
 }

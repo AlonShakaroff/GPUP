@@ -54,7 +54,7 @@ public class ExecutorThread extends Thread{
         this.SourceFolderPath = SourceFolderPath;
         this.DestFolderPath = DestFolderPath;
         this.numOfThreads = numOfThreads;
-        this.threadExecutor = new ThreadPoolExecutor(numOfThreads,targetGraph.getMaxParallelism(),1000,TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
+        this.threadExecutor = new ThreadPoolExecutor(numOfThreads,numOfThreads,1000,TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
         this.runLogTextArea = runLogTextArea;
         initTasksList(isIncremental);
     }
@@ -83,7 +83,6 @@ public class ExecutorThread extends Thread{
         while (!tasksList.isEmpty()) {
             if (isStopped) { // break if stopped
                 threadExecutor.shutdownNow();
-                System.out.println("Run stopped!");
                 Platform.runLater(()->{
                     runLogTextArea.appendText("Run stopped!\n"); });
                 return;
@@ -95,8 +94,6 @@ public class ExecutorThread extends Thread{
             } else {    // target is waiting (but maybe needs to be skipped)
                 curTask.getTarget().checkIfNeedsToBeSkipped();
                 if (curTask.getTarget().getRunStatus().equals(Target.Status.SKIPPED)) {
-                    System.out.println("Target " + curTask.getTarget().getName() +
-                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n");
                     Platform.runLater(()->{
                         runLogTextArea.appendText("Target " + curTask.getTarget().getName() +
                             " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n\n"); });
@@ -104,7 +101,6 @@ public class ExecutorThread extends Thread{
                     if (targetGraph.DoesHaveSerialMemberInProgress(curTask.target))
                         tasksList.addLast(curTask);
                     else {   // target is waiting to run!!!
-                        System.out.println("Adding task on target " + curTask.getTarget().getName() + " to thread pool.");
                         threadExecutor.submit(curTask);
                     }
                 }
@@ -116,7 +112,6 @@ public class ExecutorThread extends Thread{
         targetGraph.setTotalTaskDuration(Duration.between(targetGraph.getTaskStartTime(), targetGraph.getTaskEndTime()));
         Platform.runLater(()->{
             runLogTextArea.appendText("Total task runtime: " + TargetGraph.getDurationAsString(targetGraph.getTotalTaskDuration()) + "\n\n"); });
-        System.out.println("Total task runtime: " + TargetGraph.getDurationAsString(targetGraph.getTotalTaskDuration()) + "\n");
     }
 
     public void shutdown() {
@@ -126,7 +121,6 @@ public class ExecutorThread extends Thread{
         while(!threadExecutor.isTerminated()) {}
         Platform.runLater(()->{
             runLogTextArea.appendText("Run finished.\n\n"); });
-        System.out.println("Run finished.");
     }
 
     public Boolean getPaused() {
@@ -159,5 +153,6 @@ public class ExecutorThread extends Thread{
 
     public void refreshChosenParallelism() {
         threadExecutor.setCorePoolSize(targetGraph.getChosenParallelism());
+        threadExecutor.setMaximumPoolSize(targetGraph.getChosenParallelism());
     }
 }

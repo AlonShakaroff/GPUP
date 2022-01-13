@@ -551,7 +551,6 @@ public class TaskController {
 
     @FXML
     void parallelismTextInputEntered(InputMethodEvent event) {
-        System.out.println(event.getCommitted());
     }
 
 

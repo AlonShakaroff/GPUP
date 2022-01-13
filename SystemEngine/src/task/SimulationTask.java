@@ -57,7 +57,6 @@ public class SimulationTask extends GPUPTask {
 
             Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n"); });
 
-            System.out.println("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds");
             Thread.sleep(runTime);
 
             if (randSuccess > successChance) {
@@ -69,13 +68,11 @@ public class SimulationTask extends GPUPTask {
 
 
 
-            System.out.println("Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n");
             Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n\n"); });
 
             target.setStatus(Target.Status.FINISHED);
 
         } catch (InterruptedException exception) {
-            System.out.println("Target " + target.getName() + " was interrupted! \n");
             Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " was interrupted! \n\n"); });
             target.setStatus(Target.Status.SKIPPED);
             target.setResult(Target.Result.SKIPPED);
