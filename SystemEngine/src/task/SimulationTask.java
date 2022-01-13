@@ -37,9 +37,7 @@ public class SimulationTask extends GPUPTask {
                 }
                 taskManager.refreshChosenParallelism();
             }
-            catch(Exception e){
-                e.printStackTrace();
-            }
+            catch(Exception ignore){}
         }
         try {
             target.setStatus(Target.Status.IN_PROCESS);
