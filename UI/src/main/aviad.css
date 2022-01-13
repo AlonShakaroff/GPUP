@@ -20,6 +20,22 @@
  -fx-background-color: default-primary-color;
 }
 
+.tree-cell{
+ -fx-background-color: linear-gradient(dark-primary-color,default-primary-color);
+ -fx-text-fill: white;
+}
+.tree-cell:selected{
+ -fx-background-color: linear-gradient(divider-color,accent-color);
+ -fx-text-fill: black;
+}
+.tree-cell .tree-disclosure-node .arrow{
+ -fx-background-color: white;
+}
+
+.tree-cell:selected .tree-disclosure-node .arrow{
+ -fx-background-color: black;
+}
+
 .menuBar{
  -fx-background-color : dark-primary-color;
 }

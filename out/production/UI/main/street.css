@@ -27,6 +27,22 @@
  -fx-effect: innershadow(gaussian,white,5,0.2,1,1);
 }
 
+.tree-cell{
+ -fx-background-color: linear-gradient(dark-primary-color,default-primary-color);
+ -fx-text-fill: text-primary-color;
+}
+.tree-cell:selected{
+ -fx-background-color: linear-gradient(divider-color,accent-color);
+ -fx-text-fill: dark-primary-color;
+}
+.tree-cell .tree-disclosure-node .arrow{
+ -fx-background-color: text-primary-color;
+}
+
+.tree-cell:selected .tree-disclosure-node .arrow{
+ -fx-background-color: dark-primary-color;
+}
+
 .button{
  -fx-border-color : divider-color;
  -fx-background-color : dark-primary-color;
@@ -189,10 +205,7 @@
  -fx-background-color: rgba(0, 0, 0, 0.5);
 }
 
-
 /*table view*/
-
-
 
 .table-view{
  -fx-background-color: #424242;
