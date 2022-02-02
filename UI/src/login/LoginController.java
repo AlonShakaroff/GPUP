@@ -5,19 +5,29 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import main.MainController;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
+
+import static main.include.Constants.MAIN_FXML_RESOURCE;
 
 public class LoginController {
     private Stage primaryStage;
+    private MainController mainController;
 
     @FXML
     public TextField userNameTextField;
@@ -46,7 +56,7 @@ public class LoginController {
         String finalUrl = HttpUrl
                         .parse(Constants.LOGIN_PAGE)
                         .newBuilder()
-                        .addQueryParameter("username", userName)
+                        .addQueryParameter("userName", userName)
                         .build()
                         .toString();
 
@@ -65,11 +75,24 @@ public class LoginController {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
                     Platform.runLater(() ->
-                            errorMessageProperty.set("Something went wrong: " + responseBody)
+                            errorMessageProperty.set("Login failed: " + responseBody)
                     );
                 } else {
                     Platform.runLater(() -> {
+                        try{
+                            URL url = getClass().getResource(MAIN_FXML_RESOURCE);
+                            FXMLLoader fxmlLoader = new FXMLLoader();
+                            fxmlLoader.setLocation(url);
+                            VBox mainMenuComponent = null;
+                            mainMenuComponent = fxmlLoader.load(url.openStream());
+                            MainController mainController = fxmlLoader.getController();
 
+                            Scene scene = new Scene(mainMenuComponent,1280, 800);
+                            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
+                            primaryStage.setScene(scene);
+
+                            mainController.initialize(primaryStage); }
+                        catch(Exception ignore) {}
                     });
                 }
             }
@@ -84,5 +107,9 @@ public class LoginController {
     @FXML
     private void quitButtonClicked(ActionEvent e) {
         Platform.exit();
+    }
+
+    public void setMainController(MainController mainController){
+        this.mainController = mainController;
     }
 }

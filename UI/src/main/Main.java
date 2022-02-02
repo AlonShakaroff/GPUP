@@ -35,22 +35,11 @@ public class Main extends Application {
         GridPane loginComponent = fxmlLoader.load(url.openStream());
         LoginController loginController = fxmlLoader.getController();
 
-        Scene scene = new Scene(loginComponent,400, 400);
+        Scene scene = new Scene(loginComponent,500, 500);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
         primaryStage.setScene(scene);
 
         loginController.initialize(primaryStage);
-
-//        URL url = getClass().getResource(MAIN_FXML_RESOURCE);
-//        fxmlLoader.setLocation(url);
-//        VBox mainMenuComponent = fxmlLoader.load(url.openStream());
-//        MainController mainController = fxmlLoader.getController();
-//
-//        Scene scene = new Scene(mainMenuComponent,1280, 800);
-//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
-//        primaryStage.setScene(scene);
-//
-//        mainController.initialize(primaryStage);
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override

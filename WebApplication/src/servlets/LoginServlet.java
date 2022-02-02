@@ -16,12 +16,14 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String userName = req.getParameter("userName");
         resp.setContentType("text/plain");
-        if(userName.contains(userName)){
+        if(userNames.contains(userName)){
             resp.getWriter().println("The chosen user name is taken");
+            resp.setStatus(400);
         }
         else {
             userNames.add(userName);
             resp.getWriter().println("Logged in successfully");
+            resp.setStatus(200);
         }
     }
 }
