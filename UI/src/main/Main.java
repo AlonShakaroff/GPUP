@@ -1,30 +1,22 @@
 package main;
 
-import connections.ConnectionsController;
-import graph.GraphController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import runtask.TaskController;
 
 import java.awt.*;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
-import static main.include.CommonResourcesPaths.MAIN_FXML_RESOURCE;
-import static main.include.CommonResourcesPaths.CONNECTIONS_FXML_RESOURCE;
-import static main.include.CommonResourcesPaths.GRAPH_FXML_RESOURCE;
-import static main.include.CommonResourcesPaths.RUNTASK_FXML_RESOURCE;
+import static main.include.Constants.MAIN_FXML_RESOURCE;
 
 public class Main extends Application {
 
