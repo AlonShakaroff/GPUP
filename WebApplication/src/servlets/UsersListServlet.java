@@ -1,8 +1,6 @@
-package chat.servlets;
+package servlets;
 
-import chat.utils.ServletUtils;
 import com.google.gson.Gson;
-import engine.users.UserManager;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,6 +9,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.UserManager;
+import utils.ServletUtils;
 
 public class UsersListServlet extends HttpServlet {
 
