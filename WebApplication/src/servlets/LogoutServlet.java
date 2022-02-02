@@ -12,12 +12,7 @@ import utils.SessionUtils;
 
 @WebServlet(name = "LogoutServlet", urlPatterns = {"/chat/logout"})
 public class LogoutServlet extends HttpServlet {
-
-<<<<<<< Updated upstream
-
-=======
-//
->>>>>>> Stashed changes
+    
 //    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 //        String usernameFromSession = SessionUtils.getUsername(request);
 //        UserManager userManager = ServletUtils.getUserManager(getServletContext());
