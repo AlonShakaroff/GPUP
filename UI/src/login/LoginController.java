@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ import util.http.HttpClientUtil;
 import java.io.IOException;
 
 public class LoginController {
+    private Stage primaryStage;
 
     @FXML
     public TextField userNameTextField;
@@ -26,7 +28,8 @@ public class LoginController {
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
     @FXML
-    public void initialize() {
+    public void initialize(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         errorMessageLabel.textProperty().bind(errorMessageProperty);
     }
 

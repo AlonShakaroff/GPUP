@@ -10,12 +10,14 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import login.LoginController;
 
 import java.awt.*;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
+import static main.include.Constants.LOGIN_FXML_RESOURCE;
 import static main.include.Constants.MAIN_FXML_RESOURCE;
 
 public class Main extends Application {
@@ -28,16 +30,27 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.getIcons().add(new Image("/resources/images/icon.png"));
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource(MAIN_FXML_RESOURCE);
+        URL url = getClass().getResource(LOGIN_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
-        VBox mainMenuComponent = fxmlLoader.load(url.openStream());
-        MainController mainController = fxmlLoader.getController();
+        GridPane loginComponent = fxmlLoader.load(url.openStream());
+        LoginController loginController = fxmlLoader.getController();
 
-        Scene scene = new Scene(mainMenuComponent,1280, 800);
+        Scene scene = new Scene(loginComponent,400, 400);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
         primaryStage.setScene(scene);
 
-        mainController.initialize(primaryStage);
+        loginController.initialize(primaryStage);
+
+//        URL url = getClass().getResource(MAIN_FXML_RESOURCE);
+//        fxmlLoader.setLocation(url);
+//        VBox mainMenuComponent = fxmlLoader.load(url.openStream());
+//        MainController mainController = fxmlLoader.getController();
+//
+//        Scene scene = new Scene(mainMenuComponent,1280, 800);
+//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
+//        primaryStage.setScene(scene);
+//
+//        mainController.initialize(primaryStage);
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override

@@ -6,6 +6,7 @@ public class Constants {
     public final static String GRAPH_FXML_RESOURCE = "/graph/Graph.fxml";
     public final static String RUNTASK_FXML_RESOURCE = "/runtask/RunTask.fxml";
     public final static String ABOUT_FXML_RESOURCE = "/aboutgpup/AboutGpup.fxml";
+    public final static String LOGIN_FXML_RESOURCE = "/login/login.fxml";
 
     public final static String BASE_DOMAIN = "localhost";
     private final static String BASE_URL = "http://" + BASE_DOMAIN + ":8080";
