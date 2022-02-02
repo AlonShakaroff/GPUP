@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
+import static main.include.Constants.CLASSIC_SKIN_CSS;
 import static main.include.Constants.MAIN_FXML_RESOURCE;
 
 public class LoginController {
@@ -88,7 +89,7 @@ public class LoginController {
                             MainController mainController = fxmlLoader.getController();
 
                             Scene scene = new Scene(mainMenuComponent,1280, 800);
-                            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
+                            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(CLASSIC_SKIN_CSS)).toExternalForm());
                             primaryStage.setScene(scene);
 
                             mainController.initialize(primaryStage); }
