@@ -1,6 +1,7 @@
 package main;
 
 import connections.ConnectionsController;
+import dashboard.dashboardController;
 import graph.GraphController;
 import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -41,7 +42,10 @@ public class MainController {
     @FXML private GraphController graphController;
     @FXML private SplitPane runTaskComponent;
     @FXML private TaskController taskController;
+    @FXML private SplitPane dashboardComponent;
+    @FXML private dashboardController dashboardController;
     @FXML private VBox aboutComponent;
+
     private Stage aboutStage = null;
     private Stage primaryStage;
     private static String lastVisitedDirectory = System.getProperty("user.home");
@@ -112,6 +116,12 @@ public class MainController {
         fxmlLoader.setLocation(url);
         runTaskComponent = fxmlLoader.load(url.openStream());
         taskController = fxmlLoader.getController();
+
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource(DASHBOARD_FXML_RESOURCE);
+        fxmlLoader.setLocation(url);
+        dashboardComponent = fxmlLoader.load(url.openStream());
+        dashboardController = fxmlLoader.getController();
     }
 
     @FXML
@@ -146,6 +156,9 @@ public class MainController {
 
     @FXML
     private Button newFileButton;
+
+    @FXML
+    private ToggleButton dashboardButton;
 
     @FXML
     private Button closeFileButton;
@@ -219,6 +232,14 @@ public class MainController {
     void connectionsButtonClicked(ActionEvent event) {
         if (connectionsButton.isSelected())
             mainChangingScene.setContent(connectionsComponent);
+        else
+            mainChangingScene.setContent(logoGridPane);
+    }
+
+    @FXML
+    void dashboardButtonClicked(ActionEvent event) {
+        if (dashboardButton.isSelected())
+            mainChangingScene.setContent(dashboardComponent);
         else
             mainChangingScene.setContent(logoGridPane);
     }

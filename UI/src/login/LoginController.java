@@ -79,8 +79,7 @@ public class LoginController {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
                     Platform.runLater(() ->
-                            errorMessageProperty.set("Login failed: " + responseBody)
-                    );
+                            errorMessageProperty.set("Login failed: " + responseBody));
                 } else {
                     Platform.runLater(() -> {
                         try{

@@ -113,16 +113,21 @@
                               <Font size="13.0" />
                            </font>
                         </Button>
-                        <ToggleButton fx:id="graphButton" disable="true" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#graphButtonClicked" text="Graph" VBox.vgrow="ALWAYS">
+                        <ToggleButton fx:id="dashboardButton" focusTraversable="false" layoutX="15.0" layoutY="154.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#dashboardButtonClicked" text="Dashboard" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <toggleGroup>
+                              <ToggleGroup fx:id="mainoptions" />
+                           </toggleGroup>
+                        </ToggleButton>
+                        <ToggleButton fx:id="graphButton" disable="true" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#graphButtonClicked" text="Graph" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                            <VBox.margin>
-                              <Insets top="5.0" />
+                              <Insets />
                            </VBox.margin>
-                           <toggleGroup>
-                              <ToggleGroup fx:id="mainoptions" />
-                           </toggleGroup>
                         </ToggleButton>
                         <ToggleButton fx:id="connectionsButton" disable="true" focusTraversable="false" layoutX="15.0" layoutY="167.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#connectionsButtonClicked" text="Connections" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
                            <font>

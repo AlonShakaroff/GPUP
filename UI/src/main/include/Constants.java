@@ -4,6 +4,7 @@ public class Constants {
     public final static String MAIN_FXML_RESOURCE = "/main/MainMenu.fxml";
     public final static String CONNECTIONS_FXML_RESOURCE = "/connections/Connections.fxml";
     public final static String GRAPH_FXML_RESOURCE = "/graph/Graph.fxml";
+    public final static String DASHBOARD_FXML_RESOURCE = "/dashboard/dashboard.fxml";
     public final static String RUNTASK_FXML_RESOURCE = "/runtask/RunTask.fxml";
     public final static String ABOUT_FXML_RESOURCE = "/aboutgpup/AboutGpup.fxml";
     public final static String LOGIN_FXML_RESOURCE = "/login/login.fxml";

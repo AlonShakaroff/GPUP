@@ -13,6 +13,7 @@ import javafx.stage.WindowEvent;
 import login.LoginController;
 
 import java.awt.*;
+import java.awt.ScrollPane;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,10 +33,10 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(LOGIN_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
-        GridPane loginComponent = fxmlLoader.load(url.openStream());
+        VBox loginComponent = fxmlLoader.load(url.openStream());
         LoginController loginController = fxmlLoader.getController();
 
-        Scene scene = new Scene(loginComponent,500, 500);
+        Scene scene = new Scene(loginComponent,400, 200);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
         primaryStage.setScene(scene);
 
