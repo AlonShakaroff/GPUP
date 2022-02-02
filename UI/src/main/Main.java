@@ -51,8 +51,9 @@ public class Main extends Application {
                 alert.initOwner(primaryStage);
                 Toolkit.getDefaultToolkit().beep();
                 Optional<ButtonType> result = alert.showAndWait();
-                if(result.get() == ButtonType.OK)
+                if(result.get() == ButtonType.OK) {
                     Platform.exit();
+                }
                 event.consume();
             }
         });

@@ -21,7 +21,9 @@ import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static main.include.Constants.CLASSIC_SKIN_CSS;
 import static main.include.Constants.MAIN_FXML_RESOURCE;
@@ -29,6 +31,7 @@ import static main.include.Constants.MAIN_FXML_RESOURCE;
 public class LoginController {
     private Stage primaryStage;
     private MainController mainController;
+    private String currentUser;
 
     @FXML
     public TextField userNameTextField;
@@ -81,6 +84,7 @@ public class LoginController {
                 } else {
                     Platform.runLater(() -> {
                         try{
+                            currentUser = userName;
                             URL url = getClass().getResource(MAIN_FXML_RESOURCE);
                             FXMLLoader fxmlLoader = new FXMLLoader();
                             fxmlLoader.setLocation(url);
@@ -112,5 +116,8 @@ public class LoginController {
 
     public void setMainController(MainController mainController){
         this.mainController = mainController;
+    }
+
+    public void deleteCurrentUser() {
     }
 }
