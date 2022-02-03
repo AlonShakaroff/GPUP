@@ -1,30 +1,25 @@
 package main;
 
-import connections.ConnectionsController;
-import graph.GraphController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import runtask.TaskController;
+import login.LoginController;
 
 import java.awt.*;
-import java.io.IOException;
+import java.awt.ScrollPane;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
-import static main.include.CommonResourcesPaths.MAIN_FXML_RESOURCE;
-import static main.include.CommonResourcesPaths.CONNECTIONS_FXML_RESOURCE;
-import static main.include.CommonResourcesPaths.GRAPH_FXML_RESOURCE;
-import static main.include.CommonResourcesPaths.RUNTASK_FXML_RESOURCE;
+import static main.include.Constants.LOGIN_FXML_RESOURCE;
+import static main.include.Constants.MAIN_FXML_RESOURCE;
 
 public class Main extends Application {
 
@@ -36,16 +31,16 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.getIcons().add(new Image("/resources/images/icon.png"));
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource(MAIN_FXML_RESOURCE);
+        URL url = getClass().getResource(LOGIN_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
-        VBox mainMenuComponent = fxmlLoader.load(url.openStream());
-        MainController mainController = fxmlLoader.getController();
+        VBox loginComponent = fxmlLoader.load(url.openStream());
+        LoginController loginController = fxmlLoader.getController();
 
-        Scene scene = new Scene(mainMenuComponent,1280, 800);
+        Scene scene = new Scene(loginComponent,400, 230);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
         primaryStage.setScene(scene);
 
-        mainController.initialize(primaryStage);
+        loginController.initialize(primaryStage);
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -57,8 +52,9 @@ public class Main extends Application {
                 alert.initOwner(primaryStage);
                 Toolkit.getDefaultToolkit().beep();
                 Optional<ButtonType> result = alert.showAndWait();
-                if(result.get() == ButtonType.OK)
+                if(result.get() == ButtonType.OK) {
                     Platform.exit();
+                }
                 event.consume();
             }
         });

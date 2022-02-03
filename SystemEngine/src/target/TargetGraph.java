@@ -30,12 +30,15 @@ public class TargetGraph implements Serializable {
     private int maxParallelism;
     public String currentTaskLog;
     private Integer chosenParallelism;
+    private String uploaderName;
 
     public String getCurrentTaskLog() { return currentTaskLog; }
 
     public Map<String, Set<String>> getSerialSets() {
         return SerialSets;
     }
+
+    public void setSerialSets(Map<String,Set<String>> serialSets) { this.SerialSets = serialSets; }
 
     public int getMaxParallelism() {
         return maxParallelism;
@@ -53,6 +56,18 @@ public class TargetGraph implements Serializable {
 
     public void setChosenParallelism(Integer chosenParallelism) {
         this.chosenParallelism = chosenParallelism;
+    }
+
+    public String getGraphName() {
+        return graphName;
+    }
+
+    public String getUploaderName() {
+        return uploaderName;
+    }
+
+    public void setUploaderName(String uploaderName) {
+        this.uploaderName = uploaderName;
     }
 
     static public enum pathDirection {DEPENDS_ON, REQUIRED_FOR}
@@ -255,6 +270,8 @@ public class TargetGraph implements Serializable {
         curTarget.setVisited(false);
         return circleFound;
     }
+
+
 
     public static TargetGraph createTargetGraphFromXml(File file) throws Exception {
 

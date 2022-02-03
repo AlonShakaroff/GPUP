@@ -1,6 +1,7 @@
 package main;
 
 import connections.ConnectionsController;
+import dashboard.dashboardController;
 import graph.GraphController;
 import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -8,34 +9,31 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.HLineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 import javafx.util.Duration;
+import login.LoginController;
 import runtask.TaskController;
 import target.TargetGraph;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
 
-import static main.include.CommonResourcesPaths.*;
+import static main.include.Constants.*;
 
 public class MainController {
 
@@ -45,7 +43,10 @@ public class MainController {
     @FXML private GraphController graphController;
     @FXML private SplitPane runTaskComponent;
     @FXML private TaskController taskController;
+    @FXML private SplitPane dashboardComponent;
+    @FXML private dashboardController dashboardController;
     @FXML private VBox aboutComponent;
+
     private Stage aboutStage = null;
     private Stage primaryStage;
     private static String lastVisitedDirectory = System.getProperty("user.home");
@@ -54,7 +55,10 @@ public class MainController {
 
     private final FileChooser fileChooser = new FileChooser();
     private SimpleBooleanProperty isFileSelected;
-
+    private GridPane loginComponent;
+    private LoginController logicController;
+    private AnchorPane mainPanel;
+    private String userName;
 
     public MainController()
     {
@@ -63,15 +67,15 @@ public class MainController {
 
     @FXML
     public void initialize(Stage primaryStage) throws IOException {
-
         this.primaryStage = primaryStage;
-        menuBarCloseFileButton.disableProperty().bind(isFileSelected.not());
-        closeFileButton.disableProperty().bind(isFileSelected.not());
         graphButton.disableProperty().bind(isFileSelected.not());
         connectionsButton.disableProperty().bind(isFileSelected.not());
         runTaskButton.disableProperty().bind(isFileSelected.not());
 
         refreshComponentsAndControllers();
+
+        dashboardController.setPrimaryStage(primaryStage);
+        dashboardController.setUserName(userName);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(ABOUT_FXML_RESOURCE);
@@ -85,7 +89,7 @@ public class MainController {
         rotate.setInterpolator(Interpolator.LINEAR);
         rotate.rateProperty().bind(rotationSlider.valueProperty());
 
-        scale = new ScaleTransition(Duration.seconds(4), newFileButton);
+        scale = new ScaleTransition(Duration.seconds(4), dashboardButton);
         scale.setCycleCount(Animation.INDEFINITE);
         scale.setByX(0.5);
         scale.setByY(0.5);
@@ -114,16 +118,25 @@ public class MainController {
         fxmlLoader.setLocation(url);
         runTaskComponent = fxmlLoader.load(url.openStream());
         taskController = fxmlLoader.getController();
+
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource(DASHBOARD_FXML_RESOURCE);
+        fxmlLoader.setLocation(url);
+        dashboardComponent = fxmlLoader.load(url.openStream());
+        dashboardController = fxmlLoader.getController();
     }
+
+    @FXML
+    private TextField SelectedGraphTextField;
+
+    @FXML
+    private TextField SelectedTaskTextField;
 
     @FXML
     private GridPane logoGridPane;
 
     @FXML
     private MenuItem menuBarOpenButton;
-
-    @FXML
-    private MenuItem menuBarCloseFileButton;
 
     @FXML
     private MenuItem classicSkinButton;
@@ -147,10 +160,8 @@ public class MainController {
     private Color x2;
 
     @FXML
-    private Button newFileButton;
+    private ToggleButton dashboardButton;
 
-    @FXML
-    private Button closeFileButton;
 
     @FXML
     private ToggleButton graphButton;
@@ -203,12 +214,6 @@ public class MainController {
     }
 
 
-    @FXML
-    void closeFileButtonClicked(ActionEvent event) {
-        //delete file//
-        closeFile();
-    }
-
     private void closeFile() {
         mainChangingScene.setContent(logoGridPane);
         graphButton.setSelected(false);
@@ -226,6 +231,14 @@ public class MainController {
     }
 
     @FXML
+    void dashboardButtonClicked(ActionEvent event) {
+        if (dashboardButton.isSelected())
+            mainChangingScene.setContent(dashboardComponent);
+        else
+            mainChangingScene.setContent(logoGridPane);
+    }
+
+    @FXML
     void graphButtonClicked(ActionEvent event)  {
         if (graphButton.isSelected())
             mainChangingScene.setContent(graphComponent);
@@ -234,18 +247,7 @@ public class MainController {
     }
 
     @FXML
-    void menuBarCloseFileButtonClicked(ActionEvent event) {
-        closeFile();
-    }
-
-    @FXML
     void menuBarOpenButtonClicked(ActionEvent event) {
-        fileExplorerLoadXMLFile();
-    }
-
-    @FXML
-    void newFileButtonClicked(ActionEvent event) {
-        //load file//
         fileExplorerLoadXMLFile();
     }
 
@@ -342,5 +344,13 @@ public class MainController {
         AnimationsOnButton.setDisable(true);
         rotate.play();
         scale.play();
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

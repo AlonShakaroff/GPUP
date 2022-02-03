@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/GPUP.iml" filepath="$PROJECT_DIR$/.idea/GPUP.iml" />
       <module fileurl="file://$PROJECT_DIR$/SystemEngine/SystemEngine.iml" filepath="$PROJECT_DIR$/SystemEngine/SystemEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/UI/UI.iml" filepath="$PROJECT_DIR$/UI/UI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebApplication/WebApplication.iml" filepath="$PROJECT_DIR$/WebApplication/WebApplication.iml" />
     </modules>
   </component>
 </project>

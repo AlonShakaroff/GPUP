@@ -33,13 +33,13 @@
 -->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
@@ -59,7 +59,6 @@
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem fx:id="menuBarOpenButton" mnemonicParsing="false" onAction="#menuBarOpenButtonClicked" text="Open" />
-                  <MenuItem fx:id="menuBarCloseFileButton" disable="true" mnemonicParsing="false" onAction="#menuBarCloseFileButtonClicked" text="Close File" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Skins">
@@ -100,31 +99,37 @@
                       <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
                     </textFill>
                            <VBox.margin>
-                              <Insets bottom="20.0" top="10.0" />
+                              <Insets top="10.0" />
                            </VBox.margin>
                   </Label>
-                        <Button fx:id="newFileButton" focusTraversable="false" maxWidth="1.7976931348623157E308" minWidth="55.0" mnemonicParsing="false" onAction="#newFileButtonClicked" prefHeight="31.0" styleClass="fileButton" text="new">
-                           <font>
-                              <Font name="Corbel" size="13.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="closeFileButton" disable="true" focusTraversable="false" maxWidth="1.7976931348623157E308" minWidth="55.0" mnemonicParsing="false" onAction="#closeFileButtonClicked" prefHeight="31.0" styleClass="fileButton" text="close">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Button>
-                        <ToggleButton fx:id="graphButton" disable="true" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#graphButtonClicked" text="Graph" VBox.vgrow="ALWAYS">
+                        <VBox>
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <Label text="selected graph: " />
+                                    <TextField fx:id="SelectedGraphTextField" editable="false" minHeight="25.0" prefHeight="25.0" promptText="Graph name" VBox.vgrow="NEVER" />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label text="selected task: " />
+                                    <TextField fx:id="SelectedTaskTextField" editable="false" minHeight="25.0" prefHeight="25.0" promptText="Task name" VBox.vgrow="NEVER" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <ToggleButton fx:id="dashboardButton" focusTraversable="false" layoutX="15.0" layoutY="154.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#dashboardButtonClicked" text="Dashboard" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
-                           <VBox.margin>
-                              <Insets top="5.0" />
-                           </VBox.margin>
                            <toggleGroup>
                               <ToggleGroup fx:id="mainoptions" />
                            </toggleGroup>
                         </ToggleButton>
-                        <ToggleButton fx:id="connectionsButton" disable="true" focusTraversable="false" layoutX="15.0" layoutY="167.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#connectionsButtonClicked" text="Connections" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
+                        <ToggleButton fx:id="graphButton" disable="true" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#graphButtonClicked" text="Graph&#10;information" textAlignment="CENTER" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -132,7 +137,15 @@
                               <Insets />
                            </VBox.margin>
                         </ToggleButton>
-                        <ToggleButton fx:id="runTaskButton" disable="true" focusTraversable="false" layoutX="15.0" layoutY="136.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#runTaskButtonClicked" text="Run task" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
+                        <ToggleButton fx:id="connectionsButton" disable="true" focusTraversable="false" layoutX="15.0" layoutY="167.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#connectionsButtonClicked" text="Actions on&#10;graph" textAlignment="CENTER" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </ToggleButton>
+                        <ToggleButton fx:id="runTaskButton" disable="true" focusTraversable="false" layoutX="15.0" layoutY="136.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#runTaskButtonClicked" text="Task&#10;control" textAlignment="CENTER" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
