@@ -1,5 +1,6 @@
 package dashboard;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -25,9 +26,6 @@ public class dashboardController {
     private Button LoadGraphButton;
 
     @FXML
-    private Button deleteGraphButton;
-
-    @FXML
     private TitledPane OnlineAdminsTiltedPane;
 
     @FXML
@@ -37,13 +35,16 @@ public class dashboardController {
     private TitledPane OnlineWorkersTiltedPane;
 
     @FXML
-    private ListView<?> onlinwWorkersListView;
+    private ListView<?> onlineWorkersListView;
 
     @FXML
     private TitledPane OnlineTasksTiltedPane;
 
     @FXML
     private ListView<?> myTasksListView;
+
+    @FXML
+    private Button loadSelectedTaskButton;
 
     @FXML
     private ListView<?> AllTasksListView;
@@ -64,28 +65,25 @@ public class dashboardController {
     private TableView<?> GraphTargetsTableView;
 
     @FXML
-    private TableColumn<?, ?> GraphtargetsAmount;
+    private TableColumn<?, ?> GraphTargetsAmount;
 
     @FXML
-    private TableColumn<?, ?> GtaphIndependentAmount;
+    private TableColumn<?, ?> GraphIndependentAmount;
 
     @FXML
-    private TableColumn<?, ?> GtaphLeafAmount;
+    private TableColumn<?, ?> GraphLeafAmount;
 
     @FXML
-    private TableColumn<?, ?> GtaphMiddleAmount;
+    private TableColumn<?, ?> GraphMiddleAmount;
 
     @FXML
-    private TableColumn<?, ?> GtaphRootAmount;
+    private TableColumn<?, ?> GraphRootAmount;
 
     @FXML
-    private TableView<?> GraphTaskPaymentTableView;
+    private TextField GraphNameTextField1;
 
     @FXML
-    private TableColumn<?, ?> GraphTaskType;
-
-    @FXML
-    private TableColumn<?, ?> GraphWorkPayment;
+    private TextField GraphNameTextField11;
 
     @FXML
     private Font x1;
@@ -131,5 +129,20 @@ public class dashboardController {
 
     @FXML
     private TableColumn<?, ?> TaskWorkPayment;
+
+    @FXML
+    void AddNewGraphButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void LoadGraphButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void loadSelectedTaskButtonClicked(ActionEvent event) {
+
+    }
 
 }

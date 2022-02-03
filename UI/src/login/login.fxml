@@ -9,7 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.text.Font?>
 
 <VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.LoginController">
    <children>
@@ -17,14 +17,23 @@
          <content>
             <VBox alignment="TOP_CENTER" spacing="5.0">
                <children>
-                  <ImageView fx:id="miniLogoImageView" fitHeight="102.0" fitWidth="185.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../resources/images/miniAboutLogo.png" />
-                     </image>
-                  </ImageView>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <ImageView fx:id="miniLogoImageView" fitHeight="102.0" fitWidth="185.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../resources/images/miniAboutLogo.png" />
+                           </image>
+                        </ImageView>
+                        <Label styleClass="headLines" text="Admin login">
+                           <font>
+                              <Font size="22.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Label maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="User Nane:" />
+                        <Label maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="User name:" />
                         <TextField fx:id="userNameTextField" onKeyTyped="#userNameKeyTyped" HBox.hgrow="ALWAYS" />
                      </children>
                      <VBox.margin>

@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -58,7 +59,6 @@ public class MainController {
     private LoginController logicController;
     private AnchorPane mainPanel;
 
-
     public MainController()
     {
         isFileSelected = new SimpleBooleanProperty(false);
@@ -67,8 +67,6 @@ public class MainController {
     @FXML
     public void initialize(Stage primaryStage) throws IOException {
         this.primaryStage = primaryStage;
-        menuBarCloseFileButton.disableProperty().bind(isFileSelected.not());
-        closeFileButton.disableProperty().bind(isFileSelected.not());
         graphButton.disableProperty().bind(isFileSelected.not());
         connectionsButton.disableProperty().bind(isFileSelected.not());
         runTaskButton.disableProperty().bind(isFileSelected.not());
@@ -87,7 +85,7 @@ public class MainController {
         rotate.setInterpolator(Interpolator.LINEAR);
         rotate.rateProperty().bind(rotationSlider.valueProperty());
 
-        scale = new ScaleTransition(Duration.seconds(4), newFileButton);
+        scale = new ScaleTransition(Duration.seconds(4), dashboardButton);
         scale.setCycleCount(Animation.INDEFINITE);
         scale.setByX(0.5);
         scale.setByY(0.5);
@@ -125,13 +123,16 @@ public class MainController {
     }
 
     @FXML
+    private TextField SelectedGraphTextField;
+
+    @FXML
+    private TextField SelectedTaskTextField;
+
+    @FXML
     private GridPane logoGridPane;
 
     @FXML
     private MenuItem menuBarOpenButton;
-
-    @FXML
-    private MenuItem menuBarCloseFileButton;
 
     @FXML
     private MenuItem classicSkinButton;
@@ -155,13 +156,8 @@ public class MainController {
     private Color x2;
 
     @FXML
-    private Button newFileButton;
-
-    @FXML
     private ToggleButton dashboardButton;
 
-    @FXML
-    private Button closeFileButton;
 
     @FXML
     private ToggleButton graphButton;
@@ -214,12 +210,6 @@ public class MainController {
     }
 
 
-    @FXML
-    void closeFileButtonClicked(ActionEvent event) {
-        //delete file//
-        closeFile();
-    }
-
     private void closeFile() {
         mainChangingScene.setContent(logoGridPane);
         graphButton.setSelected(false);
@@ -253,18 +243,7 @@ public class MainController {
     }
 
     @FXML
-    void menuBarCloseFileButtonClicked(ActionEvent event) {
-        closeFile();
-    }
-
-    @FXML
     void menuBarOpenButtonClicked(ActionEvent event) {
-        fileExplorerLoadXMLFile();
-    }
-
-    @FXML
-    void newFileButtonClicked(ActionEvent event) {
-        //load file//
         fileExplorerLoadXMLFile();
     }
 

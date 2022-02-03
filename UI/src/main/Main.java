@@ -36,7 +36,7 @@ public class Main extends Application {
         VBox loginComponent = fxmlLoader.load(url.openStream());
         LoginController loginController = fxmlLoader.getController();
 
-        Scene scene = new Scene(loginComponent,400, 200);
+        Scene scene = new Scene(loginComponent,400, 230);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("classic.css")).toExternalForm());
         primaryStage.setScene(scene);
 

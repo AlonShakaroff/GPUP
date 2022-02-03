@@ -93,7 +93,11 @@ public class LoginController {
 
                             Scene scene = new Scene(mainMenuComponent,1280, 800);
                             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(CLASSIC_SKIN_CSS)).toExternalForm());
+
+                            primaryStage.hide();
                             primaryStage.setScene(scene);
+                            primaryStage.centerOnScreen();
+                            primaryStage.show();
 
                             mainController.initialize(primaryStage); }
                         catch(Exception ignore) {}
