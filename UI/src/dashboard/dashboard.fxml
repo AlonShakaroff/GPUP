@@ -31,8 +31,8 @@
                                     <ListView fx:id="OnlineGraphsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                                     <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="75.0" prefWidth="200.0" spacing="5.0" VBox.vgrow="SOMETIMES">
                                        <children>
-                                          <Button fx:id="AddNewGraphButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="70.0" mnemonicParsing="false" prefWidth="75.0" text="Add new&#10; graph" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-                                          <Button fx:id="LoadGraphButton" layoutX="122.0" layoutY="20.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="70.0" mnemonicParsing="false" prefWidth="75.0" text="Load&#10;selected&#10;graph" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+                                          <Button fx:id="AddNewGraphButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="70.0" mnemonicParsing="false" onAction="#AddNewGraphButtonClicked" prefWidth="75.0" text="Add new&#10; graph" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+                                          <Button fx:id="LoadGraphButton" layoutX="122.0" layoutY="20.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="70.0" mnemonicParsing="false" onAction="#LoadGraphButtonClicked" prefWidth="75.0" text="Load&#10;selected&#10;graph" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -74,7 +74,7 @@
                                        <children>
                                           <Label text="My tasks:" />
                                           <ListView fx:id="myTasksListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                          <Button fx:id="loadSelectedTaskButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="30.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="Load selected Task" textAlignment="CENTER" />
+                                          <Button fx:id="loadSelectedTaskButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="30.0" mnemonicParsing="false" onAction="#loadSelectedTaskButtonClicked" prefHeight="50.0" prefWidth="50.0" text="Load selected Task" textAlignment="CENTER" />
                                        </children>
                                     </VBox>
                                     <VBox layoutX="15.0" layoutY="15.0">

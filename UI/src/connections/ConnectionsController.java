@@ -5,14 +5,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import target.Target;
 import target.TargetGraph;
 
@@ -43,13 +40,146 @@ public class ConnectionsController {
        isCircleTargetSelected = new SimpleBooleanProperty(false);
     }
 
-
     @FXML
     public void initialize() {
        destinationComboBox.disableProperty().bind(isSourceTargetSelected.not());
        pathListView.disableProperty().bind(isDestinationTargetSelected.not());
        circleListView.disableProperty().bind(isCircleTargetSelected.not());
        whatIfListView.disableProperty().bind(isWhatIfTargetSelected.not());
+    }
+    
+    @FXML
+    private TitledPane simulationTitledPane;
+
+    @FXML
+    private Spinner<Integer> simulationTimeSpinner;
+
+    @FXML
+    private CheckBox simulationRandomCheckBox;
+
+    @FXML
+    private Spinner<Double> simulationSuccessRateSpinner;
+
+    @FXML
+    private Spinner<Double> simulationWarningRateSpinner;
+
+    @FXML
+    private TitledPane compileTaskTitledPane;
+
+    @FXML
+    private TextField compileTaskSourceTextField;
+
+    @FXML
+    private Button compileTaskSourceSearchButton;
+
+    @FXML
+    private TextField compileTaskDestTextField;
+
+    @FXML
+    private Button compileTaskDestSearchButton;
+
+    @FXML
+    private TextField TaskNameTextField;
+
+    @FXML
+    private Button addTaskButton;
+
+    @FXML
+    private Color x2;
+
+    @FXML
+    private Font x1;
+
+    @FXML
+    private ListView<String> TargetsListView;
+
+    @FXML
+    private Button selectAllButton;
+
+    @FXML
+    private Button deSelectAllButton;
+
+    @FXML
+    private Button allTargetsButton;
+
+    @FXML
+    private Button requiredForButton;
+
+    @FXML
+    private Button dependsOnButton;
+
+    @FXML
+    private Button addButton;
+
+    @FXML
+    private Button removeButton;
+
+    @FXML
+    private Button clearButton;
+
+    @FXML
+    private Color x22;
+
+    @FXML
+    private Font x12;
+
+    @FXML
+    private ListView<String> AddedTargetsListView;
+
+
+    @FXML
+    void addButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void addTaskButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void allTargetsButtonSelected(ActionEvent event) {
+
+    }
+
+    @FXML
+    void clearButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void compileTaskDestSearchButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void compileTaskSourceSearchButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void deSelectAllButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void dependsOnButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void removeButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void requiredForButtonClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void selectAllButtonClicked(ActionEvent event) {
+
     }
 
     @FXML
@@ -155,14 +285,12 @@ public class ConnectionsController {
         }
     }
 
-
     @FXML
     void pathRequiredForKeyboardPress(KeyEvent event) {
         if(isDestinationTargetSelected.get()) {
             refreshPathList();
         }
     }
-
 
     @FXML
     void whatIfTargetComboBoxClicked(ActionEvent event) {
