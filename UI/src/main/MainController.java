@@ -58,6 +58,7 @@ public class MainController {
     private GridPane loginComponent;
     private LoginController logicController;
     private AnchorPane mainPanel;
+    private String userName;
 
     public MainController()
     {
@@ -72,6 +73,9 @@ public class MainController {
         runTaskButton.disableProperty().bind(isFileSelected.not());
 
         refreshComponentsAndControllers();
+
+        dashboardController.setPrimaryStage(primaryStage);
+        dashboardController.setUserName(userName);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(ABOUT_FXML_RESOURCE);
@@ -340,5 +344,13 @@ public class MainController {
         AnimationsOnButton.setDisable(true);
         rotate.play();
         scale.play();
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
