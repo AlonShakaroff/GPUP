@@ -1,6 +1,7 @@
 package dashboard;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 public class dashboardController {
 
+    private ObservableList<String> onlineGraphsList;
     private Stage primaryStage;
     private String userName;
     private final FileChooser fileChooser = new FileChooser();
@@ -31,7 +33,7 @@ public class dashboardController {
     private TitledPane OnlineGraphsTiltedPane;
 
     @FXML
-    private ListView<?> OnlineGraphsListView;
+    private ListView<String> OnlineGraphsListView;
 
     @FXML
     private Button AddNewGraphButton;
@@ -43,25 +45,25 @@ public class dashboardController {
     private TitledPane OnlineAdminsTiltedPane;
 
     @FXML
-    private ListView<?> onlineAdminsListView;
+    private ListView<String> onlineAdminsListView;
 
     @FXML
     private TitledPane OnlineWorkersTiltedPane;
 
     @FXML
-    private ListView<?> onlineWorkersListView;
+    private ListView<String> onlineWorkersListView;
 
     @FXML
     private TitledPane OnlineTasksTiltedPane;
 
     @FXML
-    private ListView<?> myTasksListView;
+    private ListView<String> myTasksListView;
 
     @FXML
     private Button loadSelectedTaskButton;
 
     @FXML
-    private ListView<?> AllTasksListView;
+    private ListView<String> AllTasksListView;
 
     @FXML
     private Font x11;
