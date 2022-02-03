@@ -1,6 +1,7 @@
 package dashboard;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,12 +23,20 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class dashboardController {
+    private ObservableList<String> onlineGraphsList = FXCollections.observableArrayList();
+    private ObservableList<String> onlineTasksList = FXCollections.observableArrayList();
+    private ObservableList<String> onlineAdminsList = FXCollections.observableArrayList();
+    private ObservableList<String> onlineWorkersList = FXCollections.observableArrayList();
 
-    private ObservableList<String> onlineGraphsList;
     private Stage primaryStage;
     private String userName;
     private final FileChooser fileChooser = new FileChooser();
     private static String lastVisitedDirectory = System.getProperty("user.home");
+    private Thread usersListsRefreshThread;
+
+    public void initialize() {
+        usersListsRefreshThread = new Thread(this::refreshUsersLists);
+    }
 
     @FXML
     private TitledPane OnlineGraphsTiltedPane;
@@ -147,13 +156,14 @@ public class dashboardController {
     private TableColumn<?, ?> TaskWorkPayment;
 
 
-    @FXML void AddNewGraphButtonClicked(ActionEvent event) throws IOException {
+    @FXML
+    void AddNewGraphButtonClicked(ActionEvent event) throws IOException {
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extensionFilter);
         fileChooser.setInitialDirectory(new File(lastVisitedDirectory));
         File file = fileChooser.showOpenDialog(primaryStage);
 
-        if(file != null)
+        if (file != null)
             uploadFileToServer(Constants.GRAPHS_PATH, file);
     }
 
@@ -174,16 +184,15 @@ public class dashboardController {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 System.out.println("got graph response - failed");
-                Platform.runLater(()-> errorPopup(e.getMessage()));
+                Platform.runLater(() -> errorPopup(e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
-                if(response.code() < 200 || response.code() >= 300) {
+                if (response.code() < 200 || response.code() >= 300) {
                     System.out.println("got graph response - error: " + response.header("message"));
                     Platform.runLater(() -> errorPopup(response.header("message")));
-                }
-                else
+                } else
                     System.out.println("got graph response - success");
             }
         });
@@ -219,4 +228,40 @@ public class dashboardController {
         Optional<ButtonType> result = alert.showAndWait();
     }
 
+    private void refreshUsersLists() {
+        usersListsRefreshThread.setDaemon(true);
+        while (usersListsRefreshThread.isAlive()) {
+            getAndUpdateUsersLists();
+        }
+    }
+
+    private void getAndUpdateUsersLists() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Platform.runLater(() -> {
+            //noinspection ConstantConditions
+            String finalUrl = HttpUrl
+                    .parse(Constants.USERS_LIST)
+                    .newBuilder()
+                    .addQueryParameter("userName", userName)
+                    .build()
+                    .toString();
+
+
+            HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                }
+            });
+        });
+    }
 }
