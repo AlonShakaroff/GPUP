@@ -65,7 +65,7 @@ public class LoginController {
                         .toString();
 
 
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        HttpClientUtil.runAsync(finalUrl,"GET",null ,new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -99,7 +99,9 @@ public class LoginController {
                             primaryStage.centerOnScreen();
                             primaryStage.show();
 
-                            mainController.initialize(primaryStage); }
+                            mainController.setUserName(currentUser);
+                            mainController.initialize(primaryStage);
+                        }
                         catch(Exception ignore) {}
                     });
                 }

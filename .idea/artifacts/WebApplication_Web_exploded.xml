@@ -6,6 +6,14 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="WebApplication" />
+          <element id="module-output" name="SystemEngine" />
+          <element id="module-output" name="UI" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="application_server_libraries" name="Tomcat 10.0.16" />
+          <element id="library" level="project" name="okHttp" />
+          <element id="library" level="project" name="gson" />
+          <element id="library" level="project" name="apache" />
         </element>
       </element>
     </root>
