@@ -47,7 +47,7 @@ public class ConnectionsController {
        circleListView.disableProperty().bind(isCircleTargetSelected.not());
        whatIfListView.disableProperty().bind(isWhatIfTargetSelected.not());
     }
-    
+
     @FXML
     private TitledPane simulationTitledPane;
 
