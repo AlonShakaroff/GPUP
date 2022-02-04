@@ -140,7 +140,7 @@
                                     <HBox alignment="CENTER">
                                        <children>
                                           <Label text="Task Name: " HBox.hgrow="ALWAYS" />
-                                          <TextField fx:id="TaskNameTextField" editable="false" maxWidth="1.7976931348623157E308" prefWidth="100.0" promptText="Task's name" HBox.hgrow="ALWAYS" />
+                                          <TextField fx:id="TaskNameTextField" maxWidth="1.7976931348623157E308" prefWidth="100.0" promptText="Task's name" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
                                     <Button fx:id="addTaskButton" mnemonicParsing="false" onAction="#addTaskButtonClicked" text="Add task to list" VBox.vgrow="SOMETIMES" />

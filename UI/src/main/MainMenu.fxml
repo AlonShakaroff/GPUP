@@ -107,13 +107,13 @@
                               <VBox>
                                  <children>
                                     <Label text="selected graph: " />
-                                    <TextField fx:id="SelectedGraphTextField" editable="false" minHeight="25.0" prefHeight="25.0" promptText="Graph name" VBox.vgrow="NEVER" />
+                                    <TextField fx:id="SelectedGraphTextField" editable="false" focusTraversable="false" minHeight="25.0" prefHeight="25.0" promptText="Graph name" VBox.vgrow="NEVER" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
                                     <Label text="selected task: " />
-                                    <TextField fx:id="SelectedTaskTextField" editable="false" minHeight="25.0" prefHeight="25.0" promptText="Task name" VBox.vgrow="NEVER" />
+                                    <TextField fx:id="SelectedTaskTextField" editable="false" focusTraversable="false" minHeight="25.0" prefHeight="25.0" promptText="Task name" VBox.vgrow="NEVER" />
                                  </children>
                               </VBox>
                            </children>
