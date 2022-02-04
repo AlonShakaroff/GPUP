@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ResourceChecker {
+public class FileChecker {
     public TargetGraph createTargetGraphFromXml(File file) throws Exception {
 
         JAXBContext jaxbContext = JAXBContext.newInstance(GPUPDescriptor.class);

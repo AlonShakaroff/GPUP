@@ -1,7 +1,7 @@
 package main;
 
 import connections.ConnectionsController;
-import dashboard.dashboardController;
+import dashboard.DashboardController;
 import graph.GraphController;
 import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -42,7 +42,7 @@ public class MainController {
     @FXML private SplitPane runTaskComponent;
     @FXML private TaskController taskController;
     @FXML private SplitPane dashboardComponent;
-    @FXML private dashboardController dashboardController;
+    @FXML private DashboardController dashboardController;
     @FXML private VBox aboutComponent;
 
     private Stage aboutStage = null;
@@ -74,6 +74,7 @@ public class MainController {
 
         dashboardController.setPrimaryStage(primaryStage);
         dashboardController.setUserName(userName);
+        dashboardController.setMainController(this);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(ABOUT_FXML_RESOURCE);
@@ -246,7 +247,7 @@ public class MainController {
 
     @FXML
     void menuBarOpenButtonClicked(ActionEvent event) {
-        fileExplorerLoadXMLFile();
+        //fileExplorerLoadXMLFile();
     }
 
     @FXML
@@ -262,11 +263,7 @@ public class MainController {
     private Slider sizeSlider;
 
 
-    private void fileExplorerLoadXMLFile() {
-        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.xml)", "*.xml");
-        fileChooser.getExtensionFilters().add(extensionFilter);
-        fileChooser.setInitialDirectory(new File(lastVisitedDirectory));
-        File file = fileChooser.showOpenDialog(primaryStage);
+    public void LoadXMLFile(File file) {
         if (file != null) {
             lastVisitedDirectory = file.getParent();
             try {

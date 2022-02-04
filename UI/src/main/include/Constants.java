@@ -18,6 +18,7 @@ public class Constants {
     public final static String USERS_LISTS = FULL_SERVER_PATH + "/userslists";
     public final static String GRAPHS_PATH = FULL_SERVER_PATH + "/graphs";
     public final static String LOGOUT_PAGE = FULL_SERVER_PATH + "/logout";
+    public final static String GRAPHS_LISTS_PAGE = FULL_SERVER_PATH + "/graphslist";
 
     public final static String CLASSIC_SKIN_CSS = "/main/classic.css";
 }

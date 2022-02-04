@@ -1,14 +1,11 @@
 package servlets;
 
 import users.UserManager;
-import java.io.IOException;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
-import utils.SessionUtils;
 
 @WebServlet(name = "LogoutServlet", urlPatterns = {"/logout"})
 public class LogoutServlet extends HttpServlet {
@@ -21,7 +18,6 @@ public class LogoutServlet extends HttpServlet {
         if (username != null) {
             System.out.println("Clearing session for " + username);
             userManager.removeUser(username);
-            SessionUtils.clearSession(request);
         }
     }
 }

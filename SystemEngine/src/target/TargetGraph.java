@@ -20,7 +20,14 @@ import java.util.stream.Collectors;
 
 public class TargetGraph implements Serializable {
 
+    public Map<TaskType, Integer> getTaskPricing() {
+        return taskPricing;
+    }
+
+    static public enum TaskType {SIMULATION, COMPILATION};
+
     private final Map<String, Target> allTargets;
+    private Map<TaskType, Integer>  taskPricing;
     private Duration totalTaskDuration;
     private Instant taskStartTime, taskEndTime;
     private Boolean canRunIncrementally;
@@ -78,7 +85,8 @@ public class TargetGraph implements Serializable {
         this.directory = directory;
         this.maxParallelism = maxParallelism;
         this.SerialSets = new HashMap<>();
-        allTargets = new HashMap<>();
+        this.allTargets = new HashMap<>();
+        this.taskPricing = new HashMap<>();
         canRunIncrementally = false;
         currentTaskLog = "";
     }

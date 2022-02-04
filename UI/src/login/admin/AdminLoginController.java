@@ -28,7 +28,7 @@ import static main.include.Constants.MAIN_FXML_RESOURCE;
 public class AdminLoginController {
     private Stage primaryStage;
     private MainController mainController;
-    private String currentUser;
+    private String currentUser = null;
 
     @FXML
     public TextField userNameTextField;
