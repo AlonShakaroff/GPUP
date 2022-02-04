@@ -10,21 +10,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
-@WebServlet(name = "LogoutServlet", urlPatterns = {"/chat/logout"})
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/logout"})
 public class LogoutServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String usernameFromSession = SessionUtils.getUsername(request);
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("entering logout doPost");
+        String username = request.getParameter("username");
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-        if (usernameFromSession != null) {
-            System.out.println("Clearing session for " + usernameFromSession);
-            userManager.removeUser(usernameFromSession);
+        if (username != null) {
+            System.out.println("Clearing session for " + username);
+            userManager.removeUser(username);
             SessionUtils.clearSession(request);
-
-            // used mainly for the web version. irrelevant in the desktop client version
-            response.sendRedirect(request.getContextPath() + "/index.html");
         }
     }
-
 }

@@ -1,5 +1,6 @@
 package dashboard;
 
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.stage.Stage;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import users.UsersLists;
 import util.http.HttpClientUtil;
 
 import java.awt.*;
@@ -36,6 +38,12 @@ public class dashboardController {
 
     public void initialize() {
         usersListsRefreshThread = new Thread(this::refreshUsersLists);
+        Thread suddenExitHook = new Thread(this::logout);
+        Runtime.getRuntime().addShutdownHook(suddenExitHook);
+        onlineAdminsListView.setItems(onlineAdminsList);
+        onlineWorkersListView.setItems(onlineWorkersList);
+        usersListsRefreshThread.setDaemon(true);
+        usersListsRefreshThread.start();
     }
 
     @FXML
@@ -229,39 +237,79 @@ public class dashboardController {
     }
 
     private void refreshUsersLists() {
-        usersListsRefreshThread.setDaemon(true);
         while (usersListsRefreshThread.isAlive()) {
-            getAndUpdateUsersLists();
+            getUsersLists();
         }
     }
 
-    private void getAndUpdateUsersLists() {
+    private void getUsersLists() {
         try {
+            System.out.println("going to sleep for 1 second");
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        Platform.runLater(() -> {
-            //noinspection ConstantConditions
-            String finalUrl = HttpUrl
-                    .parse(Constants.USERS_LIST)
-                    .newBuilder()
-                    .addQueryParameter("userName", userName)
-                    .build()
-                    .toString();
+        String finalUrl = HttpUrl
+                .parse(Constants.USERS_LISTS)
+                .newBuilder()
+                .build()
+                .toString();
 
 
-            HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
 
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                }
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("I failed you master");
+            }
 
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                }
-            });
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                System.out.println("responding to refresh call");
+                Gson gson = new Gson();
+                ResponseBody responseBody = response.body();
+                UsersLists usersLists = gson.fromJson(responseBody.string(), UsersLists.class);
+                if(usersLists.getAdminsList().isEmpty())
+                    System.out.println("admins list is empty");
+                else
+                    System.out.println("there are admins in the list");
+                Platform.runLater(() -> {
+                    updateUsersLists(usersLists);
+                });
+            }
+        });
+    }
+
+    private void updateUsersLists(UsersLists usersLists) {
+        onlineAdminsList.clear();
+        onlineWorkersList.clear();
+        onlineAdminsList.addAll(usersLists.getAdminsList());
+        onlineWorkersList.addAll(usersLists.getWorkersList());
+    }
+
+    private void logout() {
+        if(userName == null)
+            return;
+
+        String finalUrl = HttpUrl
+                .parse(Constants.LOGOUT_PAGE)
+                .newBuilder()
+                .addQueryParameter("username",userName)
+                .build()
+                .toString();
+
+
+        HttpClientUtil.runAsync(finalUrl, "DELETE", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("failed to logout user");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                System.out.println("user logged out");
+            }
         });
     }
 }

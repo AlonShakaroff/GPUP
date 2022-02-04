@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.LoginController">
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.admin.AdminLoginController">
    <children>
       <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
          <content>
@@ -21,7 +21,7 @@
                      <children>
                         <ImageView fx:id="miniLogoImageView" fitHeight="102.0" fitWidth="185.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../resources/images/miniAboutLogo.png" />
+                              <Image url="@../../resources/images/miniAboutLogo.png" />
                            </image>
                         </ImageView>
                         <Label styleClass="headLines" text="Admin login">

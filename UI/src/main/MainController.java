@@ -9,10 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -23,7 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 import javafx.util.Duration;
-import login.LoginController;
+import login.admin.AdminLoginController;
 import runtask.TaskController;
 import target.TargetGraph;
 
@@ -56,7 +54,7 @@ public class MainController {
     private final FileChooser fileChooser = new FileChooser();
     private SimpleBooleanProperty isFileSelected;
     private GridPane loginComponent;
-    private LoginController logicController;
+    private AdminLoginController logicController;
     private AnchorPane mainPanel;
     private String userName;
 

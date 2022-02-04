@@ -1,4 +1,4 @@
-package login;
+package login.admin;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -6,7 +6,6 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -21,14 +20,12 @@ import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import static main.include.Constants.CLASSIC_SKIN_CSS;
 import static main.include.Constants.MAIN_FXML_RESOURCE;
 
-public class LoginController {
+public class AdminLoginController {
     private Stage primaryStage;
     private MainController mainController;
     private String currentUser;
@@ -60,7 +57,7 @@ public class LoginController {
         String finalUrl = HttpUrl
                         .parse(Constants.LOGIN_PAGE)
                         .newBuilder()
-                        .addQueryParameter("userName", userName)
+                        .addQueryParameter("adminUsername", userName)
                         .build()
                         .toString();
 
@@ -125,4 +122,6 @@ public class LoginController {
 
     public void deleteCurrentUser() {
     }
+
+    public String getCurrentUser() { return currentUser; }
 }

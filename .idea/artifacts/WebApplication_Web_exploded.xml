@@ -13,7 +13,6 @@
           <element id="library" level="application_server_libraries" name="Tomcat 10.0.16" />
           <element id="library" level="project" name="okHttp" />
           <element id="library" level="project" name="gson" />
-          <element id="library" level="project" name="apache" />
         </element>
       </element>
     </root>
