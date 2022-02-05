@@ -219,6 +219,7 @@ public class DashboardController {
                     Gson gson = new Gson();
                     ResponseBody responseBody = response.body();
                     File graphXMLFile = gson.fromJson(responseBody.string(), File.class);
+                    responseBody.close();
                     Platform.runLater(()-> mainController.LoadXMLFile(graphXMLFile));
                 } else //Failed
                 {
@@ -285,6 +286,7 @@ public class DashboardController {
                 Gson gson = new Gson();
                 ResponseBody responseBody = response.body();
                 UsersLists usersLists = gson.fromJson(responseBody.string(), UsersLists.class);
+                responseBody.close();
                 if (usersLists.getAdminsList().isEmpty())
                     System.out.println("admins list is empty");
                 else
@@ -360,6 +362,7 @@ public class DashboardController {
                                 try {
                                     if (responseBody != null) {
                                         Set graphsSet = gson.fromJson(responseBody.string(), Set.class);
+                                        responseBody.close();
                                         updateGraphListView(graphsSet);
                                     }
                                 } catch (IOException e) {
@@ -413,6 +416,7 @@ public class DashboardController {
                                 try {
                                     if (responseBody != null) {
                                         GraphInfoDto graphInfoDto = gson.fromJson(responseBody.string(), GraphInfoDto.class);
+                                        responseBody.close();
                                         refreshGraphDetailsDTO(graphInfoDto);
                                     }
                                 } catch (IOException e) {

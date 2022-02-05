@@ -264,7 +264,6 @@ public class MainController {
         if (file != null) {
             try {
                 TargetGraph targetGraph = TargetGraph.createTargetGraphFromXml(file.toPath());
-                refreshComponentsAndControllers();
                 graphController.setTargetGraph(targetGraph);
                 connectionsController.setTargetGraph(targetGraph);
                 taskController.setTargetGraph(targetGraph);
