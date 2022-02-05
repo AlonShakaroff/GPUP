@@ -41,6 +41,8 @@ public class ConnectionsController {
     private final SimpleIntegerProperty howManyTargetsSelected;
     private final SimpleIntegerProperty howManyTargetsAdded;
     private final SimpleBooleanProperty isNameEmpty;
+    private final SimpleBooleanProperty isSimulationPossible;
+    private final SimpleBooleanProperty isCompilationPossible;
 
     private final ListChangeListener<String> currentSelectedListListener;
     private final ListChangeListener<String> currentAddedListListener;
@@ -70,6 +72,8 @@ public class ConnectionsController {
         currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
         howManyTargetsAdded = new SimpleIntegerProperty(0);
         isNameEmpty = new SimpleBooleanProperty(true);
+        isSimulationPossible = new SimpleBooleanProperty(false);
+        isCompilationPossible =  new SimpleBooleanProperty(false);
         currentAddedListListener = change -> {
             howManyTargetsAdded.set(change.getList().size());
         };
@@ -102,6 +106,8 @@ public class ConnectionsController {
         pathListView.disableProperty().bind(isDestinationTargetSelected.not());
         circleListView.disableProperty().bind(isCircleTargetSelected.not());
         whatIfListView.disableProperty().bind(isWhatIfTargetSelected.not());
+        simulationTitledPane.disableProperty().bind(isSimulationPossible.not());
+        compileTaskTitledPane.disableProperty().bind(isCompilationPossible.not());
 
         simulationSuccessRateSpinner.setValueFactory(successRateValueFactory);
         simulationWarningRateSpinner.setValueFactory(WarningRateValueFactory);
@@ -386,6 +392,9 @@ public class ConnectionsController {
         isWhatIfTargetSelected.set(false);
         isCircleTargetSelected.set(false);
         setAllTargetsNameList();
+        isSimulationPossible.setValue(targetGraph.getTaskPricing().containsKey(TargetGraph.TaskType.SIMULATION));
+        isCompilationPossible.setValue(targetGraph.getTaskPricing().containsKey(TargetGraph.TaskType.COMPILATION));
+
         pathList.clear();
     }
 
