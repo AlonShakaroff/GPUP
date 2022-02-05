@@ -150,8 +150,10 @@ public class DashboardController {
         fileChooser.setInitialDirectory(new File(lastVisitedDirectory));
         File file = fileChooser.showOpenDialog(primaryStage);
 
-        if (file != null)
+        if (file != null) {
             uploadFileToServer(Constants.GRAPHS_PATH, file);
+            lastVisitedDirectory = file.getParent();
+        }
     }
 
     public void uploadFileToServer(String url, File file) throws IOException {
