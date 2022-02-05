@@ -41,7 +41,7 @@ public class ExecutorThread extends Thread{
         this.processTimeInMS = processTimeInMS;
         this.tasksList = new LinkedList<>();
         this.numOfThreads = numOfThreads;
-        this.threadExecutor = new ThreadPoolExecutor(numOfThreads,targetGraph.getMaxParallelism(),1000,TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
+        this.threadExecutor = new ThreadPoolExecutor(numOfThreads,numOfThreads,1000,TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
         this.runLogTextArea = runLogTextArea;
         initTasksList(isIncremental);
     }
@@ -98,11 +98,7 @@ public class ExecutorThread extends Thread{
                         runLogTextArea.appendText("Target " + curTask.getTarget().getName() +
                             " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n\n"); });
                 } else {  // target is waiting to run, but maybe can't run due to a serial set
-                    if (targetGraph.DoesHaveSerialMemberInProgress(curTask.target))
-                        tasksList.addLast(curTask);
-                    else {   // target is waiting to run!!!
                         threadExecutor.submit(curTask);
-                    }
                 }
             }
             targetGraph.refreshWaiting();
@@ -149,10 +145,5 @@ public class ExecutorThread extends Thread{
 
     public TargetGraph getTargetGraph() {
         return targetGraph;
-    }
-
-    public void refreshChosenParallelism() {
-        threadExecutor.setCorePoolSize(targetGraph.getChosenParallelism());
-        threadExecutor.setMaximumPoolSize(targetGraph.getChosenParallelism());
     }
 }

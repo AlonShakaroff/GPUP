@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import main.include.Constants;
 import target.Target;
 import target.TargetGraph;
 
@@ -251,7 +252,7 @@ public class GraphController {
     }
 
     public Image generateGraphImage() {
-        GraphViz graphViz = new GraphViz(targetGraph.getDirectory(),
+        GraphViz graphViz = new GraphViz(Constants.TEMP_DIR,
                 "yellow", "blue", "orange", "pink");
         graphViz.openGraph();
         for (Target target : targetGraph.getAllTargets().values()) {

@@ -1,6 +1,7 @@
 package target;
 
 import exceptions.*;
+import task.GPUPTask;
 import xmlfiles.generated.GPUPConfiguration;
 import xmlfiles.generated.GPUPDescriptor;
 import xmlfiles.generated.GPUPTarget;
@@ -24,6 +25,10 @@ public class TargetGraph implements Serializable {
         return taskPricing;
     }
 
+    public void setTaskPricing(Map<TaskType, Integer> taskPricing) {
+        this.taskPricing = taskPricing;
+    }
+
     static public enum TaskType {SIMULATION, COMPILATION};
 
     private final Map<String, Target> allTargets;
@@ -32,24 +37,10 @@ public class TargetGraph implements Serializable {
     private Instant taskStartTime, taskEndTime;
     private Boolean canRunIncrementally;
     private String graphName;
-    private final String directory;
-    private Map<String, Set<String>> SerialSets;
-    private int maxParallelism;
     public String currentTaskLog;
-    private Integer chosenParallelism;
     private String uploaderName;
 
     public String getCurrentTaskLog() { return currentTaskLog; }
-
-    public Map<String, Set<String>> getSerialSets() {
-        return SerialSets;
-    }
-
-    public void setSerialSets(Map<String,Set<String>> serialSets) { this.SerialSets = serialSets; }
-
-    public int getMaxParallelism() {
-        return maxParallelism;
-    }
 
     public static String getDurationAsString(Duration duration) {
         return String.format("%02d:%02d:%02d", duration.toHours(),
@@ -57,13 +48,6 @@ public class TargetGraph implements Serializable {
                                              duration.getSeconds() - (duration.toHours() * 3600));
     }
 
-    public Integer getChosenParallelism() {
-        return chosenParallelism;
-    }
-
-    public void setChosenParallelism(Integer chosenParallelism) {
-        this.chosenParallelism = chosenParallelism;
-    }
 
     public String getGraphName() {
         return graphName;
@@ -79,14 +63,9 @@ public class TargetGraph implements Serializable {
 
     static public enum pathDirection {DEPENDS_ON, REQUIRED_FOR}
 
-    public TargetGraph(String name, String directory, int maxParallelism) {
-        this.chosenParallelism = 1;
+    public TargetGraph(String name) {
         this.graphName = name;
-        this.directory = directory;
-        this.maxParallelism = maxParallelism;
-        this.SerialSets = new HashMap<>();
         this.allTargets = new HashMap<>();
-        this.taskPricing = new HashMap<>();
         canRunIncrementally = false;
         currentTaskLog = "";
     }
@@ -288,9 +267,18 @@ public class TargetGraph implements Serializable {
         GPUPDescriptor gpupDescriptor = (GPUPDescriptor) jaxbUnmarshaller.unmarshal(file);
 
         GPUPConfiguration gpupConfiguration = gpupDescriptor.getGPUPConfiguration();
-        String GpupWorkingDirectory = gpupConfiguration.getGPUPWorkingDirectory();
-        checkIfPathIsValidDirectory(GpupWorkingDirectory);
-        TargetGraph targetGraph = new TargetGraph(gpupConfiguration.getGPUPGraphName(),GpupWorkingDirectory,gpupConfiguration.getGPUPMaxParallelism());
+        TargetGraph targetGraph = new TargetGraph(gpupConfiguration.getGPUPGraphName());
+        Map<TaskType, Integer>  taskPricing = new HashMap<>();
+        for (GPUPConfiguration.GPUPPricing.GPUPTask task:gpupConfiguration.getGPUPPricing().getGPUPTask()) {
+            TaskType taskType;
+            if(task.getName().equalsIgnoreCase("simulation"))
+                taskType = TaskType.SIMULATION;
+            else
+                taskType = TaskType.COMPILATION;
+            taskPricing.put(taskType,task.getPricePerTarget());
+        }
+        targetGraph.setTaskPricing(taskPricing);
+
         for (GPUPTarget gpupTarget : gpupDescriptor.getGPUPTargets().getGPUPTarget()) {
             Target target = new Target(gpupTarget);
             if (targetGraph.allTargets.containsKey(target.getName().toUpperCase())){
@@ -298,30 +286,7 @@ public class TargetGraph implements Serializable {
             }
             targetGraph.addTargetToGraph(target);
         }
-        if(gpupDescriptor.getGPUPSerialSets() == null)
-            targetGraph.SerialSets = null;
-        else {
-            for (GPUPDescriptor.GPUPSerialSets.GPUPSerialSet serialSet : gpupDescriptor.getGPUPSerialSets().getGPUPSerialSet()) {
 
-                Map<String, Set<String>> serialSets = targetGraph.getSerialSets();
-                if (serialSets.containsKey(serialSet.getName().toUpperCase()))
-                    throw new TwoSerialSetsWithSameName(serialSet.getName());
-                else {
-                    String[] targetsInCurrentSet = serialSet.getTargets().split(",");
-                    Set<String> currentSetTargetsSet = new HashSet<>();
-
-                    for (String targetName : targetsInCurrentSet) {
-                        if (!targetGraph.allTargets.containsKey(targetName.toUpperCase()))
-                            throw new TargetThatAppearsInTheSerialSetDoNotExist(targetName.toUpperCase(), serialSet.getName().toUpperCase());
-                        else {
-                            targetGraph.getTarget(targetName).addSerialSet(serialSet.getName());
-                            currentSetTargetsSet.add(targetName.toUpperCase());
-                        }
-                    }
-                    serialSets.put(serialSet.getName(), currentSetTargetsSet);
-                }
-            }
-        }
         for (GPUPTarget gpupTarget : gpupDescriptor.getGPUPTargets().getGPUPTarget()) {
             if (gpupTarget.getGPUPTargetDependencies() != null) {
                 targetGraph.getTarget(gpupTarget.getName()).addDependencies(gpupTarget.getGPUPTargetDependencies().getGPUGDependency(), targetGraph.allTargets);
@@ -329,23 +294,6 @@ public class TargetGraph implements Serializable {
         }
         targetGraph.resetGraph();
         return targetGraph;
-    }
-
-    public static void checkIfPathIsValidDirectory(String directoryPath) throws Exception {
-        if (directoryPath == null)
-            return;
-        Path workingDirPath = new File(directoryPath).toPath();
-        if(Files.exists(workingDirPath)) {
-            if(!Files.isDirectory(workingDirPath))
-                throw new pathIsNotDirException(directoryPath);
-        }
-        else {
-            Files.createDirectories(workingDirPath);
-        }
-    }
-
-    public String getDirectory() {
-        return directory;
     }
 
     public int getAmountOfTargets() {
@@ -412,11 +360,4 @@ public class TargetGraph implements Serializable {
         }
     }
 
-    public boolean DoesHaveSerialMemberInProgress(Target target){
-        if (SerialSets == null)
-            return false;
-         return !SerialSets.values().stream().filter(serialSet -> (serialSet.contains(target.getName()))).
-                allMatch(serialSet -> serialSet.stream().allMatch
-                        (TargetName -> allTargets.get(TargetName).getRunStatus() !=  Target.Status.IN_PROCESS));
-    }
 }

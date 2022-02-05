@@ -100,7 +100,7 @@ public class GraphsServlet extends HttpServlet {
             Files.copy(fileInputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
 
             FileChecker fileChecker = new FileChecker();
-            TargetGraph graph = fileChecker.createTargetGraphFromXml(filePath.toFile());
+            TargetGraph graph = fileChecker.createTargetGraphFromXml(filePath);
             GraphsManager graphsManager = ServletUtils.getGraphsManager(getServletContext());
 
             System.out.println("in graphs servlet post - graph created from xml file");

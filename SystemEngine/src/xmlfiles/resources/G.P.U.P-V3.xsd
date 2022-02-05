@@ -67,8 +67,25 @@
 		<xs:complexType>
 			<xs:all>
 				<xs:element ref="GPUP-Graph-Name"/>
-				<xs:element ref="GPUP-Working-Directory"/>
-				<xs:element name="GPUP-Max-Parallelism" type="xs:int"/>
+				<xs:element name="GPUP-Pricing">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="GPUP-Task" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="name" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="Simulation"/>
+												<xs:enumeration value="Compilation"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="price-per-target" type="xs:int" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 			</xs:all>
 		</xs:complexType>
 	</xs:element>

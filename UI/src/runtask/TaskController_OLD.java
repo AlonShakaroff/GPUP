@@ -280,14 +280,14 @@ public class TaskController_OLD {
 //            if (newValue == null)
 //                simulationTimeSpinner.getValueFactory().setValue(0);
 //        });
-        ParallelismSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null) {
-                ParallelismSpinner.getValueFactory().setValue(1);
-                targetGraph.setChosenParallelism(1);
-            }
-            else if(newValue <=targetGraph.getMaxParallelism() && newValue>=1)
-                targetGraph.setChosenParallelism(newValue);
-        });
+//        ParallelismSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue == null) {
+//                ParallelismSpinner.getValueFactory().setValue(1);
+//                targetGraph.setChosenParallelism(1);
+//            }
+//            else if(newValue <=targetGraph.getMaxParallelism() && newValue>=1)
+////                targetGraph.setChosenParallelism(newValue);
+//        });
 
         TargetsListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -556,8 +556,8 @@ public class TaskController_OLD {
     public void setTargetGraph(TargetGraph targetGraph) {
         this.targetGraph = targetGraph;
         setAllTargetsNameList();
-        ParallelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, targetGraph.getMaxParallelism(), 1);
-        ParallelismSpinner.setValueFactory(ParallelValueFactory);
+       // ParallelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, targetGraph.getMaxParallelism(), 1);
+       // ParallelismSpinner.setValueFactory(ParallelValueFactory);
     }
 
     private void setAllTargetsNameList() {

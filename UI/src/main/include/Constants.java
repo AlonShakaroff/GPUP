@@ -21,4 +21,6 @@ public class Constants {
     public final static String GRAPHS_LISTS_PAGE = FULL_SERVER_PATH + "/graphslist";
 
     public final static String CLASSIC_SKIN_CSS = "/main/classic.css";
+
+    public final static String TEMP_DIR = "C:/temp";
 }
