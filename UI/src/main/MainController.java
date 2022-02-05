@@ -47,11 +47,8 @@ public class MainController {
 
     private Stage aboutStage = null;
     private Stage primaryStage;
-    private static String lastVisitedDirectory = System.getProperty("user.home");
     private RotateTransition rotate;
     private ScaleTransition scale;
-
-    private final FileChooser fileChooser = new FileChooser();
     private SimpleBooleanProperty isFileSelected;
     private GridPane loginComponent;
     private AdminLoginController logicController;
@@ -265,7 +262,6 @@ public class MainController {
 
     public void LoadXMLFile(File file) {
         if (file != null) {
-            lastVisitedDirectory = file.getParent();
             try {
                 TargetGraph targetGraph = TargetGraph.createTargetGraphFromXml(file.toPath());
                 refreshComponentsAndControllers();
