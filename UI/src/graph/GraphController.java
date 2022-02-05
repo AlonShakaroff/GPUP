@@ -27,8 +27,6 @@ public class GraphController {
     private static final int CHAR_WIDTH=8;
     private final ObservableList<TargetTableItem> targetTableList = FXCollections.observableArrayList();
     private final ObservableList<TargetTypeSummery> typeSummeryList = FXCollections.observableArrayList();
-    private final ObservableList<String> serialSetNameList = FXCollections.observableArrayList();
-    private final ObservableList<String> serialSetInfoList = FXCollections.observableArrayList();
     private TargetGraph targetGraph;
     private TreeItem<String> BigRootRoots;
     private TreeItem<String> BigRootLeaves;
@@ -55,9 +53,6 @@ public class GraphController {
     private TableColumn<TargetTableItem, Integer> requiredForTotal;
 
     @FXML
-    private TableColumn<TargetTableItem, Integer> serialSetsAmount;
-
-    @FXML
     private TableColumn<TargetTableItem, String> extraData;
 
     @FXML
@@ -77,12 +72,6 @@ public class GraphController {
 
     @FXML
     private TableColumn<TargetTypeSummery, Integer> rootAmount;
-
-    @FXML
-    private ComboBox<String> serialSetComboBox;
-
-    @FXML
-    private ListView<String> serialSetsListView;
 
     @FXML
     private ImageView graphImageView;
@@ -137,7 +126,6 @@ public class GraphController {
     public void initialize() {
         initializeTargetTable();
         initializeTypeSummeryTable();
-        initializeSerialSetComboBox();
         rootsRadioButton.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             if (newValue.equals(true))
                 treeView.setRoot(BigRootRoots);
@@ -153,7 +141,6 @@ public class GraphController {
         dependsOnTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("DependsOnTotal"));
         requiredForDirectly.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("RequiredForDirectly"));
         requiredForTotal.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("RequiredForTotal"));
-        serialSetsAmount.setCellValueFactory(new PropertyValueFactory<TargetTableItem, Integer>("AmountOfSerialSets"));
         extraData.setCellValueFactory(new PropertyValueFactory<TargetTableItem, String>("ExtraData"));
     }
 
@@ -165,22 +152,11 @@ public class GraphController {
         independentAmount.setCellValueFactory(new PropertyValueFactory<TargetTypeSummery, Integer>("Independent"));
     }
 
-    public void initializeSerialSetComboBox() {
-        serialSetComboBox.setOnAction((event) -> {
-            serialSetInfoList.clear();
-            if (!targetGraph.getSerialSets().isEmpty()) {
-                serialSetInfoList.addAll(targetGraph.getSerialSets().get(serialSetComboBox.getValue()));
-                serialSetsListView.setItems(serialSetInfoList.sorted());
-            }
-        });
-    }
-
     public void setTargetGraph(TargetGraph targetGraph) {
         this.targetGraph = targetGraph;
         initialize();
         setDependenciesTable();
         setTypeSummeryTable();
-        setSerialSetComboBox();
         treeViewRoots();
         treeViewLeaves();
         treeView.setShowRoot(false);
@@ -211,23 +187,6 @@ public class GraphController {
         typeTableView.setItems(typeSummeryList);
     }
 
-    private void setSerialSetComboBox() {
-        serialSetNameList.clear();
-        serialSetInfoList.clear();
-        if (targetGraph.getSerialSets() != null) {
-            serialSetComboBox.setDisable(false);
-            serialSetsListView.setDisable(false);
-            serialSetNameList.addAll(targetGraph.getSerialSets().keySet());
-            serialSetComboBox.setItems(serialSetNameList.sorted());
-        } else {
-            serialSetComboBox.setDisable(true);
-            serialSetInfoList.add("No serial sets");
-            serialSetsListView.setItems(serialSetInfoList);
-            serialSetsListView.setDisable(true);
-        }
-        serialSetComboBox.setTooltip
-                (new Tooltip("Choose a serial set to display all the targets that belong to it"));
-    }
 
     private void treeViewRoots(){
         BigRootRoots = new TreeItem<>("root");
