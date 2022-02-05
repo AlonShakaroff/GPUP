@@ -40,7 +40,6 @@ public class ConnectionsController {
 
     private final SimpleIntegerProperty howManyTargetsSelected;
     private final SimpleIntegerProperty howManyTargetsAdded;
-    private final SimpleBooleanProperty isATargetSelected;
     private final SimpleBooleanProperty isNameEmpty;
 
     private final ListChangeListener<String> currentSelectedListListener;
@@ -70,7 +69,6 @@ public class ConnectionsController {
         howManyTargetsSelected = new SimpleIntegerProperty(0);
         currentSelectedListListener = change -> howManyTargetsSelected.set(change.getList().size());
         howManyTargetsAdded = new SimpleIntegerProperty(0);
-        isATargetSelected = new SimpleBooleanProperty(false);
         isNameEmpty = new SimpleBooleanProperty(true);
         currentAddedListListener = change -> {
             howManyTargetsAdded.set(change.getList().size());

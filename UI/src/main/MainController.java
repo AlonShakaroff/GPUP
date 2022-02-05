@@ -49,7 +49,8 @@ public class MainController {
     private Stage primaryStage;
     private RotateTransition rotate;
     private ScaleTransition scale;
-    private SimpleBooleanProperty isFileSelected;
+    private final SimpleBooleanProperty isFileSelected;
+    private SimpleBooleanProperty isTaskSelected;
     private GridPane loginComponent;
     private AdminLoginController logicController;
     private AnchorPane mainPanel;
@@ -58,6 +59,7 @@ public class MainController {
     public MainController()
     {
         isFileSelected = new SimpleBooleanProperty(false);
+        isTaskSelected = new SimpleBooleanProperty(false);
     }
 
     @FXML
@@ -65,8 +67,10 @@ public class MainController {
         this.primaryStage = primaryStage;
         graphButton.disableProperty().bind(isFileSelected.not());
         connectionsButton.disableProperty().bind(isFileSelected.not());
-        runTaskButton.disableProperty().bind(isFileSelected.not());
-
+        runTaskButton.disableProperty().bind(isTaskSelected.not());
+        SelectedTaskTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            isTaskSelected.setValue(newValue!= null && !newValue.trim().equals(""));
+        });
         refreshComponentsAndControllers();
 
         dashboardController.setPrimaryStage(primaryStage);
@@ -209,15 +213,6 @@ public class MainController {
         aboutStage.show();
     }
 
-
-    private void closeFile() {
-        mainChangingScene.setContent(logoGridPane);
-        graphButton.setSelected(false);
-        connectionsButton.setSelected(false);
-        runTaskButton.setSelected(false);
-        isFileSelected.set(false);
-    }
-
     @FXML
     void connectionsButtonClicked(ActionEvent event) {
         if (connectionsButton.isSelected())
@@ -243,8 +238,10 @@ public class MainController {
     }
 
     @FXML
-    void menuBarOpenButtonClicked(ActionEvent event) {
-        //LoadXMLFile(null);
+    void menuBarOpenButtonClicked(ActionEvent event) throws IOException {
+        dashboardController.addNewGraphToList();
+        dashboardButton.setSelected(true);
+        mainChangingScene.setContent(dashboardComponent);
     }
 
     @FXML
@@ -342,5 +339,12 @@ public class MainController {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setSelectedGraphTextField(String graphName){
+        this.SelectedGraphTextField.setText(graphName);
+    }
+    public void setSelectedTaskTextField(String taskName){
+        this.SelectedTaskTextField.setText(taskName);
     }
 }

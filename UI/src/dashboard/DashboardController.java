@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dashboard.tableitems.GraphInfoTableItem;
 import dtos.GraphInfoDto;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -36,8 +37,14 @@ public class DashboardController {
     private ObservableList<String> onlineAdminsList = FXCollections.observableArrayList();
     private ObservableList<String> onlineWorkersList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedGraphList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedMyTasksList = FXCollections.observableArrayList();
+    private ObservableList<String> currentSelectedAllTasksList = FXCollections.observableArrayList();
     private ObservableList<GraphInfoTableItem> graphInfoTableList = FXCollections.observableArrayList();
     private ListChangeListener<String> currentSelectedGraphListListener;
+    private ListChangeListener<String> currentSelectedMyTasksListListener;
+    private ListChangeListener<String> currentSelectedAllTasksListListener;
+    private SimpleBooleanProperty isGraphSelected;
+    private SimpleBooleanProperty isMyTaskSelected;
 
     private Stage primaryStage;
     private String userName;
@@ -47,12 +54,29 @@ public class DashboardController {
     private MainController mainController;
 
     public DashboardController() {
-        currentSelectedGraphListListener = change -> displaySelectedGraphInfo();
+        isGraphSelected = new SimpleBooleanProperty(false);
+        isMyTaskSelected = new SimpleBooleanProperty(false);
+        currentSelectedGraphListListener = change -> {
+            displaySelectedGraphInfo();
+            isGraphSelected.setValue(change.getList().size() != 0);
+        };
+        currentSelectedMyTasksListListener = change -> {
+            isMyTaskSelected.setValue(change.getList().size() != 0);
+        };
+        currentSelectedAllTasksListListener = change -> {
+            displaySelectedTaskInfo();
+        };
     }
 
     public void initialize() {
+        LoadGraphButton.disableProperty().bind(isGraphSelected.not());
+        loadSelectedTaskButton.disableProperty().bind(isMyTaskSelected.not());
         currentSelectedGraphList = OnlineGraphsListView.getSelectionModel().getSelectedItems();
+        currentSelectedMyTasksList = myTasksListView.getSelectionModel().getSelectedItems();
+        currentSelectedAllTasksList = AllTasksListView.getSelectionModel().getSelectedItems();
         currentSelectedGraphList.addListener(currentSelectedGraphListListener);
+        currentSelectedMyTasksList.addListener(currentSelectedMyTasksListListener);
+        currentSelectedAllTasksList.addListener(currentSelectedAllTasksListListener);
         initializeTargetDetailsTable();
         refreshDashboardDataThread = new Thread(this::refreshDashboardData);
         Thread suddenExitHook = new Thread(this::logout);
@@ -123,17 +147,17 @@ public class DashboardController {
     @FXML
     private TextField TaskOnGraphTextField;
     @FXML
-    private TableView<?> TaskTypeTableView;
+    private TableView<GraphInfoTableItem> TaskTypeTableView;
     @FXML
-    private TableColumn<?, ?> TaskTargetsAmount;
+    private TableColumn<GraphInfoTableItem, Integer> TaskTargetsAmount;
     @FXML
-    private TableColumn<?, ?> TaskIndependentAmount;
+    private TableColumn<GraphInfoTableItem, Integer> TaskIndependentAmount;
     @FXML
-    private TableColumn<?, ?> TaskLeafAmount;
+    private TableColumn<GraphInfoTableItem, Integer> TaskLeafAmount;
     @FXML
-    private TableColumn<?, ?> TaskMiddleAmount;
+    private TableColumn<GraphInfoTableItem, Integer> TaskMiddleAmount;
     @FXML
-    private TableColumn<?, ?> TaskRootAmount;
+    private TableColumn<GraphInfoTableItem, Integer> TaskRootAmount;
     @FXML
     private TableView<?> TaskInfoTableView;
     @FXML
@@ -145,6 +169,10 @@ public class DashboardController {
 
     @FXML
     void AddNewGraphButtonClicked(ActionEvent event) throws IOException {
+        addNewGraphToList();
+    }
+
+    public void addNewGraphToList() throws IOException {
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extensionFilter);
         fileChooser.setInitialDirectory(new File(lastVisitedDirectory));
@@ -190,6 +218,8 @@ public class DashboardController {
         if(selectedGraphName == null)
             return;
 
+        mainController.setSelectedGraphTextField(selectedGraphName);
+        this.OnlineGraphsListView.getSelectionModel().clearSelection();
         String finalUrl = HttpUrl
                 .parse(Constants.GRAPHS_PATH)
                 .newBuilder()
@@ -224,6 +254,14 @@ public class DashboardController {
 
     @FXML
     void loadSelectedTaskButtonClicked(ActionEvent event) {
+        String selectedTaskName = this.myTasksListView.getSelectionModel().getSelectedItem();
+
+        if(selectedTaskName == null)
+            return;
+
+        mainController.setSelectedTaskTextField(selectedTaskName);
+        this.myTasksListView.getSelectionModel().clearSelection();
+
 
     }
 
@@ -366,6 +404,24 @@ public class DashboardController {
             if (!onlineGraphsList.contains(curr))
                 onlineGraphsList.add(curr);
         }
+    }
+    private void updateTasksListView(Set<String> taskSet) {
+        if (taskSet == null)
+            return;
+
+        for (String curr : taskSet) {
+            if (!onlineTasksList.contains(curr))
+                onlineTasksList.add(curr);
+        }
+    }
+
+
+    private void displaySelectedTaskInfo() {
+        if (currentSelectedAllTasksList.isEmpty())
+            return;
+
+        String selectedTaskName = currentSelectedAllTasksList.get(0);
+
     }
 
     private void displaySelectedGraphInfo() {
