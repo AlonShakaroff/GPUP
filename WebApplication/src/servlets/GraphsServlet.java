@@ -30,7 +30,7 @@ public class GraphsServlet extends HttpServlet {
     //---------------------------------------------------Members---------------------------------------//
 
     public Gson gson = new Gson();
-    public static Path WORKING_DIRECTORY_PATH = Paths.get("c:\\gpup-working-dir");
+    public static Path WORKING_DIRECTORY_PATH = Paths.get("C:\\gpup-working-dir");
     private final Map<String, GraphInfoDto> graphInfoDtoMap = new HashMap<>();
     //---------------------------------------------------Dummies---------------------------------------//
     private static final Object creatingDirectory = new Object();

@@ -281,8 +281,8 @@ public class TargetGraph implements Serializable {
 
 
 
-    public static TargetGraph createTargetGraphFromXml(File file) throws Exception {
-
+    public static TargetGraph createTargetGraphFromXml(Path filePath) throws Exception {
+        File file = new File(filePath.toString());
         JAXBContext jaxbContext = JAXBContext.newInstance(GPUPDescriptor.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         GPUPDescriptor gpupDescriptor = (GPUPDescriptor) jaxbUnmarshaller.unmarshal(file);

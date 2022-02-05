@@ -247,7 +247,7 @@ public class MainController {
 
     @FXML
     void menuBarOpenButtonClicked(ActionEvent event) {
-        //fileExplorerLoadXMLFile();
+        //LoadXMLFile(null);
     }
 
     @FXML
@@ -267,7 +267,7 @@ public class MainController {
         if (file != null) {
             lastVisitedDirectory = file.getParent();
             try {
-                TargetGraph targetGraph = TargetGraph.createTargetGraphFromXml(file);
+                TargetGraph targetGraph = TargetGraph.createTargetGraphFromXml(file.toPath());
                 refreshComponentsAndControllers();
                 graphController.setTargetGraph(targetGraph);
                 connectionsController.setTargetGraph(targetGraph);
