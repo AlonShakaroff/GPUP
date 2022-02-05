@@ -167,27 +167,20 @@ public class DashboardController {
                 .post(body).addHeader("username", this.userName)
                 .build();
 
-        System.out.println("making a graph request");
 
         HttpClientUtil.runAsyncWithRequest(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("got graph response - failed");
                 Platform.runLater(() -> errorPopup(e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if (response.code() < 200 || response.code() >= 300) {
-                    System.out.println("got graph response - error: " + response.header("message"));
                     Platform.runLater(() -> errorPopup(response.header("message")));
-                } else
-                    System.out.println("got graph response - success");
+                }
             }
         });
-
-        System.out.println("sent async request");
-//        Response response = client.newCall(request).execute();
     }
 
     @FXML
@@ -260,7 +253,6 @@ public class DashboardController {
 
     private void getUsersLists() {
         try {
-            System.out.println("going to sleep for 1 second");
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -277,20 +269,14 @@ public class DashboardController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("I failed you master");
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                System.out.println("responding to refresh call");
                 Gson gson = new Gson();
                 ResponseBody responseBody = response.body();
                 UsersLists usersLists = gson.fromJson(responseBody.string(), UsersLists.class);
                 responseBody.close();
-                if (usersLists.getAdminsList().isEmpty())
-                    System.out.println("admins list is empty");
-                else
-                    System.out.println("there are admins in the list");
                 Platform.runLater(() -> {
                     updateUsersLists(usersLists);
                 });
@@ -328,12 +314,10 @@ public class DashboardController {
         HttpClientUtil.runAsync(finalUrl, "DELETE", null, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("failed to logout user");
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                System.out.println("user logged out");
             }
         });
     }
@@ -348,7 +332,6 @@ public class DashboardController {
         HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("could not connect to graphslist servlet"));
             }
 
             @Override
@@ -370,8 +353,7 @@ public class DashboardController {
                                 }
                             }
                     );
-                } else //Failed
-                    Platform.runLater(() -> System.out.println("couldn't pull graph-list from server!"));
+                }
             }
         });
     }
@@ -402,7 +384,6 @@ public class DashboardController {
         HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("connection failed to graph servlet"));
             }
 
             @Override
@@ -424,8 +405,7 @@ public class DashboardController {
                                 }
                             }
                     );
-                } else //Failed
-                    Platform.runLater(() -> System.out.println("couldn't pull graph-dto from server!"));
+                }
             }
         });
     }

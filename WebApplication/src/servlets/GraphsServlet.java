@@ -93,7 +93,6 @@ public class GraphsServlet extends HttpServlet {
                 Files.delete(filePath);
 
             Files.createFile(filePath);
-            System.out.println("in graphs servlet post - created graph file on server");
 
             Part filePart = req.getPart("fileToUpload");
             InputStream fileInputStream = filePart.getInputStream();
@@ -103,7 +102,6 @@ public class GraphsServlet extends HttpServlet {
             TargetGraph graph = fileChecker.createTargetGraphFromXml(filePath);
             GraphsManager graphsManager = ServletUtils.getGraphsManager(getServletContext());
 
-            System.out.println("in graphs servlet post - graph created from xml file");
 
             if(graphsManager.isGraphExists(graph.getGraphName().toLowerCase(Locale.ROOT)))
             {
@@ -123,8 +121,6 @@ public class GraphsServlet extends HttpServlet {
                 resp.addHeader("graphname", graph.getGraphName());
             }
         } catch (Exception e) {
-            System.out.println("in graphs servlet post - failed in creating graph from xml");
-            System.out.println(e.getMessage());
             resp.getWriter().println(e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
