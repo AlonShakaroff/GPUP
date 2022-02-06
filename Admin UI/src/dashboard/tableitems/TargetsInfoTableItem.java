@@ -1,13 +1,13 @@
 package dashboard.tableitems;
 
-public class GraphInfoTableItem {
+public class TargetsInfoTableItem {
     private Integer targets;
     private Integer roots;
     private Integer middles;
     private Integer leaves;
     private Integer independents;
 
-    public GraphInfoTableItem(Integer roots, Integer middles, Integer leaves, Integer independents, Integer targets) {
+    public TargetsInfoTableItem(Integer roots, Integer middles, Integer leaves, Integer independents, Integer targets) {
         this.targets = targets;
         this.roots = roots;
         this.middles = middles;

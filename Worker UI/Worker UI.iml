@@ -12,5 +12,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 10.0.16" level="application_server_libraries" />
     <orderEntry type="module" module-name="Admin UI" />
     <orderEntry type="module" module-name="WebApplication" />
+    <orderEntry type="module" module-name="SystemEngine" />
   </component>
 </module>

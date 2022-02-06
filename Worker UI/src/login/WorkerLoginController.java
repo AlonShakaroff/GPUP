@@ -1,5 +1,6 @@
 package login;
 
+import constants.WorkersConstants;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -8,11 +9,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import main.AdminMainController;
+import main.WorkerMainController;
 import main.include.Constants;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -25,38 +28,36 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
-import static main.include.Constants.CLASSIC_SKIN_CSS;
-import static main.include.Constants.MAIN_FXML_RESOURCE;
 
 public class WorkerLoginController {
     private Stage primaryStage;
-    private AdminMainController adminMainController;
+    private WorkerMainController workerMainController;
     private String currentUser = null;
 
-    @FXML
-    public TextField userNameTextField;
-
-    @FXML
-    public Label errorMessageLabel;
+    @FXML public TextField userNameTextField;
+    @FXML private Spinner<Integer> ThreadAmountSpinner;
+    @FXML public Label errorMessageLabel;
 
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
+    private final SpinnerValueFactory<Integer> ThreadsAmountValueFactory =
+            new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5, 1);
 
     @FXML
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
         errorMessageLabel.textProperty().bind(errorMessageProperty);
+        ThreadAmountSpinner.setEditable(false);
+        ThreadAmountSpinner.setValueFactory(ThreadsAmountValueFactory);
     }
 
     @FXML
     private void loginButtonClicked(ActionEvent event) {
-
         String userName = userNameTextField.getText();
         if (userName.isEmpty()) {
             errorMessageProperty.set("User name is empty. You can't login with empty user name");
             return;
         }
 
-        //noinspection ConstantConditions
         String finalUrl = HttpUrl
                 .parse(Constants.LOGIN_PAGE)
                 .newBuilder()
@@ -84,23 +85,23 @@ public class WorkerLoginController {
                     Platform.runLater(() -> {
                         try{
                             currentUser = userName;
-                            URL url = getClass().getResource(MAIN_FXML_RESOURCE);
+                            URL url = getClass().getResource(WorkersConstants.WORKERS_MAIN_MENU_FXML_RESOURCE);
                             FXMLLoader fxmlLoader = new FXMLLoader();
                             fxmlLoader.setLocation(url);
                             VBox mainMenuComponent = null;
                             mainMenuComponent = fxmlLoader.load(url.openStream());
-                            AdminMainController adminMainController = fxmlLoader.getController();
+                            WorkerMainController workerMainController = fxmlLoader.getController();
 
                             Scene scene = new Scene(mainMenuComponent,1280, 800);
-                            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(CLASSIC_SKIN_CSS)).toExternalForm());
+                            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(WorkersConstants.CLASSIC_CSS)).toExternalForm());
 
                             primaryStage.hide();
                             primaryStage.setScene(scene);
                             primaryStage.centerOnScreen();
                             primaryStage.show();
 
-                            adminMainController.setUserName(currentUser);
-                            adminMainController.initialize(primaryStage);
+                            workerMainController.setUserName(currentUser);
+                            workerMainController.initialize(primaryStage);
                         }
                         catch(Exception ignore) {}
                     });
@@ -119,8 +120,8 @@ public class WorkerLoginController {
         Platform.exit();
     }
 
-    public void setMainController(AdminMainController adminMainController){
-        this.adminMainController = adminMainController;
+    public void setMainController(WorkerMainController workerMainController){
+        this.workerMainController = workerMainController;
     }
 
     public void deleteCurrentUser() {

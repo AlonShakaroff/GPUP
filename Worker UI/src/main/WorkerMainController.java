@@ -41,7 +41,6 @@ public class WorkerMainController {
 
         dashboardController.setPrimaryStage(primaryStage);
         dashboardController.setUserName(userName);
-        dashboardController.setMainController(this);
     }
 
     @FXML private MenuItem classicSkinButton;
@@ -108,8 +107,10 @@ public class WorkerMainController {
         dashboardController = fxmlLoader.getController();
 
         fxmlLoader = new FXMLLoader();
-        url = getClass().getResource(ABOUT_FXML_RESOURCE);
+        url = getClass().getResource(WorkersConstants.ABOUT_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
         aboutComponent = fxmlLoader.load(url.openStream());
     }
+
+    public void setUserName(String userName) { this.userName = userName; }
 }

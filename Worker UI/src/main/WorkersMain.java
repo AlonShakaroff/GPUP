@@ -26,10 +26,12 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
+import static constants.WorkersConstants.WORKERS_LOGIN_FXML_RESOURCE;
 import static main.include.Constants.LOGIN_FXML_RESOURCE;
 
+
 public class WorkersMain extends Application {
-    /**
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -38,12 +40,12 @@ public class WorkersMain extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.getIcons().add(new Image(WorkersConstants.ICON_IMAGE));
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource(LOGIN_FXML_RESOURCE);
+        URL url = getClass().getResource(WORKERS_LOGIN_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
         VBox loginComponent = fxmlLoader.load(url.openStream());
         WorkerLoginController workerLoginController = fxmlLoader.getController();
 
-        Scene scene = new Scene(loginComponent,400, 230);
+        Scene scene = new Scene(loginComponent,400, 280);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(WorkersConstants.CLASSIC_CSS)).toExternalForm());
         primaryStage.setScene(scene);
 
@@ -92,5 +94,4 @@ public class WorkersMain extends Application {
             }
         });
     }
-    **/
 }

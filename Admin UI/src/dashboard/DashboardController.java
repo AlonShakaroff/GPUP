@@ -1,7 +1,7 @@
 package dashboard;
 
 import com.google.gson.Gson;
-import dashboard.tableitems.GraphInfoTableItem;
+import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.GraphInfoDto;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -39,7 +39,7 @@ public class DashboardController {
     private ObservableList<String> currentSelectedGraphList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedMyTasksList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedAllTasksList = FXCollections.observableArrayList();
-    private ObservableList<GraphInfoTableItem> graphInfoTableList = FXCollections.observableArrayList();
+    private ObservableList<TargetsInfoTableItem> graphInfoTableList = FXCollections.observableArrayList();
     private ListChangeListener<String> currentSelectedGraphListListener;
     private ListChangeListener<String> currentSelectedMyTasksListListener;
     private ListChangeListener<String> currentSelectedAllTasksListListener;
@@ -121,17 +121,17 @@ public class DashboardController {
     @FXML
     private TextField uploadedByTextField;
     @FXML
-    private TableView<GraphInfoTableItem> GraphTargetsTableView;
+    private TableView<TargetsInfoTableItem> GraphTargetsTableView;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> GraphTargetsAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphTargetsAmount;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> GraphIndependentAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphIndependentAmount;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> GraphLeafAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphLeafAmount;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> GraphMiddleAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphMiddleAmount;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> GraphRootAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphRootAmount;
     @FXML
     private TextField SimulationPriceTextField;
     @FXML
@@ -147,17 +147,17 @@ public class DashboardController {
     @FXML
     private TextField TaskOnGraphTextField;
     @FXML
-    private TableView<GraphInfoTableItem> TaskTypeTableView;
+    private TableView<TargetsInfoTableItem> TaskTypeTableView;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> TaskTargetsAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> TaskTargetsAmount;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> TaskIndependentAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> TaskIndependentAmount;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> TaskLeafAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> TaskLeafAmount;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> TaskMiddleAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> TaskMiddleAmount;
     @FXML
-    private TableColumn<GraphInfoTableItem, Integer> TaskRootAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> TaskRootAmount;
     @FXML
     private TableView<?> TaskInfoTableView;
     @FXML
@@ -329,11 +329,11 @@ public class DashboardController {
     }
 
     public void initializeTargetDetailsTable() {
-        this.GraphTargetsAmount.setCellValueFactory(new PropertyValueFactory<GraphInfoTableItem, Integer>("targets"));
-        this.GraphRootAmount.setCellValueFactory(new PropertyValueFactory<GraphInfoTableItem, Integer>("roots"));
-        this.GraphMiddleAmount.setCellValueFactory(new PropertyValueFactory<GraphInfoTableItem, Integer>("middles"));
-        this.GraphLeafAmount.setCellValueFactory(new PropertyValueFactory<GraphInfoTableItem, Integer>("leaves"));
-        this.GraphIndependentAmount.setCellValueFactory(new PropertyValueFactory<GraphInfoTableItem, Integer>("independents"));
+        this.GraphTargetsAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("targets"));
+        this.GraphRootAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("roots"));
+        this.GraphMiddleAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("middles"));
+        this.GraphLeafAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("leaves"));
+        this.GraphIndependentAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("independents"));
     }
 
     private void logout() {
@@ -476,11 +476,11 @@ public class DashboardController {
 
     private void updateTargetDetailsTable(GraphInfoDto graphInfoDto) {
 
-        GraphInfoTableItem graphInfoTableItem = new GraphInfoTableItem(graphInfoDto.getRoots(),
+        TargetsInfoTableItem targetsInfoTableItem = new TargetsInfoTableItem(graphInfoDto.getRoots(),
                 graphInfoDto.getMiddles(), graphInfoDto.getLeaves(), graphInfoDto.getIndependents(), graphInfoDto.getTargets());
 
         this.graphInfoTableList.clear();
-        this.graphInfoTableList.add(graphInfoTableItem);
+        this.graphInfoTableList.add(targetsInfoTableItem);
 
         DashboardController.this.GraphTargetsTableView.setItems(this.graphInfoTableList);
     }
