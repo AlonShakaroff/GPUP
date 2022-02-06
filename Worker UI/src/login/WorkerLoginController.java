@@ -9,13 +9,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import main.AdminMainController;
 import main.include.Constants;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
 
@@ -26,7 +28,7 @@ import java.util.Objects;
 import static main.include.Constants.CLASSIC_SKIN_CSS;
 import static main.include.Constants.MAIN_FXML_RESOURCE;
 
-public class AdminLoginController {
+public class WorkerLoginController {
     private Stage primaryStage;
     private AdminMainController adminMainController;
     private String currentUser = null;
@@ -56,11 +58,11 @@ public class AdminLoginController {
 
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
-                        .parse(Constants.LOGIN_PAGE)
-                        .newBuilder()
-                        .addQueryParameter("adminUsername", userName)
-                        .build()
-                        .toString();
+                .parse(Constants.LOGIN_PAGE)
+                .newBuilder()
+                .addQueryParameter("adminUsername", userName)
+                .build()
+                .toString();
 
 
         HttpClientUtil.runAsync(finalUrl,"GET",null ,new Callback() {
@@ -125,13 +127,4 @@ public class AdminLoginController {
     }
 
     public String getCurrentUser() { return currentUser; }
-
-
-    @FXML
-    void EnterButtonClicked(KeyEvent event) {
-        if (event.getCode().equals(KeyCode.ENTER)){
-            loginButtonClicked(new ActionEvent());
-        }
-    }
-
 }
