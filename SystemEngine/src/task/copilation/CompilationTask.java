@@ -1,9 +1,11 @@
-package task;
+package task.copilation;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import target.Target;
 import target.TargetGraph;
+import task.ExecutorThread;
+import task.GPUPTask;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
