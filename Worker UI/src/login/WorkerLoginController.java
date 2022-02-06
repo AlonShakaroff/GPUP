@@ -61,7 +61,7 @@ public class WorkerLoginController {
         String finalUrl = HttpUrl
                 .parse(Constants.LOGIN_PAGE)
                 .newBuilder()
-                .addQueryParameter("adminUsername", userName)
+                .addQueryParameter("workerUsername", userName)
                 .build()
                 .toString();
 
@@ -103,7 +103,9 @@ public class WorkerLoginController {
                             workerMainController.setUserName(currentUser);
                             workerMainController.initialize(primaryStage);
                         }
-                        catch(Exception ignore) {}
+                        catch(Exception e) {
+                            e.printStackTrace();
+                        }
                     });
                 }
             }
