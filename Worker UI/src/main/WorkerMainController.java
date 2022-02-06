@@ -3,15 +3,20 @@ package main;
 import constants.WorkersConstants;
 import dashboard.DashboardController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import tasks.control.TaskController;
 
 import java.io.IOException;
@@ -24,7 +29,7 @@ import static main.include.Constants.DASHBOARD_FXML_RESOURCE;
 
 public class WorkerMainController {
 
-    @FXML private SplitPane runTaskComponent;
+    @FXML private TabPane runTaskComponent;
     @FXML private TaskController taskController;
     @FXML private SplitPane dashboardComponent;
     @FXML private DashboardController dashboardController;
@@ -85,12 +90,18 @@ public class WorkerMainController {
 
     @FXML
     void MyTasksButtonClicked(ActionEvent event) {
-
+        if(MyTasksButton.isSelected())
+            mainChangingScene.setContent(runTaskComponent);
+        else
+            mainChangingScene.setContent(logoGridPane);
     }
 
     @FXML
     void dashboardButtonClicked(ActionEvent event) {
-
+        if (dashboardButton.isSelected())
+            mainChangingScene.setContent(dashboardComponent);
+        else
+            mainChangingScene.setContent(logoGridPane);
     }
 
     private void refreshComponentsAndControllers() throws IOException {
@@ -113,4 +124,24 @@ public class WorkerMainController {
     }
 
     public void setUserName(String userName) { this.userName = userName; }
+
+    @FXML
+    void aboutGPUPButtonClicked(ActionEvent event) {
+        if (aboutStage == null) {
+            aboutStage = new Stage();
+            Scene aboutScene = new Scene(aboutComponent, 500, 350);
+            aboutStage.getIcons().add(new Image("resources/images/icon.png"));
+            aboutStage.initOwner(primaryStage);
+            aboutStage.setScene(aboutScene);
+            aboutStage.initModality(Modality.APPLICATION_MODAL);
+            aboutStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    aboutStage.hide();
+                }
+            });
+        }
+        aboutStage.show();
+    }
+
 }
