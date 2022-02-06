@@ -33,7 +33,7 @@ import java.util.*;
 
 import static main.include.Constants.*;
 
-public class MainController {
+public class AdminMainController {
 
     @FXML private ScrollPane connectionsComponent;
     @FXML private ConnectionsController connectionsController;
@@ -56,7 +56,7 @@ public class MainController {
     private AnchorPane mainPanel;
     private String userName;
 
-    public MainController()
+    public AdminMainController()
     {
         isFileSelected = new SimpleBooleanProperty(false);
         isTaskSelected = new SimpleBooleanProperty(false);

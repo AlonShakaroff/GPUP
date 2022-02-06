@@ -18,7 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import main.MainController;
+import main.AdminMainController;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +51,7 @@ public class DashboardController {
     private final FileChooser fileChooser = new FileChooser();
     private static String lastVisitedDirectory = System.getProperty("user.home");
     private Thread refreshDashboardDataThread;
-    private MainController mainController;
+    private AdminMainController adminMainController;
 
     public DashboardController() {
         isGraphSelected = new SimpleBooleanProperty(false);
@@ -218,7 +218,7 @@ public class DashboardController {
         if(selectedGraphName == null)
             return;
 
-        mainController.setSelectedGraphTextField(selectedGraphName);
+        adminMainController.setSelectedGraphTextField(selectedGraphName);
         this.OnlineGraphsListView.getSelectionModel().clearSelection();
         String finalUrl = HttpUrl
                 .parse(Constants.GRAPHS_PATH)
@@ -243,7 +243,7 @@ public class DashboardController {
                     ResponseBody responseBody = response.body();
                     File graphXMLFile = gson.fromJson(responseBody.string(), File.class);
                     responseBody.close();
-                    Platform.runLater(()-> mainController.LoadXMLFile(graphXMLFile));
+                    Platform.runLater(()-> adminMainController.LoadXMLFile(graphXMLFile));
                 } else //Failed
                 {
                     Platform.runLater(() -> errorPopup(response.message()));
@@ -259,7 +259,7 @@ public class DashboardController {
         if(selectedTaskName == null)
             return;
 
-        mainController.setSelectedTaskTextField(selectedTaskName);
+        adminMainController.setSelectedTaskTextField(selectedTaskName);
         this.myTasksListView.getSelectionModel().clearSelection();
 
 
@@ -486,11 +486,11 @@ public class DashboardController {
         DashboardController.this.GraphTargetsTableView.setItems(this.graphInfoTableList);
     }
 
-    public MainController getMainController() {
-        return mainController;
+    public AdminMainController getMainController() {
+        return adminMainController;
     }
 
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+    public void setMainController(AdminMainController adminMainController) {
+        this.adminMainController = adminMainController;
     }
 }
