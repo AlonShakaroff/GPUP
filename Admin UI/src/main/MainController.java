@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 import javafx.util.Duration;
-import login.admin.AdminLoginController;
+import login.AdminLoginController;
 import runtask.TaskController;
 import target.TargetGraph;
 

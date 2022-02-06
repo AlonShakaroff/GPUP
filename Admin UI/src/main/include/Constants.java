@@ -4,10 +4,10 @@ public class Constants {
     public final static String MAIN_FXML_RESOURCE = "/main/MainMenu.fxml";
     public final static String CONNECTIONS_FXML_RESOURCE = "/connections/Connections.fxml";
     public final static String GRAPH_FXML_RESOURCE = "/graph/Graph.fxml";
-    public final static String DASHBOARD_FXML_RESOURCE = "/dashboard/dashboard.fxml";
+    public final static String DASHBOARD_FXML_RESOURCE = "/dashboard/AdminDashboard.fxml";
     public final static String RUNTASK_FXML_RESOURCE = "/runtask/RunTask.fxml";
     public final static String ABOUT_FXML_RESOURCE = "/aboutgpup/AboutGpup.fxml";
-    public final static String LOGIN_FXML_RESOURCE = "/login/admin/AdminLogin.fxml";
+    public final static String LOGIN_FXML_RESOURCE = "/login/AdminLogin.fxml";
 
     public final static String BASE_DOMAIN = "localhost";
     private final static String BASE_URL = "http://" + BASE_DOMAIN + ":8080";

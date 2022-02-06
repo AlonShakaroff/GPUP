@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import login.admin.AdminLoginController;
+import login.AdminLoginController;
 import main.include.Constants;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static main.include.Constants.LOGIN_FXML_RESOURCE;
 
-public class Main extends Application {
+public class AdminMain extends Application {
     public static void main(String[] args) {
         launch(args);
     }

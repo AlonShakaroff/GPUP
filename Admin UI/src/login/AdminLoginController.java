@@ -1,4 +1,4 @@
-package login.admin;
+package login;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;

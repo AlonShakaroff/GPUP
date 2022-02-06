@@ -7,7 +7,7 @@
         <element id="directory" name="classes">
           <element id="module-output" name="WebApplication" />
           <element id="module-output" name="SystemEngine" />
-          <element id="module-output" name="UI" />
+          <element id="module-output" name="Admin UI" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="application_server_libraries" name="Tomcat 10.0.16" />

@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/SystemEngine_jar</output-path>
     <root id="archive" name="SystemEngine.jar">
       <element id="module-output" name="SystemEngine" />
-      <element id="module-output" name="UI" />
+      <element id="module-output" name="Admin UI" />
     </root>
   </artifact>
 </component>

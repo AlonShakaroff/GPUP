@@ -7,8 +7,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Admin UI" />
-    <orderEntry type="library" name="Tomcat 10.0.16" level="application_server_libraries" />
-    <orderEntry type="module" module-name="WebApplication" />
   </component>
 </module>
