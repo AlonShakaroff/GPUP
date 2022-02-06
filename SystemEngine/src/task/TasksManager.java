@@ -1,7 +1,6 @@
 package task;
 
 import dtos.TaskDetailsDto;
-import target.Graph;
 import target.TargetGraph;
 import task.copilation.CompilationTaskInformation;
 import task.simulation.SimulationTaskInformation;
