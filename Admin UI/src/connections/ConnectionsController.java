@@ -1,6 +1,7 @@
 package connections;
 
-import javafx.beans.InvalidationListener;
+import com.google.gson.Gson;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -12,6 +13,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -19,10 +22,22 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
-import target.Target;
+import main.AdminMainController;
+import main.include.Constants;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import target.TargetGraph;
+import task.copilation.CompilationParameters;
+import task.copilation.CompilationTaskInformation;
+import task.simulation.SimulationParameters;
+import task.simulation.SimulationTaskInformation;
+import util.http.HttpClientUtil;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class ConnectionsController {
@@ -32,6 +47,7 @@ public class ConnectionsController {
     String destinationTargetName;
     String circleTargetName;
     String whatIfTargetName;
+    private AdminMainController mainController;
     private final SimpleBooleanProperty isSourceTargetSelected;
     private final SimpleBooleanProperty isDestinationTargetSelected;
     private final SimpleBooleanProperty isWhatIfTargetSelected;
@@ -67,6 +83,8 @@ public class ConnectionsController {
     ObservableList<String> circleList = FXCollections.observableArrayList();
     ObservableList<String> whatIfList = FXCollections.observableArrayList();
     TargetGraph targetGraph;
+    Gson gson;
+    SimulationParameters simulationParametes;
 
     public ConnectionsController() {
         howManyTargetsSelected = new SimpleIntegerProperty(0);
@@ -83,6 +101,7 @@ public class ConnectionsController {
         isWhatIfTargetSelected = new SimpleBooleanProperty(false);
         isDestinationTargetSelected = new SimpleBooleanProperty(false);
         isCircleTargetSelected = new SimpleBooleanProperty(false);
+        this.gson = new Gson();
     }
 
     @FXML
@@ -482,7 +501,44 @@ public class ConnectionsController {
 
     @FXML
     void addTaskButtonClicked(ActionEvent event) {
+        String taskName = this.TaskNameTextField.getText();
+        String uploader = this.mainController.getUserName();
+        String graphName = this.targetGraph.getGraphName();
+        Set<String> TaskTargets = new HashSet<>();
+        String taskTypeRequest = null;
+        String stringObject = null;
 
+        TaskTargets.addAll(currentSelectedList);
+
+        if(simulationTitledPane.isExpanded())
+        {
+            Integer pricing = this.targetGraph.getTaskPricing().get(TargetGraph.TaskType.SIMULATION);
+
+            SimulationParameters simulationParameters = new SimulationParameters(
+                     simulationTimeSpinner.getValue(),simulationRandomCheckBox.isSelected(),
+                    simulationSuccessRateSpinner.getValue(), simulationWarningRateSpinner.getValue());
+
+            SimulationTaskInformation taskInfo = new SimulationTaskInformation
+                    (taskName, uploader, graphName, TaskTargets, pricing, simulationParameters);
+
+            taskTypeRequest = "Simulation";
+            stringObject = this.gson.toJson(taskInfo);
+        }
+        else if(compileTaskTitledPane.isExpanded())
+        {
+            Integer pricing = this.targetGraph.getTaskPricing().get(TargetGraph.TaskType.COMPILATION);
+
+            CompilationParameters compilationParameters = new CompilationParameters(
+                    new File(compileTaskSourceTextField.getText()), new File(compileTaskDestTextField.getText()));
+
+            CompilationTaskInformation taskInfo = new CompilationTaskInformation(
+                    taskName, uploader, graphName, TaskTargets, pricing, compilationParameters);
+
+            taskTypeRequest = "Compilation";
+            stringObject = this.gson.toJson(taskInfo);
+        }
+
+        uploadTaskToServer(stringObject, taskTypeRequest);
     }
 
     @FXML
@@ -515,5 +571,39 @@ public class ConnectionsController {
         if (event.getCode().equals(KeyCode.ENTER)){
             selectAllButton.requestFocus();
         }
+    }
+
+    public void setMainController(AdminMainController mainController) {
+        this.mainController = mainController;
+    }
+
+    private void uploadTaskToServer(String stringObject, String taskTypeRequest) {
+        RequestBody body = RequestBody.create(stringObject, MediaType.parse("application/json"));
+
+        Request request = new Request.Builder()
+                .url(Constants.TASKS_PATH)
+                .post(body).addHeader(taskTypeRequest, taskTypeRequest)
+                .build();
+
+        HttpClientUtil.runAsyncWithRequest(request, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> errorPopup(e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(!(response.code() >= 200 && response.code() < 300))
+                    Platform.runLater(() -> errorPopup(response.header("message")));
+            }
+        });
+    }
+
+    public void errorPopup(String message) {
+        Toolkit.getDefaultToolkit().beep();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Loading error");
+        alert.setHeaderText(message);
+        Optional<ButtonType> result = alert.showAndWait();
     }
 }

@@ -1,6 +1,7 @@
 package dashboard;
 
 import com.google.gson.Gson;
+import dashboard.tableitems.SelectedTaskStatusTableItem;
 import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.GraphInfoDto;
 import javafx.application.Platform;
@@ -22,6 +23,7 @@ import main.AdminMainController;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import org.omg.PortableInterceptor.NON_EXISTENT;
 import users.UsersLists;
 import util.http.HttpClientUtil;
 
@@ -33,7 +35,8 @@ import java.util.Set;
 
 public class DashboardController {
     private ObservableList<String> onlineGraphsList = FXCollections.observableArrayList();
-    private ObservableList<String> onlineTasksList = FXCollections.observableArrayList();
+    private ObservableList<String> allTasksList = FXCollections.observableArrayList();
+    private ObservableList<String> myTasksList = FXCollections.observableArrayList();
     private ObservableList<String> onlineAdminsList = FXCollections.observableArrayList();
     private ObservableList<String> onlineWorkersList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedGraphList = FXCollections.observableArrayList();
@@ -159,13 +162,13 @@ public class DashboardController {
     @FXML
     private TableColumn<TargetsInfoTableItem, Integer> TaskRootAmount;
     @FXML
-    private TableView<?> TaskInfoTableView;
+    private TableView<SelectedTaskStatusTableItem> TaskInfoTableView;
     @FXML
-    private TableColumn<?, ?> TaskStatus;
+    private TableColumn<SelectedTaskStatusTableItem, String> TaskStatus;
     @FXML
-    private TableColumn<?, ?> currentWorkers;
+    private TableColumn<SelectedTaskStatusTableItem, Integer> currentWorkers;
     @FXML
-    private TableColumn<?, ?> TaskWorkPayment;
+    private TableColumn<SelectedTaskStatusTableItem, Integer> TaskWorkPayment;
 
     @FXML
     void AddNewGraphButtonClicked(ActionEvent event) throws IOException {
@@ -261,7 +264,6 @@ public class DashboardController {
         adminMainController.setSelectedTaskTextField(selectedTaskName);
         this.myTasksListView.getSelectionModel().clearSelection();
 
-
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -285,6 +287,7 @@ public class DashboardController {
         while (refreshDashboardDataThread.isAlive()) {
             getUsersLists();
             refreshGraphList();
+            refreshTaskLists();
         }
     }
 
@@ -334,6 +337,20 @@ public class DashboardController {
         this.GraphMiddleAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("middles"));
         this.GraphLeafAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("leaves"));
         this.GraphIndependentAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("independents"));
+    }
+
+    public void initializeTaskTargetDetailsTable() {
+        this.TaskTargetsAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("targets"));
+        this.TaskRootAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("roots"));
+        this.TaskMiddleAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("middles"));
+        this.TaskLeafAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("leaves"));
+        this.TaskIndependentAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("independents"));
+    }
+
+    public void initializeTaskStatusTable() {
+        this.TaskStatus.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, String>("status"));
+        this.currentWorkers.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, Integer>("workers"));
+        this.TaskWorkPayment.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, Integer>("totalPayment"));
     }
 
     private void logout() {
@@ -404,16 +421,6 @@ public class DashboardController {
                 onlineGraphsList.add(curr);
         }
     }
-    private void updateTasksListView(Set<String> taskSet) {
-        if (taskSet == null)
-            return;
-
-        for (String curr : taskSet) {
-            if (!onlineTasksList.contains(curr))
-                onlineTasksList.add(curr);
-        }
-    }
-
 
     private void displaySelectedTaskInfo() {
         if (currentSelectedAllTasksList.isEmpty())
@@ -492,4 +499,109 @@ public class DashboardController {
     public void setMainController(AdminMainController adminMainController) {
         this.adminMainController = adminMainController;
     }
+
+
+    private void refreshTaskLists() {
+        refreshAllTasksList();
+        refreshMyTasksList();
+    }
+
+    private void refreshAllTasksList() {
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_LIST_PATH)
+                .newBuilder()
+                .addQueryParameter("allTasksList", "allTasksList")
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300)
+                {
+                    Platform.runLater(() ->
+                            {
+                                Gson gson = new Gson();
+                                ResponseBody responseBody = response.body();
+                                try {
+                                    if (responseBody != null) {
+                                        Set taskList = gson.fromJson(responseBody.string(), Set.class);
+                                        updateAllTasksList(taskList);
+                                        responseBody.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    );
+                }
+            }
+        });
+    }
+
+    private void updateAllTasksList(Set<String> allTasksList) {
+        if(allTasksList == null)
+            return;
+
+        for(String curr : allTasksList)
+        {
+            if(!DashboardController.this.allTasksList.contains(curr))
+                DashboardController.this.allTasksList.add(curr);
+        }
+    }
+
+
+    private void refreshMyTasksList() {
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_LIST_PATH)
+                .newBuilder()
+                .addQueryParameter("myTasksList", "myTasksList")
+                .addQueryParameter("username", this.userName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    Platform.runLater(() ->
+                            {
+                                Gson gson = new Gson();
+                                ResponseBody responseBody = response.body();
+                                try {
+                                    if (responseBody != null) {
+                                        Set taskList = gson.fromJson(responseBody.string(), Set.class);
+                                        updateMyTasksList(taskList);
+                                        responseBody.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    );
+                }
+            }
+        });
+    }
+
+    private void updateMyTasksList(Set<String> myTasksList) {
+        if(myTasksList == null)
+            return;
+
+        for(String curr : myTasksList)
+        {
+            if(!DashboardController.this.myTasksList.contains(curr))
+                DashboardController.this.myTasksList.add(curr);
+        }
+    }
+
 }
