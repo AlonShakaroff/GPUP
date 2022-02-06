@@ -10,7 +10,8 @@ public class SimulationTaskInformation {
     private final Integer pricingForTarget;
     private final SimulationParameters simulationParameters;
 
-    public SimulationTaskInformation(String taskName, String taskCreator, String graphName, Set<String> targetsToExecute, Integer pricingForTarget, SimulationParameters simulationParameters) {
+    public SimulationTaskInformation(String taskName, String taskCreator, String graphName,
+                                     Set<String> targetsToExecute, Integer pricingForTarget, SimulationParameters simulationParameters) {
         this.taskName = taskName;
         this.taskCreator = taskCreator;
         this.graphName = graphName;

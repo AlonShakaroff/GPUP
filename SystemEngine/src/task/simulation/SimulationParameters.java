@@ -1,26 +1,24 @@
 package task.simulation;
 
-import java.time.Duration;
-
 public class SimulationParameters {
-    private Duration processingTime;
+    private int processingTime;
     private Boolean isRandom;
     private Double successRate, successWithWarnings;
 
     public SimulationParameters() {
-        this.processingTime = null;
+        this.processingTime = 0;
         this.isRandom = false;
         this.successRate = this.successWithWarnings = 0.0;
     }
 
-    public SimulationParameters(Duration processingTime, Boolean isRandom, Double successRate, Double successWithWarnings) {
+    public SimulationParameters(int processingTime, Boolean isRandom, Double successRate, Double successWithWarnings) {
         this.processingTime = processingTime;
         this.isRandom = isRandom;
         this.successRate = successRate;
         this.successWithWarnings = successWithWarnings;
     }
 
-    public Duration getProcessingTime() {
+    public int getProcessingTime() {
         return this.processingTime;
     }
 
@@ -48,7 +46,7 @@ public class SimulationParameters {
         this.successWithWarnings = successWithWarnings;
     }
 
-    public void setProcessingTime(Duration processingTime) {
+    public void setProcessingTime(int processingTime) {
         this.processingTime = processingTime;
     }
 }

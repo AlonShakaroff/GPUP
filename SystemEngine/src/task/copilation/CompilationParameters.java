@@ -6,9 +6,9 @@ public class CompilationParameters {
     private final File sourceCodeDirectory;
     private final File destinationDirectory;
 
-    public CompilationParameters(File sourceCodeDirectory, File outputDirectory) {
+    public CompilationParameters(File sourceCodeDirectory, File destinationDirectory) {
         this.sourceCodeDirectory = sourceCodeDirectory;
-        this.destinationDirectory = outputDirectory;
+        this.destinationDirectory = destinationDirectory;
     }
 
     public File getSourceCodeDirectory() {

@@ -12,7 +12,7 @@ import utils.ServletUtils;
 import java.io.IOException;
 import java.util.Set;
 
-@WebServlet(name = "TaskListServlet", urlPatterns = "/tasks-list")
+@WebServlet(name = "TaskListServlet", urlPatterns = "/tasks/list")
 public class TaskListServlet extends HttpServlet {
 
     private static final Object dummy = new Object();
@@ -29,14 +29,14 @@ public class TaskListServlet extends HttpServlet {
             tasksManager = ServletUtils.getTasksManager(getServletContext());
         }
 
-        if(req.getParameter("all-tasks-list") == null && req.getParameter("my-tasks-list") == null)
+        if(req.getParameter("allTasksList") == null && req.getParameter("myTasksList") == null)
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         else
         {
             Set<String> tasksList;
-            if(req.getParameter("all-tasks-list") != null)
+            if(req.getParameter("allTasksList") != null)
                 tasksList = tasksManager.getAllTaskList();
-            else //(req.getParameter("my-tasks-list") != null)
+            else
                 tasksList = tasksManager.getUserTaskList(req.getParameter("username"));
 
             listAsString = gson.toJson(tasksList);

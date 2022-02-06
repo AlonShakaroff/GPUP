@@ -76,6 +76,7 @@ public class AdminMainController {
         dashboardController.setPrimaryStage(primaryStage);
         dashboardController.setUserName(userName);
         dashboardController.setMainController(this);
+        connectionsController.setMainController(this);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(ABOUT_FXML_RESOURCE);

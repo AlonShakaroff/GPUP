@@ -15,10 +15,7 @@ import java.io.IOException;
 
 @WebServlet(name = "TasksServlet", urlPatterns = "/tasks")
 public class TasksServlet extends HttpServlet {
-    //---------------------------------------------------Members---------------------------------------//
     public Gson gson = new Gson();
-
-    //----------------------------------------------------doGet----------------------------------------//
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
