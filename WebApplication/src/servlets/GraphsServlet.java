@@ -121,7 +121,7 @@ public class GraphsServlet extends HttpServlet {
                 resp.addHeader("graphname", graph.getGraphName());
             }
         } catch (Exception e) {
-            resp.getWriter().println(e);
+            resp.addHeader("message", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }

@@ -12,6 +12,6 @@ public class TargetNotExistException extends Exception {
 
     @Override
     public String getMessage(){
-        return ("the target " + referToNotExist.getName() + " refer to target " + notExist + " that not exist\n");
+        return ("The target " + referToNotExist.getName() + " refers to the target " + notExist + " that does not exist\n");
     }
 }

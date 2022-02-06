@@ -12,6 +12,6 @@ public class TargetsDependsOnEachOtherException extends Exception {
 
     @Override
     public String getMessage(){
-        return ("the targets " + target1.getName() + " and " +target2.getName() + " depend on each other\n");
+        return ("The targets " + target1.getName() + " and " +target2.getName() + " depend on each other\n");
     }
 }

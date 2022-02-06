@@ -10,6 +10,6 @@ public class TargetAppearTwiceException extends Exception {
 
     @Override
     public String getMessage(){
-        return ("the target " + target.getName() + " appears more then once \n");
+        return ("The target " + target.getName() + " appears more then once \n");
     }
 }

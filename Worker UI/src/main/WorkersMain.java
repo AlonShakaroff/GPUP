@@ -18,6 +18,7 @@ import java.util.Optional;
 
 
 public class WorkersMain extends Application {
+    /**
     public static void main(String[] args) {
         launch(args);
     }
@@ -80,4 +81,5 @@ public class WorkersMain extends Application {
             }
         });
     }
+    **/
 }

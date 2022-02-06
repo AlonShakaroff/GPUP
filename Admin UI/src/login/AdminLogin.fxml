@@ -21,7 +21,7 @@
                      <children>
                         <ImageView fx:id="miniLogoImageView" fitHeight="102.0" fitWidth="185.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/images/miniAboutLogo.png" />
+                              <Image url="@../resources/images/miniAboutLogo.png" />
                            </image>
                         </ImageView>
                         <Label styleClass="headLines" text="Admin login">
@@ -34,7 +34,7 @@
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
                         <Label maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="User name:" />
-                        <TextField fx:id="userNameTextField" onKeyTyped="#userNameKeyTyped" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="userNameTextField" onKeyPressed="#EnterButtonClicked" onKeyTyped="#userNameKeyTyped" HBox.hgrow="ALWAYS" />
                      </children>
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
