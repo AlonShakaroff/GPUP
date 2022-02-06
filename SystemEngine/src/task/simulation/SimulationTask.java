@@ -1,8 +1,10 @@
-package task;
+package task.simulation;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import target.Target;
+import task.ExecutorThread;
+import task.GPUPTask;
 //import userinterface.Communicator;
 
 import java.time.Duration;

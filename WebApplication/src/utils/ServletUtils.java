@@ -5,6 +5,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import target.GraphsManager;
 import target.TargetGraph;
+import task.TasksManager;
 import users.UserManager;
 
 import java.util.HashMap;
@@ -13,9 +14,11 @@ public class ServletUtils {
 
 	private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
 	private static final String GRAPHS_MANAGER_ATTRIBUTE_NAME = "graphsManager";
+	private static final String TASK_MANAGER_ATTRIBUTE_NAME = "taskManager";
 
 	private static final Object userManagerLock = new Object();
 	private static final Object graphsManagerLock = new Object();
+	private static final Object taskManagerLock = new Object();
 
 	public static UserManager getUserManager(ServletContext servletContext) {
 		synchronized (userManagerLock) {
@@ -35,4 +38,14 @@ public class ServletUtils {
 		}
 		return (GraphsManager) servletContext.getAttribute(GRAPHS_MANAGER_ATTRIBUTE_NAME);
 	}
+
+	public static TasksManager getTasksManager(ServletContext servletContext) {
+		synchronized (taskManagerLock) {
+			if (servletContext.getAttribute(TASK_MANAGER_ATTRIBUTE_NAME) == null) {
+				servletContext.setAttribute(TASK_MANAGER_ATTRIBUTE_NAME, new TasksManager());
+			}
+		}
+		return (TasksManager)servletContext.getAttribute(TASK_MANAGER_ATTRIBUTE_NAME);
+	}
+
 }
