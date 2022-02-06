@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import target.Target;
 import target.TargetGraph;
+import task.copilation.CompilationTask;
+import task.simulation.SimulationTask;
 
 import java.time.Duration;
 import java.time.Instant;
