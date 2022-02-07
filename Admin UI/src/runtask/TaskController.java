@@ -1,5 +1,9 @@
 package runtask;
 
+import com.google.gson.Gson;
+import dashboard.tableitems.SelectedTaskStatusTableItem;
+import dashboard.tableitems.TargetsInfoTableItem;
+import dtos.TaskDetailsDto;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
@@ -12,15 +16,32 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import main.AdminMainController;
+import main.include.Constants;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import runtask.tableview.TargetInfoTableItem;
 import target.Target;
 import target.TargetGraph;
 import task.ExecutorThread;
 import task.GPUPTask;
+import task.TasksManager;
+import task.copilation.CompilationTaskInformation;
+import task.simulation.SimulationTaskInformation;
+import util.http.HttpClientUtil;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +49,9 @@ public class TaskController {
 
     private TargetGraph targetGraph;
     private GPUPTask currentGPUPTask;
+    private SimulationTaskInformation simulationTaskInformation = null;
+    private CompilationTaskInformation compilationTaskInformation = null;
+    private AdminMainController mainController;
     private ExecutorThread taskThread;
     private Thread dataRefreshThread;
     private Task<Void> task;
@@ -49,6 +73,7 @@ public class TaskController {
     private final ObservableList<String> inProcessTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> finishedTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<TargetInfoTableItem> targetInfoTableList = FXCollections.observableArrayList();
+    private ObservableList<TargetsInfoTableItem> TaskInfoTargetTableList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedFrozenList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedSkippedList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedWaitingList = FXCollections.observableArrayList();
@@ -190,6 +215,7 @@ public class TaskController {
         WaitingListView.setItems(waitingTargetsNameList);
         InProcessListView.setItems(inProcessTargetsNameList);
         FinishedListView.setItems(finishedTargetsNameList);
+        initializeTaskTargetDetailsTable();
     }
 
     @FXML
@@ -217,22 +243,22 @@ public class TaskController {
     private TextField TaskOnGraphTextField;
 
     @FXML
-    private TableView<TargetInfoTableItem> GraphTargetsTableView;
+    private TableView<TargetsInfoTableItem> GraphTargetsTableView;
 
     @FXML
-    private TableColumn<TargetInfoTableItem, Integer > GraphTargetsAmount;
+    private TableColumn<TargetsInfoTableItem, Integer > GraphTargetsAmount;
 
     @FXML
-    private TableColumn<TargetInfoTableItem, Integer> GraphIndependentAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphIndependentAmount;
 
     @FXML
-    private TableColumn<TargetInfoTableItem, Integer > GraphLeafAmount;
+    private TableColumn<TargetsInfoTableItem, Integer > GraphLeafAmount;
 
     @FXML
-    private TableColumn<TargetInfoTableItem, Integer> GraphMiddleAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphMiddleAmount;
 
     @FXML
-    private TableColumn<TargetInfoTableItem, Integer> GraphRootAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphRootAmount;
 
     @FXML
     private CheckBox incrementalCheckBox;
@@ -276,6 +302,9 @@ public class TaskController {
     @FXML
     private Label progressBarLabel;
 
+    @FXML
+    private TextField TaskTypeTextField;
+
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
@@ -315,6 +344,131 @@ public class TaskController {
         type.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Type"));
         status.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Status"));
     }
+
+    public void setSimulationTaskInformation(SimulationTaskInformation simulationTaskInformation) {
+        this.simulationTaskInformation = simulationTaskInformation;
+    }
+
+    public void setCompilationTaskInformation(CompilationTaskInformation compilationTaskInformation) {
+        this.compilationTaskInformation = compilationTaskInformation;
+    }
+
+    public void setCurrentGPUPTask(GPUPTask currentGPUPTask) {
+        this.currentGPUPTask = currentGPUPTask;
+    }
+
+    private void displaySelectedTaskInfo(String selectedTaskName) {
+
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("selectedTaskName", selectedTaskName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    Platform.runLater(() ->
+                            {
+                                Gson gson = new Gson();
+                                ResponseBody responseBody = response.body();
+                                try {
+                                    if (responseBody != null) {
+                                        TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
+                                        responseBody.close();
+                                        displaySelectedTaskInfoFromDto(taskDetailsDto);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    );
+                }
+            }
+        });
+    }
+
+    private void displaySelectedTaskInfoFromDto(TaskDetailsDto taskDetailsDto) {
+        this.TaskNameTextField.setText(taskDetailsDto.getTaskName());
+        this.CurrentWorkersTextField.setText(taskDetailsDto.getTotalWorkers().toString());
+        this.TaskOnGraphTextField.setText(taskDetailsDto.getGraphName());
+        this.TaskTypeTextField.setText(taskDetailsDto.getTaskType().toString());
+
+        TargetsInfoTableItem targetsInfoTableItem = new TargetsInfoTableItem(taskDetailsDto.getRoots(),
+                taskDetailsDto.getMiddles(), taskDetailsDto.getLeaves(), taskDetailsDto.getIndependents(), taskDetailsDto.getTargets());
+        this.TaskInfoTargetTableList.clear();
+        this.TaskInfoTargetTableList.add(targetsInfoTableItem);
+
+        this.GraphTargetsTableView.setItems(TaskInfoTargetTableList);
+    }
+
+
+    public void setNewTask() {
+        String taskName = mainController.getTaskName();
+        displaySelectedTaskInfo(taskName);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("task", taskName)
+                .build()
+                .toString();
+         HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+
+             @Override
+             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                 Platform.runLater(() ->
+                         errorPopup(e.getMessage()));
+             }
+
+             @Override
+             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                 if (response.code() >= 200 && response.code() < 300) //Success
+                 {
+                     Gson gson = new Gson();
+                     ResponseBody responseBody = response.body();
+                     if (TaskTypeTextField.getText().equals(TargetGraph.TaskType.SIMULATION.toString())) // if Simulation
+                     {
+                         simulationTaskInformation = gson.fromJson(responseBody.string(), SimulationTaskInformation.class);
+                     }
+                     else { //if compilation
+                         compilationTaskInformation = gson.fromJson(responseBody.string(), CompilationTaskInformation.class);
+                     }
+                     responseBody.close();
+                 } else //Failed
+                 {
+                     Platform.runLater(() -> errorPopup(response.message()));
+                 }
+             }
+         });
+    }
+    public void errorPopup(String message) {
+        Toolkit.getDefaultToolkit().beep();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Loading error");
+        alert.setHeaderText(message);
+        Optional<ButtonType> result = alert.showAndWait();
+    }
+
+    public void setMainController(AdminMainController mainController) {
+        this.mainController = mainController;
+    }
+
+    public void initializeTaskTargetDetailsTable() {
+        this.GraphTargetsAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("targets"));
+        this.GraphRootAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("roots"));
+        this.GraphMiddleAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("middles"));
+        this.GraphLeafAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("leaves"));
+        this.GraphIndependentAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("independents"));
+    }
+
     /*-------------------------------------------------data refreshing thread------------------------------------------------------------------------------------*/
 
     private void refreshTaskData() {

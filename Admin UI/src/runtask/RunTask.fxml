@@ -90,6 +90,12 @@
                               <TextField fx:id="TaskNameTextField" editable="false" focusTraversable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" promptText="Task's name" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
+                        <HBox alignment="CENTER" layoutX="20.0" layoutY="20.0">
+                           <children>
+                              <Label text="Task type:            " HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="TaskTypeTextField" editable="false" focusTraversable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" promptText="Simulation / Compilation" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER">
                            <children>
                               <Label text="Current workers: " HBox.hgrow="ALWAYS" />

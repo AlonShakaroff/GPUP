@@ -77,12 +77,16 @@ public class AdminMainController {
         dashboardController.setUserName(userName);
         dashboardController.setMainController(this);
         connectionsController.setMainController(this);
-
+        taskController.setMainController(this);
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(ABOUT_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
         aboutComponent = fxmlLoader.load(url.openStream());
         AnimationsOffButton.setDisable(true);
+
+        SelectedTaskTextField.textProperty().addListener(observable -> {
+            taskController.setNewTask();
+        });
 
         rotate = new RotateTransition(Duration.seconds(4), logoImageView);
         rotate.setByAngle(360);
@@ -358,5 +362,9 @@ public class AdminMainController {
         this.mainChangingScene.setContent(dashboardComponent);
         dashboardButton.setSelected(true);
         dashboardController.expandTaskTitledPane();
+    }
+
+    public String getTaskName() {
+        return SelectedTaskTextField.getText();
     }
 }
