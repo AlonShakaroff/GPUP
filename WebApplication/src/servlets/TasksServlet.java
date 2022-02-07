@@ -23,9 +23,9 @@ public class TasksServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
 
-        if(req.getParameter("task-info") != null)
+        if(req.getParameter("selectedTaskName") != null)
         {
-            String taskInfoName = req.getParameter("task-info");
+            String taskInfoName = req.getParameter("selectedTaskName");
             String infoAsString;
 
             if(tasksManager.isTaskExists(taskInfoName))
@@ -55,14 +55,14 @@ public class TasksServlet extends HttpServlet {
                     SimulationTaskInformation simulationInfo = tasksManager.getSimulationTaskInformation(taskName);
                     infoAsString = this.gson.toJson(simulationInfo, SimulationTaskInformation.class);
 
-                    resp.addHeader("task-type", "simulation");
+                    resp.addHeader("taskType", "simulation");
                 }
                 else  //Requesting for compilation task
                 {
                     CompilationTaskInformation compilationInfo = tasksManager.getCompilationTaskInformation(taskName);
                     infoAsString = this.gson.toJson(compilationInfo, CompilationTaskInformation.class);
 
-                    resp.addHeader("task-type", "compilation");
+                    resp.addHeader("taskType", "compilation");
                 }
 
                 resp.getWriter().write(infoAsString);
@@ -114,7 +114,7 @@ public class TasksServlet extends HttpServlet {
                 resp.addHeader("message", "The task " + newTaskInfo.getTaskName() + " uploaded successfully!");
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
 
-                tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(), ServletUtils.getGraphsManager(getServletContext()).getGraph(newTaskInfo.getGraphName()));
+                tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(), ServletUtils.getGraphsManager(getServletContext()).getGraph(newTaskInfo.getGraphName().toLowerCase()));
             }
             else //A task with the same name already exists in the system
             {

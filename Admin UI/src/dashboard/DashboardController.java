@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dashboard.tableitems.SelectedTaskStatusTableItem;
 import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.GraphInfoDto;
+import dtos.TaskDetailsDto;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -43,6 +44,8 @@ public class DashboardController {
     private ObservableList<String> currentSelectedMyTasksList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedAllTasksList = FXCollections.observableArrayList();
     private ObservableList<TargetsInfoTableItem> graphInfoTableList = FXCollections.observableArrayList();
+    private ObservableList<TargetsInfoTableItem> TaskInfoTargetTableList = FXCollections.observableArrayList();
+    private ObservableList<SelectedTaskStatusTableItem> TaskGeneralInfoTableList = FXCollections.observableArrayList();
     private ListChangeListener<String> currentSelectedGraphListListener;
     private ListChangeListener<String> currentSelectedMyTasksListListener;
     private ListChangeListener<String> currentSelectedAllTasksListListener;
@@ -81,6 +84,8 @@ public class DashboardController {
         currentSelectedMyTasksList.addListener(currentSelectedMyTasksListListener);
         currentSelectedAllTasksList.addListener(currentSelectedAllTasksListListener);
         initializeTargetDetailsTable();
+        initializeTaskTargetDetailsTable();
+        initializeTaskStatusTable();
         refreshDashboardDataThread = new Thread(this::refreshDashboardData);
         Thread suddenExitHook = new Thread(this::logout);
         Runtime.getRuntime().addShutdownHook(suddenExitHook);
@@ -430,6 +435,64 @@ public class DashboardController {
 
         String selectedTaskName = currentSelectedAllTasksList.get(0);
 
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("selectedTaskName", selectedTaskName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    Platform.runLater(() ->
+                            {
+                                Gson gson = new Gson();
+                                ResponseBody responseBody = response.body();
+                                try {
+                                    if (responseBody != null) {
+                                        TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
+                                        responseBody.close();
+                                        displaySelectedTaskInfoFromDto(taskDetailsDto);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    );
+                }
+            }
+        });
+    }
+
+    private void displaySelectedTaskInfoFromDto(TaskDetailsDto taskDetailsDto) {
+        this.TaskNameTextField.setText(taskDetailsDto.getTaskName());
+        this.CreatedByTextField.setText(taskDetailsDto.getUploader());
+        this.TaskOnGraphTextField.setText(taskDetailsDto.getGraphName());
+
+        updateTaskDetailsTables(taskDetailsDto);
+    }
+
+    private void updateTaskDetailsTables(TaskDetailsDto taskDetailsDto) {
+
+        TargetsInfoTableItem targetsInfoTableItem = new TargetsInfoTableItem(taskDetailsDto.getRoots(),
+                taskDetailsDto.getMiddles(), taskDetailsDto.getLeaves(), taskDetailsDto.getIndependents(), taskDetailsDto.getTargets());
+        SelectedTaskStatusTableItem selectedTaskStatusTableItem =
+                new SelectedTaskStatusTableItem(taskDetailsDto.getTaskStatus(),taskDetailsDto.getTotalWorkers(),taskDetailsDto.getTotalPayment());
+
+        this.TaskInfoTargetTableList.clear();
+        this.TaskInfoTargetTableList.add(targetsInfoTableItem);
+        this.TaskGeneralInfoTableList.clear();
+        this.TaskGeneralInfoTableList.add(selectedTaskStatusTableItem);
+
+        this.TaskTypeTableView.setItems(this.TaskInfoTargetTableList);
+        this.TaskInfoTableView.setItems(this.TaskGeneralInfoTableList);
     }
 
     private void displaySelectedGraphInfo() {
@@ -480,10 +543,10 @@ public class DashboardController {
         this.SimulationPriceTextField.setText(graphInfoDto.getSimulationPrice().toString());
         this.CompilationPriceTextField.setText(graphInfoDto.getCompilationPrice().toString());
 
-        updateTargetDetailsTable(graphInfoDto);
+        updateGraphTargetDetailsTable(graphInfoDto);
     }
 
-    private void updateTargetDetailsTable(GraphInfoDto graphInfoDto) {
+    private void updateGraphTargetDetailsTable(GraphInfoDto graphInfoDto) {
 
         TargetsInfoTableItem targetsInfoTableItem = new TargetsInfoTableItem(graphInfoDto.getRoots(),
                 graphInfoDto.getMiddles(), graphInfoDto.getLeaves(), graphInfoDto.getIndependents(), graphInfoDto.getTargets());
