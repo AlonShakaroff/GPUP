@@ -87,6 +87,8 @@ public class DashboardController {
         onlineAdminsListView.setItems(onlineAdminsList);
         onlineWorkersListView.setItems(onlineWorkersList);
         OnlineGraphsListView.setItems(onlineGraphsList);
+        AllTasksListView.setItems(allTasksList);
+        myTasksListView.setItems(myTasksList);
         refreshDashboardDataThread.setDaemon(true);
         refreshDashboardDataThread.start();
     }
@@ -263,7 +265,7 @@ public class DashboardController {
 
         adminMainController.setSelectedTaskTextField(selectedTaskName);
         this.myTasksListView.getSelectionModel().clearSelection();
-
+        adminMainController.setSceneToTask();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -604,4 +606,7 @@ public class DashboardController {
         }
     }
 
+    public void expandTaskTitledPane() {
+        OnlineTasksTiltedPane.setExpanded(true);
+    }
 }

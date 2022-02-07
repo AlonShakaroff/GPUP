@@ -595,6 +595,8 @@ public class ConnectionsController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if(!(response.code() >= 200 && response.code() < 300))
                     Platform.runLater(() -> errorPopup(response.header("message")));
+                else // created task successfully
+                   Platform.runLater(()-> mainController.setSceneToDashboardAndExpandTaskTitledPane());
             }
         });
     }

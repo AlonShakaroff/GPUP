@@ -348,4 +348,15 @@ public class AdminMainController {
     public void setSelectedTaskTextField(String taskName){
         this.SelectedTaskTextField.setText(taskName);
     }
+
+    public void setSceneToTask() {
+        this.mainChangingScene.setContent(runTaskComponent);
+        runTaskButton.setSelected(true);
+    }
+
+    public void setSceneToDashboardAndExpandTaskTitledPane() {
+        this.mainChangingScene.setContent(dashboardComponent);
+        dashboardButton.setSelected(true);
+        dashboardController.expandTaskTitledPane();
+    }
 }
