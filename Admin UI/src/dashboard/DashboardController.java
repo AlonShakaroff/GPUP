@@ -157,6 +157,8 @@ public class DashboardController {
     @FXML
     private TextField TaskOnGraphTextField;
     @FXML
+    private TextField TaskTypeTextField;
+    @FXML
     private TableView<TargetsInfoTableItem> TaskTypeTableView;
     @FXML
     private TableColumn<TargetsInfoTableItem, Integer> TaskTargetsAmount;
@@ -475,6 +477,7 @@ public class DashboardController {
         this.TaskNameTextField.setText(taskDetailsDto.getTaskName());
         this.CreatedByTextField.setText(taskDetailsDto.getUploader());
         this.TaskOnGraphTextField.setText(taskDetailsDto.getGraphName());
+        this.TaskTypeTextField.setText(taskDetailsDto.getTaskTypeAsString());
 
         updateTaskDetailsTables(taskDetailsDto);
     }

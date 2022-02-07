@@ -96,7 +96,8 @@ public class TasksServlet extends HttpServlet {
                 resp.addHeader("message", "The task " + newTaskInfo.getTaskName() + " uploaded successfully!");
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
                 TargetGraph targetGraph = ServletUtils.getGraphsManager(getServletContext()).getGraph(newTaskInfo.getGraphName().toLowerCase());
-                tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),targetGraph);
+                tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
+                        TargetGraph.TaskType.SIMULATION,newTaskInfo.getTargetsToExecute(), targetGraph);
             }
             else //A task with the same name already exists in the system
             {
@@ -113,8 +114,9 @@ public class TasksServlet extends HttpServlet {
 
                 resp.addHeader("message", "The task " + newTaskInfo.getTaskName() + " uploaded successfully!");
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-
-                tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(), ServletUtils.getGraphsManager(getServletContext()).getGraph(newTaskInfo.getGraphName().toLowerCase()));
+                TargetGraph targetGraph = ServletUtils.getGraphsManager(getServletContext()).getGraph(newTaskInfo.getGraphName().toLowerCase());
+                tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
+                         TargetGraph.TaskType.COMPILATION, newTaskInfo.getTargetsToExecute(), targetGraph);
             }
             else //A task with the same name already exists in the system
             {

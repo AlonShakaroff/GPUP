@@ -212,6 +212,12 @@
                                           <TextField fx:id="TaskOnGraphTextField" editable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" promptText="Graph's name" HBox.hgrow="ALWAYS" />
                                        </children>
                                     </HBox>
+                                    <HBox alignment="CENTER" layoutX="22.0" layoutY="10.0">
+                                       <children>
+                                          <Label text="Type: " HBox.hgrow="ALWAYS" />
+                                          <TextField fx:id="TaskTypeTextField" editable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" promptText="Task's type" HBox.hgrow="ALWAYS" />
+                                       </children>
+                                    </HBox>
                                  </children>
                                  <VBox.margin>
                                     <Insets top="5.0" />

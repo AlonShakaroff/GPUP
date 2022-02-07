@@ -9,34 +9,51 @@ import java.util.Set;
 public class TaskDetailsDto {
 
     private final String taskName;
+    private final TargetGraph.TaskType taskType;
     private final String graphName;
     private final String uploader;
-    private final Integer targets;
-    private final Integer roots;
-    private final Integer middles;
-    private final Integer leaves;
-    private final Integer independents;
-    private final Integer totalPayment;
-    private Integer totalWorkers;
+    private Integer targets = 0;
+    private Integer roots = 0;
+    private Integer middles = 0;
+    private Integer leaves = 0;
+    private Integer independents = 0;
+    private Integer totalPayment = 0;
+    private Integer totalWorkers = 0;
     private String taskStatus;
+    private Set<String> targetsToExecute;
 
-    public TaskDetailsDto(String taskName, String creatorName, TargetGraph targetGraph) {
+    public TaskDetailsDto(String taskName, String creatorName, TargetGraph.TaskType taskType,Set<String> targetsToExecute ,TargetGraph targetGraph) {
         this.taskName = taskName;
         this.graphName = targetGraph.getGraphName();
         this.uploader = creatorName;
+        this.taskType = taskType;
         this.totalWorkers = 0;
         this.taskStatus = "New";
+        this.targetsToExecute = targetsToExecute;
 
         Map<String,Target> allTargets = targetGraph.getAllTargets();
-        this.roots = (int)allTargets.values().stream().filter(target -> target.getNodeType().equals(Target.Type.ROOT)).count();
-        this.middles = (int)allTargets.values().stream().filter(target -> target.getNodeType().equals(Target.Type.MIDDLE)).count();
-        this.leaves = (int)allTargets.values().stream().filter(target -> target.getNodeType().equals(Target.Type.LEAF)).count();
-        this.independents = (int)allTargets.values().stream().filter(target -> target.getNodeType().equals(Target.Type.INDEPENDENT)).count();
+        for (String target : targetsToExecute ) {
+            switch(allTargets.get(target).getNodeType())
+            {
+                case ROOT:
+                    this.roots++;
+                    break;
+                case MIDDLE:
+                    this.middles++;
+                    break;
+                case LEAF:
+                    this.leaves++;
+                    break;
+                case INDEPENDENT:
+                    this.independents++;
+                    break;
+            }
+            this.targets++;
+        }
         this.targets = allTargets.size();
 
         Map<TargetGraph.TaskType, Integer> taskPrices = targetGraph.getTaskPricing();
-        this.totalPayment = taskPrices.get(TargetGraph.TaskType.SIMULATION) != null ?
-                taskPrices.get(TargetGraph.TaskType.SIMULATION) * this.targets : taskPrices.get(TargetGraph.TaskType.COMPILATION) * this.targets;
+        totalPayment = taskPrices.get(taskType) * this.targets;
     }
 
     public void addWorker() { this.totalWorkers++; }
@@ -89,4 +106,18 @@ public class TaskDetailsDto {
         return this.taskStatus;
     }
 
+    public TargetGraph.TaskType getTaskType() { return this.taskType; }
+
+    public String getTaskTypeAsString() {
+        if(taskType == TargetGraph.TaskType.SIMULATION)
+            return "Simulation";
+        else if(taskType == TargetGraph.TaskType.COMPILATION)
+            return "Compilation";
+        else
+            return "Unknown";
+    }
+
+    public Set<String> getTargetsToExecute() {
+        return targetsToExecute;
+    }
 }
