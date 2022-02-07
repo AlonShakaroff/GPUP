@@ -17,8 +17,8 @@ public class TaskDetailsDto {
     private Integer middles = 0;
     private Integer leaves = 0;
     private Integer independents = 0;
-    private Integer totalPayment = 0;
-    private Integer totalWorkers = 0;
+    private Integer totalPayment;
+    private Integer totalWorkers;
     private String taskStatus;
     private Set<String> targetsToExecute;
 
@@ -50,7 +50,6 @@ public class TaskDetailsDto {
             }
             this.targets++;
         }
-        this.targets = allTargets.size();
 
         Map<TargetGraph.TaskType, Integer> taskPrices = targetGraph.getTaskPricing();
         totalPayment = taskPrices.get(taskType) * this.targets;
