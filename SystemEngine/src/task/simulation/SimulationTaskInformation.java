@@ -1,5 +1,6 @@
 package task.simulation;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class SimulationTaskInformation {
@@ -15,7 +16,8 @@ public class SimulationTaskInformation {
         this.taskName = taskName;
         this.taskCreator = taskCreator;
         this.graphName = graphName;
-        this.targetsToExecute = targetsToExecute;
+        this.targetsToExecute = new HashSet<>();
+        this.targetsToExecute.addAll(targetsToExecute);
         this.pricingForTarget = pricingForTarget;
         this.simulationParameters = simulationParameters;
     }

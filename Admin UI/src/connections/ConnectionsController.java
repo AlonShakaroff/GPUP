@@ -68,7 +68,7 @@ public class ConnectionsController {
     private final ObservableList<String> filteredTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> addedTargetsList = FXCollections.observableArrayList();
 
-    private ObservableList<String> currentSelectedList = FXCollections.observableArrayList();
+    private ObservableList<String>  currentSelectedList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedInAddedTargetsList = FXCollections.observableArrayList();
 
     private final SpinnerValueFactory<Double> successRateValueFactory =
@@ -84,7 +84,7 @@ public class ConnectionsController {
     ObservableList<String> whatIfList = FXCollections.observableArrayList();
     TargetGraph targetGraph;
     Gson gson;
-    SimulationParameters simulationParametes;
+    SimulationParameters simulationParameters;
 
     public ConnectionsController() {
         howManyTargetsSelected = new SimpleIntegerProperty(0);
@@ -508,7 +508,7 @@ public class ConnectionsController {
         String taskTypeRequest = null;
         String stringObject = null;
 
-        TaskTargets.addAll(currentSelectedList);
+        TaskTargets.addAll(addedTargetsList);
 
         if(simulationTitledPane.isExpanded())
         {
