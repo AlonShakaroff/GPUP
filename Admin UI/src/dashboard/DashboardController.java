@@ -178,8 +178,22 @@ public class DashboardController {
     private TableColumn<SelectedTaskStatusTableItem, Integer> currentWorkers;
     @FXML
     private TableColumn<SelectedTaskStatusTableItem, Integer> TaskWorkPayment;
+    @FXML
+    private Button ReloadTaskButton;
+    @FXML
+    private RadioButton FromScratchRadioButton;
+    @FXML
+    private ToggleGroup increment;
+    @FXML
+    private RadioButton IncrementalRadioButton;
+
 
     @FXML
+    void ReloadTaskButtonClicked(ActionEvent event) {
+
+    }
+
+        @FXML
     void AddNewGraphButtonClicked(ActionEvent event) throws IOException {
         addNewGraphToList();
     }

@@ -65,7 +65,6 @@ public class TaskController {
     private final ListChangeListener<String> currentSelectedWaitingListener;
     private final ListChangeListener<String> currentSelectedInProcessListener;
     private final ListChangeListener<String> currentSelectedFinishedListener;
-    private final InvalidationListener incrementalCheckboxInvalidListener;
     private final ObservableList<String> TargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> frozenTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> skippedTargetsNameList = FXCollections.observableArrayList();
@@ -142,10 +141,6 @@ public class TaskController {
         };
         isPaused.addListener(isPausedListener);
 
-        incrementalCheckboxInvalidListener = change -> {
-            incrementalCheckBox.setSelected(false);
-        };
-
     }
     private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
         Target selectedTarget = targetGraph.getTarget(selectedTargetString.split(" ")[0]);
@@ -196,8 +191,6 @@ public class TaskController {
     public void initialize() {
         initializeTargetInfoTable();
 
-        incrementalCheckBox.disableProperty().bind(isIncrementalPossible.not());
-        incrementalCheckBox.disableProperty().addListener(incrementalCheckboxInvalidListener);
         currentSelectedFrozenList = FrozenListView.getSelectionModel().getSelectedItems();
         currentSelectedSkippedList = SkippedListView.getSelectionModel().getSelectedItems();
         currentSelectedWaitingList = WaitingListView.getSelectionModel().getSelectedItems();
@@ -259,9 +252,6 @@ public class TaskController {
 
     @FXML
     private TableColumn<TargetsInfoTableItem, Integer> GraphRootAmount;
-
-    @FXML
-    private CheckBox incrementalCheckBox;
 
     @FXML
     private Button runTaskButton;

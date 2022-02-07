@@ -5,12 +5,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
@@ -70,17 +72,35 @@
                            <content>
                               <VBox spacing="5.0" styleClass="primaryBackground">
                                  <children>
-                                    <VBox VBox.vgrow="ALWAYS">
+                                    <VBox VBox.vgrow="SOMETIMES">
                                        <children>
                                           <Label text="My tasks:" />
                                           <ListView fx:id="myTasksListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                          <Button fx:id="loadSelectedTaskButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="30.0" mnemonicParsing="false" onAction="#loadSelectedTaskButtonClicked" prefHeight="50.0" prefWidth="50.0" text="Load selected Task" textAlignment="CENTER" />
+                                          <Button fx:id="loadSelectedTaskButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="30.0" mnemonicParsing="false" onAction="#loadSelectedTaskButtonClicked" prefHeight="50.0" prefWidth="50.0" text="Load selected task" textAlignment="CENTER" />
                                        </children>
                                     </VBox>
-                                    <VBox layoutX="15.0" layoutY="15.0">
+                                    <VBox layoutX="15.0" layoutY="15.0" VBox.vgrow="SOMETIMES">
                                        <children>
                                           <Label text="All tasks:" />
                                           <ListView fx:id="AllTasksListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                          <HBox VBox.vgrow="SOMETIMES">
+                                             <children>
+                                                <Button fx:id="ReloadTaskButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="30.0" mnemonicParsing="false" onAction="#ReloadTaskButtonClicked" prefHeight="50.0" prefWidth="50.0" text="Reload selected task as copy" textAlignment="CENTER" HBox.hgrow="SOMETIMES" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="190.0" spacing="10.0">
+                                             <children>
+                                                <RadioButton fx:id="FromScratchRadioButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" selected="true" text="From scratch">
+                                                   <toggleGroup>
+                                                      <ToggleGroup fx:id="increment" />
+                                                   </toggleGroup>
+                                                </RadioButton>
+                                                <RadioButton fx:id="IncrementalRadioButton" mnemonicParsing="false" text="Incremental" toggleGroup="$increment" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </HBox>
                                        </children>
                                     </VBox>
                                  </children>

@@ -34,7 +34,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressBar?>
@@ -136,11 +135,6 @@
                      <children>
                         <VBox alignment="CENTER_LEFT" spacing="10.0" styleClass="primaryBackground" VBox.vgrow="ALWAYS">
                            <children>
-                              <CheckBox fx:id="incrementalCheckBox" alignment="CENTER" disable="true" mnemonicParsing="false" text="incremental">
-                                 <padding>
-                                    <Insets left="5.0" right="5.0" />
-                                 </padding>
-                              </CheckBox>
                               <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" styleClass="primaryBackground">
                                  <children>
                                     <Button id="playbutton" fx:id="runTaskButton" disable="true" maxHeight="120.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#runTaskButtonClicked" prefHeight="100.0" prefWidth="60.0" text="run" HBox.hgrow="ALWAYS" />
