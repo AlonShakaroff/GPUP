@@ -3,6 +3,7 @@ package task.simulation;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import target.Target;
+import target.TargetForWorker;
 import task.ExecutorThread;
 import task.GPUPTask;
 //import userinterface.Communicator;
@@ -13,16 +14,14 @@ import java.util.Random;
 
 public class SimulationTask extends GPUPTask {
 
-
     private final int processTimeInMS;
     private final boolean isRandom;
     private final double successChance;
     private final double warningChance;
     private final Random random;
 
-    public SimulationTask(String taskName, int processTimeInMS, boolean isRandom,
-                          double successChance, double warningChance, Target target, ExecutorThread taskManager, TextArea runLogTextArea) {
-        super(taskName, target,taskManager,runLogTextArea);
+    public SimulationTask(String taskName, int processTimeInMS, boolean isRandom, double successChance, double warningChance, TargetForWorker target) {
+        super(taskName, target);
         this.processTimeInMS = processTimeInMS;
         this.isRandom = isRandom;
         this.successChance = successChance;
@@ -32,19 +31,8 @@ public class SimulationTask extends GPUPTask {
 
     @Override
     public void run() {
-        synchronized (this.taskManager.getIsPauseDummy()){
-            try {
-                while(this.taskManager.getPaused()) {
-                    this.taskManager.getIsPauseDummy().wait();
-                }
-            }
-            catch(Exception ignore){}
-        }
         try {
             target.setStatus(Target.Status.IN_PROCESS);
-            target.setStartTimeInCurState();
-            target.setTargetTaskBegin(Instant.now());
-
             int runTime;
             double randSuccess = random.nextDouble();
             double randWarning = random.nextDouble();
@@ -54,7 +42,7 @@ public class SimulationTask extends GPUPTask {
                 runTime = processTimeInMS;
 
 
-            Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n"); });
+            target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n"));
 
             Thread.sleep(runTime);
 
@@ -67,18 +55,14 @@ public class SimulationTask extends GPUPTask {
 
 
 
-            Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " woke up with result: " + target.getRunResult().toString() + "\n\n"); });
+            target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " woke up with result: " + target.getResult().toString() + "\n\n"));
 
             target.setStatus(Target.Status.FINISHED);
 
         } catch (InterruptedException exception) {
-            Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " was interrupted! \n\n"); });
+            target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " was interrupted! \n\n"));
             target.setStatus(Target.Status.SKIPPED);
             target.setResult(Target.Result.SKIPPED);
-        }
-        finally {
-            target.setTargetTaskEnd(Instant.now());
-            target.setTargetTaskTime(Duration.between(target.getTargetTaskBegin(),target.getTargetTaskEnd()));
         }
     }
 }

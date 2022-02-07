@@ -1,28 +1,21 @@
 package task;
 
-import javafx.concurrent.Task;
-import javafx.scene.control.TextArea;
-import target.Target;
+import target.TargetForWorker;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class GPUPTask implements Runnable{
     protected final String taskName;
-    protected final Target target;
-    protected ExecutorThread taskManager;
-    protected TextArea runLogTextArea;
+    protected final TargetForWorker target;
 
-    public Target getTarget() {
+    public TargetForWorker getTarget() {
         return target;
     }
 
-    public GPUPTask(String taskName, Target target, ExecutorThread taskManager, TextArea runLogTextArea){
+    public GPUPTask(String taskName, TargetForWorker target){
         this.taskName = taskName;
         this.target = target;
-        this.taskManager = taskManager;
-        this.runLogTextArea = runLogTextArea;
     }
     public  String getTaskName() {
         return taskName;

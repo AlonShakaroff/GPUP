@@ -9,15 +9,18 @@ public class CompilationTaskInformation {
     private final Set<String> targetsToExecute;
     private final Integer pricingForTarget;
     private final CompilationParameters compilationParameters;
+    private final boolean isIncremental;
 
     public CompilationTaskInformation(String taskName, String taskCreator, String graphName,
-                                      Set<String> targetsToExecute, Integer pricingForTarget, CompilationParameters compilationParameters) {
+                                            Set<String> targetsToExecute, Integer pricingForTarget,
+                                                 CompilationParameters compilationParameters, boolean isIncremental) {
         this.taskName = taskName;
         this.taskCreator = taskCreator;
         this.graphName = graphName;
         this.targetsToExecute = targetsToExecute;
         this.pricingForTarget = pricingForTarget;
         this.compilationParameters = compilationParameters;
+        this.isIncremental = isIncremental;
     }
 
     public String getTaskName() {
