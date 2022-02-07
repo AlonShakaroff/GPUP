@@ -172,129 +172,47 @@ public class ConnectionsController {
         });
     }
 
-    @FXML
-    private TitledPane simulationTitledPane;
-
-    @FXML
-    private Spinner<Integer> simulationTimeSpinner;
-
-    @FXML
-    private CheckBox simulationRandomCheckBox;
-
-    @FXML
-    private Spinner<Double> simulationSuccessRateSpinner;
-
-    @FXML
-    private Spinner<Double> simulationWarningRateSpinner;
-
-    @FXML
-    private TitledPane compileTaskTitledPane;
-
-    @FXML
-    private TextField compileTaskSourceTextField;
-
-    @FXML
-    private Button compileTaskSourceSearchButton;
-
-    @FXML
-    private TextField compileTaskDestTextField;
-
-    @FXML
-    private Button compileTaskDestSearchButton;
-
-    @FXML
-    private TextField TaskNameTextField;
-
-    @FXML
-    private Button addTaskButton;
-
-    @FXML
-    private Color x2;
-
-    @FXML
-    private Font x1;
-
-    @FXML
-    private ListView<String> TargetsListView;
-
-    @FXML
-    private Button selectAllButton;
-
-    @FXML
-    private Button deSelectAllButton;
-
-    @FXML
-    private Button allTargetsButton;
-
-    @FXML
-    private Button requiredForButton;
-
-    @FXML
-    private Button dependsOnButton;
-
-    @FXML
-    private Button addButton;
-
-    @FXML
-    private Button removeButton;
-
-    @FXML
-    private Button clearButton;
-
-    @FXML
-    private Color x22;
-
-    @FXML
-    private Font x12;
-
-    @FXML
-    private ListView<String> AddedTargetsListView;
-
-    @FXML
-    private ComboBox<String> sourceComboBox;
-
-    @FXML
-    private ComboBox<String> destinationComboBox;
-
-    @FXML
-    private VBox pathDirectionChoiceVBox;
-
-    @FXML
-    private RadioButton pathRequiredForRadioButton;
-
-    @FXML
-    private ToggleGroup connections;
-
-    @FXML
-    private RadioButton pathDependsOnRadioButton;
-
-    @FXML
-    private ListView<String> pathListView;
-
-    @FXML
-    private ComboBox<String> circleTargetComboBox;
-
-    @FXML
-    private ListView<String> circleListView;
-
-    @FXML
-    private ComboBox<String> whatIfTargetComboBox;
-
-    @FXML
-    private VBox whatIfDirectionVBox;
-
-    @FXML
-    private RadioButton whatIfRequiredForRadioButton;
-
-    @FXML
-    private ToggleGroup conactions1;
-
-    @FXML
-    private RadioButton whatIfDependsOnRadioButton;
-
-    @FXML
-    private ListView<String> whatIfListView;
-
+    @FXML private TitledPane simulationTitledPane;
+    @FXML private Spinner<Integer> simulationTimeSpinner;
+    @FXML private CheckBox simulationRandomCheckBox;
+    @FXML private Spinner<Double> simulationSuccessRateSpinner;
+    @FXML private Spinner<Double> simulationWarningRateSpinner;
+    @FXML private TitledPane compileTaskTitledPane;
+    @FXML private TextField compileTaskSourceTextField;
+    @FXML private Button compileTaskSourceSearchButton;
+    @FXML private TextField compileTaskDestTextField;
+    @FXML private Button compileTaskDestSearchButton;
+    @FXML private TextField TaskNameTextField;
+    @FXML private Button addTaskButton;
+    @FXML private Color x2;
+    @FXML private Font x1;
+    @FXML private ListView<String> TargetsListView;
+    @FXML private Button selectAllButton;
+    @FXML private Button deSelectAllButton;
+    @FXML private Button allTargetsButton;
+    @FXML private Button requiredForButton;
+    @FXML private Button dependsOnButton;
+    @FXML private Button addButton;
+    @FXML private Button removeButton;
+    @FXML private Button clearButton;
+    @FXML private Color x22;
+    @FXML private Font x12;
+    @FXML private ListView<String> AddedTargetsListView;
+    @FXML private ComboBox<String> sourceComboBox;
+    @FXML private ComboBox<String> destinationComboBox;
+    @FXML private VBox pathDirectionChoiceVBox;
+    @FXML private RadioButton pathRequiredForRadioButton;
+    @FXML private ToggleGroup connections;
+    @FXML private RadioButton pathDependsOnRadioButton;
+    @FXML private ListView<String> pathListView;
+    @FXML private ComboBox<String> circleTargetComboBox;
+    @FXML private ListView<String> circleListView;
+    @FXML private ComboBox<String> whatIfTargetComboBox;
+    @FXML private VBox whatIfDirectionVBox;
+    @FXML private RadioButton whatIfRequiredForRadioButton;
+    @FXML private ToggleGroup conactions1;
+    @FXML private RadioButton whatIfDependsOnRadioButton;
+    @FXML private ListView<String> whatIfListView;
 
     @FXML
     void sourceComboBoxClicked(ActionEvent event) {
@@ -519,7 +437,7 @@ public class ConnectionsController {
                     simulationSuccessRateSpinner.getValue(), simulationWarningRateSpinner.getValue());
 
             SimulationTaskInformation taskInfo = new SimulationTaskInformation
-                    (taskName, uploader, graphName, TaskTargets, pricing, simulationParameters);
+                    (taskName, uploader, graphName, TaskTargets, pricing, simulationParameters, false);
 
             taskTypeRequest = "Simulation";
             stringObject = this.gson.toJson(taskInfo);
@@ -532,7 +450,7 @@ public class ConnectionsController {
                     new File(compileTaskSourceTextField.getText()), new File(compileTaskDestTextField.getText()));
 
             CompilationTaskInformation taskInfo = new CompilationTaskInformation(
-                    taskName, uploader, graphName, TaskTargets, pricing, compilationParameters);
+                    taskName, uploader, graphName, TaskTargets, pricing, compilationParameters,false);
 
             taskTypeRequest = "Compilation";
             stringObject = this.gson.toJson(taskInfo);

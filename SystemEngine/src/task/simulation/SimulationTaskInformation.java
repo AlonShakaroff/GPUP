@@ -10,9 +10,11 @@ public class SimulationTaskInformation {
     private final Set<String> targetsToExecute;
     private final Integer pricingForTarget;
     private final SimulationParameters simulationParameters;
+    private final boolean isIncremental;
 
     public SimulationTaskInformation(String taskName, String taskCreator, String graphName,
-                                     Set<String> targetsToExecute, Integer pricingForTarget, SimulationParameters simulationParameters) {
+                                         Set<String> targetsToExecute, Integer pricingForTarget,
+                                            SimulationParameters simulationParameters, boolean isIncremental) {
         this.taskName = taskName;
         this.taskCreator = taskCreator;
         this.graphName = graphName;
@@ -20,6 +22,7 @@ public class SimulationTaskInformation {
         this.targetsToExecute.addAll(targetsToExecute);
         this.pricingForTarget = pricingForTarget;
         this.simulationParameters = simulationParameters;
+        this.isIncremental = isIncremental;
     }
 
     public String getTaskName() {
@@ -44,5 +47,9 @@ public class SimulationTaskInformation {
 
     public SimulationParameters getSimulationParameters() {
         return this.simulationParameters;
+    }
+
+    public boolean isIncremental() {
+        return isIncremental;
     }
 }

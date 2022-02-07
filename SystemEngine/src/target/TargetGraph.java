@@ -84,16 +84,16 @@ public class TargetGraph implements Serializable {
                     (target -> (target.getRunResult().equals(Target.Result.FAILURE) ||
                             target.getRunResult().equals(Target.Result.SKIPPED))).collect(Collectors.toSet());
 
-            Set<Target> SuccessedTargets = allTargets.values().stream().filter(Target::isChosen).filter
+            Set<Target> SuccededTargets = allTargets.values().stream().filter(Target::isChosen).filter
                     (target -> (target.getRunResult().equals(Target.Result.SUCCESS) ||
                             target.getRunResult().equals(Target.Result.WARNING))).collect(Collectors.toSet());
 
-            SuccessedTargets.forEach(target -> {target.setIsChosen(false);});
+            SuccededTargets.forEach(target -> {target.setIsChosen(false);});
 
             for (Target target : ChosenTargets)
                 target.determineStatusBeforeTask();
 
-            SuccessedTargets.forEach(target -> {target.setIsChosen(true);});
+            SuccededTargets.forEach(target -> {target.setIsChosen(true);});
 
         }
         else {

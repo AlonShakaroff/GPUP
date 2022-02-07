@@ -15,15 +15,14 @@ import java.util.concurrent.*;
 public class ExecutorThread extends Thread{
     private TargetGraph targetGraph;
     private LinkedList<GPUPTask> tasksList;
+    private LinkedList<GPUPTask> readyTasksList;
     private String taskName;
-    public TextArea runLogTextArea;
+
     /*---------------------Simulation parameters-----------------------------*/
     private double warningChance;
     private double successChance;
     private boolean isRandom;
     private int processTimeInMS;
-    private int numOfThreads;
-    private ThreadPoolExecutor threadExecutor;
     /*---------------------Compilation parameters----------------------------*/
     private String SourceFolderPath;
     private String DestFolderPath;
@@ -34,7 +33,7 @@ public class ExecutorThread extends Thread{
     /*-----------------------------------------------------------------------*/
 
     public ExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
-                          boolean isRandom, int processTimeInMS, int numOfThreads, boolean isIncremental, TextArea runLogTextArea){
+                          boolean isRandom, int processTimeInMS, boolean isIncremental){
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.warningChance = warningChance;
@@ -42,9 +41,7 @@ public class ExecutorThread extends Thread{
         this.isRandom = isRandom;
         this.processTimeInMS = processTimeInMS;
         this.tasksList = new LinkedList<>();
-        this.numOfThreads = numOfThreads;
-        this.threadExecutor = new ThreadPoolExecutor(numOfThreads,numOfThreads,1000,TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
-        this.runLogTextArea = runLogTextArea;
+        this.readyTasksList = new LinkedList<>();
         initTasksList(isIncremental);
     }
 
@@ -55,9 +52,6 @@ public class ExecutorThread extends Thread{
         this.taskName = taskName;
         this.SourceFolderPath = SourceFolderPath;
         this.DestFolderPath = DestFolderPath;
-        this.numOfThreads = numOfThreads;
-        this.threadExecutor = new ThreadPoolExecutor(numOfThreads,numOfThreads,1000,TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
-        this.runLogTextArea = runLogTextArea;
         initTasksList(isIncremental);
     }
     private void initTasksList(boolean isIncremental){
@@ -65,15 +59,15 @@ public class ExecutorThread extends Thread{
         for(Target target : targetGraph.getTargetsToRunOnAndResetExtraData(isIncremental)) {
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
                 if(this.taskName.equalsIgnoreCase("simulation"))
-                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target,this, runLogTextArea));
+                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, Target.extractTargetForWorkerFromTarget(target, taskName)));
                 else /*compilation*/
-                    tasksList.addFirst(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target,this, runLogTextArea));
+                    tasksList.addFirst(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,Target.extractTargetForWorkerFromTarget(target, taskName)));
             }
             else {
                 if(this.taskName.equalsIgnoreCase("simulation"))
-                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, target,this, runLogTextArea));
+                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, Target.extractTargetForWorkerFromTarget(target, taskName)));
                 else /*compilation*/
-                    tasksList.addLast(new CompilationTask(taskName,SourceFolderPath,DestFolderPath,target,this, runLogTextArea));
+                    tasksList.addLast(new CompilationTask(taskName, SourceFolderPath, DestFolderPath, Target.extractTargetForWorkerFromTarget(target, taskName)));
             }
         }
     }
@@ -84,42 +78,31 @@ public class ExecutorThread extends Thread{
         targetGraph.getAllTargets().values().forEach(Target::setStartTimeInCurState);
         while (!tasksList.isEmpty()) {
             if (isStopped) { // break if stopped
-                threadExecutor.shutdownNow();
-                Platform.runLater(()->{
-                    runLogTextArea.appendText("Run stopped!\n"); });
-                return;
+                readyTasksList.clear();
+                break;
             }
 
             GPUPTask curTask = tasksList.poll();
-            if (curTask.target.getRunStatus().equals(Target.Status.FROZEN)) { // target is frozen
+            if (curTask.target.getStatus().equals(Target.Status.FROZEN)) { // target is frozen
                 tasksList.addLast(curTask);
             } else {    // target is waiting (but maybe needs to be skipped)
-                curTask.getTarget().checkIfNeedsToBeSkipped();
-                if (curTask.getTarget().getRunStatus().equals(Target.Status.SKIPPED)) {
-                    Platform.runLater(()->{
-                        runLogTextArea.appendText("Target " + curTask.getTarget().getName() +
-                            " is skipped because " + curTask.getTarget().getResponsibleTargets().toString() + " failed \n\n"); });
-                } else {  // target is waiting to run, but maybe can't run due to a serial set
-                        threadExecutor.submit(curTask);
+                Target curTarget = targetGraph.getTarget(curTask.getTarget().getName());
+                curTarget.checkIfNeedsToBeSkipped();
+                curTask.getTarget().setResult(curTarget.getRunResult());
+                curTask.getTarget().setStatus(curTarget.getRunStatus());
+                if (curTask.getTarget().getStatus().equals(Target.Status.SKIPPED)) {
+                        curTask.getTarget().setRunLog(curTask.getTarget().getRunLog().concat("Target " + curTask.getTarget().getName() +
+                            " is skipped because " + curTarget.getResponsibleTargets().toString() + " failed \n\n"));
+                } else {
+                     readyTasksList.add(curTask);
                 }
             }
             targetGraph.refreshWaiting();
         }
-        shutdown();
         targetGraph.setTaskEndTime(Instant.now());
         targetGraph.setTotalTaskDuration(Duration.between(targetGraph.getTaskStartTime(), targetGraph.getTaskEndTime()));
-        Platform.runLater(()->{
-            runLogTextArea.appendText("Total task runtime: " + TargetGraph.getDurationAsString(targetGraph.getTotalTaskDuration()) + "\n\n"); });
     }
 
-    public void shutdown() {
-        Platform.runLater(()->{
-            runLogTextArea.appendText("Run shutting down...\n\n"); });
-        threadExecutor.shutdown();
-        while(!threadExecutor.isTerminated()) {}
-        Platform.runLater(()->{
-            runLogTextArea.appendText("Run finished.\n\n"); });
-    }
 
     public Boolean getPaused() {
         return isPaused;

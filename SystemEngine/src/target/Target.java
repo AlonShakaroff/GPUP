@@ -2,7 +2,6 @@ package target;
 
 import exceptions.TargetNotExistException;
 import exceptions.TargetsDependsOnEachOtherException;
-import sun.security.jca.GetInstance;
 import xmlfiles.generated.GPUPTarget;
 import xmlfiles.generated.GPUPTargetDependencies;
 
@@ -10,18 +9,17 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Target implements Serializable {
 
-    static public enum Status {FROZEN, SKIPPED, WAITING, IN_PROCESS, FINISHED};
-    static public enum Result {SUCCESS, WARNING, FAILURE, SKIPPED};
-    static public enum Type {LEAF, MIDDLE, ROOT, INDEPENDENT};
+    public enum Status {FROZEN, SKIPPED, WAITING, IN_PROCESS, FINISHED}
+    public enum Result {SUCCESS, WARNING, FAILURE, SKIPPED}
+    public enum Type {LEAF, MIDDLE, ROOT, INDEPENDENT}
 
     private final String name;
     private final String ExtraData;
-    private Set<Target> requiredForSet;
-    private Set<Target> dependsOnSet;
+    private final Set<Target> requiredForSet;
+    private final Set<Target> dependsOnSet;
     private Status runStatus;
     private Result runResult;
     private Type nodeType;
@@ -39,8 +37,8 @@ public class Target implements Serializable {
     private Instant startTimeInCurState;
     private boolean isVisited;
     private boolean isChosen;
-    private Set<String> serialSets;
-    private Set<Target> responsibleTargets;
+    private final Set<String> serialSets;
+    private final Set<Target> responsibleTargets;
 
     public Target(String name, String extraData)
     {
@@ -49,8 +47,8 @@ public class Target implements Serializable {
             this.ExtraData = extraData;
         else
             this.ExtraData = "";
-        this.dependsOnSet = new HashSet<Target>();
-        this.requiredForSet = new HashSet<Target>();
+        this.dependsOnSet = new HashSet<>();
+        this.requiredForSet = new HashSet<>();
         this.responsibleTargets = new HashSet<>();
         this.serialSets = new HashSet<>();
         determineInitialType();
@@ -355,5 +353,12 @@ public class Target implements Serializable {
             default:
                 return "";
         }
+    }
+
+    public static TargetForWorker extractTargetForWorkerFromTarget(Target target,String taskName) {
+        TargetForWorker targetForWorker = new TargetForWorker(target.getName(),target.getExtraData(),taskName);
+        targetForWorker.setStatus(target.getRunStatus());
+        targetForWorker.setResult(target.getRunResult());
+        return targetForWorker;
     }
 }

@@ -3,6 +3,7 @@ package task.copilation;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import target.Target;
+import target.TargetForWorker;
 import target.TargetGraph;
 import task.ExecutorThread;
 import task.GPUPTask;
@@ -19,31 +20,21 @@ public class CompilationTask extends GPUPTask {
     private String destinationPath;
 
     public CompilationTask(String taskName, String sourceFilePath, String destinationFilePath,
-                           Target target, ExecutorThread taskManager, TextArea runLogTextArea) {
-        super(taskName, target,taskManager,runLogTextArea);
+                           TargetForWorker target) {
+        super(taskName, target);
         this.sourceFolderPath = sourceFilePath;
         this.destinationPath = destinationFilePath;
     }
 
     @Override
     public void run() {
-        synchronized (this.taskManager.getIsPauseDummy()){
-            try {
-                while(this.taskManager.getPaused()) {
-                    this.taskManager.getIsPauseDummy().wait();
-                }
-            }
-            catch(Exception Ignore){}
-        }
 
         String FQNToPath = "\\" + target.getExtraData().replace(".","\\");
         String javaFilePath = sourceFolderPath + FQNToPath + ".java";
         try {
+            Instant targetTaskBegin = Instant.now();
             target.setStatus(Target.Status.IN_PROCESS);
-            target.setStartTimeInCurState();
-            target.setTargetTaskBegin(Instant.now());
-
-            Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " is starting compilation\n\n"); });
+            target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " is starting compilation\n\n"));
 
             ProcessBuilder processBuilder = new ProcessBuilder("javac", "-d", destinationPath, "-cp", destinationPath, javaFilePath);
             Process process;
@@ -53,8 +44,8 @@ public class CompilationTask extends GPUPTask {
 
             if (code == 0) {
                 target.setResult(Target.Result.SUCCESS);
-                Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " compiled successfully with compilation time of: " +
-                        TargetGraph.getDurationAsString(Duration.between(target.getTargetTaskBegin(), Instant.now())) + "\n\n"); });
+                target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " compiled successfully with compilation time of: " +
+                        TargetGraph.getDurationAsString(Duration.between(targetTaskBegin, Instant.now())) + "\n\n"));
             } else {
                 target.setResult(Target.Result.FAILURE);
                 String errorMsg = "";
@@ -63,13 +54,13 @@ public class CompilationTask extends GPUPTask {
                     errorMsg += errorLine + "\n";
                 }
                 String finalErrorMsg = errorMsg;
-                Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " compilation failed!\n" +
-                        "error message:\n" + finalErrorMsg + "\n\n"); });
+                target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " compilation failed!\n" +
+                        "error message:\n" + finalErrorMsg + "\n\n"));
 
             }
             target.setStatus(Target.Status.FINISHED);
         }catch (Exception exception) {
-            Platform.runLater(()->{runLogTextArea.appendText("Target " + target.getName() + " was interrupted!\n\n"); });
+            target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " was interrupted!\n\n"));
             target.setStatus(Target.Status.SKIPPED);
             target.setResult(Target.Result.SKIPPED);
         }
