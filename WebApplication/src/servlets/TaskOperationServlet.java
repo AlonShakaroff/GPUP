@@ -22,6 +22,7 @@ public class TaskOperationServlet extends HttpServlet {
             else
                 isIncremental = false;
             tasksManager.addTaskExecutorThread(req.getHeader("taskName"), isIncremental);
+            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
     }
 }

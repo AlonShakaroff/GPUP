@@ -241,7 +241,6 @@
                   </HBox>
                </content>
             </ScrollPane>
-            <TextArea fx:id="runDetailsTextArea" editable="false" prefHeight="100.0" prefWidth="200.0" />
             <StackPane VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets top="5.0" />

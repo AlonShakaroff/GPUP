@@ -1,21 +1,17 @@
 package target;
 
 import exceptions.*;
-import task.GPUPTask;
 import xmlfiles.generated.GPUPConfiguration;
 import xmlfiles.generated.GPUPDescriptor;
 import xmlfiles.generated.GPUPTarget;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -129,7 +125,7 @@ public class TargetGraph implements Serializable {
      * Checks if the task finished running on all the target graph, all targets are frozen or finished.
      * @return
      */
-    public boolean isTaskFinished() {
+    public Boolean isTaskFinished() {
         return getAllTargets().values().stream().filter(Target::isChosen).allMatch(target ->
                 (target.getRunStatus() == Target.Status.FINISHED || target.getRunStatus() == Target.Status.SKIPPED));
     }

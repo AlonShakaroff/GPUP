@@ -500,12 +500,14 @@ public class ConnectionsController {
 
         Request request = new Request.Builder()
                 .url(Constants.TASKS_PATH)
-                .post(body).addHeader(taskTypeRequest, taskTypeRequest)
+                .post(body)
+                .addHeader(taskTypeRequest, taskTypeRequest)
                 .build();
 
         HttpClientUtil.runAsyncWithRequest(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("error msg is: " + e.getMessage());
                 Platform.runLater(()-> errorPopup(e.getMessage()));
             }
 

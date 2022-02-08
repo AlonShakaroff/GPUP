@@ -65,8 +65,9 @@ public class TaskController {
     private ObservableList<String> currentSelectedInProcessList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedFinishedList = FXCollections.observableArrayList();
 
-    private int currTaskAmountOfChosenTargets;
-    private int currTaskAmountOfFinishedTargets;
+    private Integer currTaskAmountOfChosenTargets;
+    private Integer currTaskAmountOfFinishedTargets;
+    private Boolean isTaskFinished = false;
 
     public TaskController() {
         isPaused = new SimpleBooleanProperty(false);
@@ -307,6 +308,10 @@ public class TaskController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if(response.code() == 202)
+                {
+                    createNewProgressBar();
+                }
             }
 
         });
@@ -419,7 +424,7 @@ public class TaskController {
     /*-------------------------------------------------data refreshing thread------------------------------------------------------------------------------------*/
 
     private void refreshTaskData() {
-        while(taskThread.isAlive()){
+        while(!getTaskFinished()){
             refreshTaskDataLists();
         }
         refreshTaskDataLists();
@@ -523,7 +528,7 @@ public class TaskController {
         FinishedListView.setItems(finishedTargetsNameList);
     }
 
-    private int updateProgressFromServer() {
+    private void updateProgressFromServer() {
         String finalUrl = HttpUrl
                 .parse(Constants.TASKS_PATH)
                 .newBuilder()
@@ -544,6 +549,7 @@ public class TaskController {
                             {
                                 setCurrTaskAmountOfChosenTargets(Integer.getInteger(response.header("amountOfChosenTargets")));
                                 setCurrTaskAmountOfFinishedTargets(Integer.getInteger(response.header("amountOfFinishedOrSkipped")));
+                                setTaskFinished(Boolean.getBoolean(response.header("isFinished")));
                             }
                     );
                 }
@@ -551,20 +557,28 @@ public class TaskController {
         });
     }
 
-    public int getCurrTaskAmountOfChosenTargets() {
+    public Integer getCurrTaskAmountOfChosenTargets() {
         return currTaskAmountOfChosenTargets;
     }
 
-    public void setCurrTaskAmountOfChosenTargets(int currTaskAmountOfChosenTargets) {
+    public void setCurrTaskAmountOfChosenTargets(Integer currTaskAmountOfChosenTargets) {
         this.currTaskAmountOfChosenTargets = currTaskAmountOfChosenTargets;
     }
 
-    public int getCurrTaskAmountOfFinishedTargets() {
+    public Integer getCurrTaskAmountOfFinishedTargets() {
         return currTaskAmountOfFinishedTargets;
     }
 
-    public void setCurrTaskAmountOfFinishedTargets(int currTaskAmountOfFinishedTargets) {
+    public void setCurrTaskAmountOfFinishedTargets(Integer currTaskAmountOfFinishedTargets) {
         this.currTaskAmountOfFinishedTargets = currTaskAmountOfFinishedTargets;
+    }
+
+    public Boolean getTaskFinished() {
+        return isTaskFinished;
+    }
+
+    public void setTaskFinished(Boolean taskFinished) {
+        isTaskFinished = taskFinished;
     }
 }
 

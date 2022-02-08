@@ -84,6 +84,7 @@ public class TasksServlet extends HttpServlet {
                 Integer amountOfFinishedOrSkipped = targetGraph.howMuchAreFinishedOrSkipped();
                 resp.addHeader("amountOfChosenTargets", amountOfChosenTargets.toString());
                 resp.addHeader("amountOfFinishedOrSkipped", amountOfFinishedOrSkipped.toString());
+                resp.addHeader("isFinished",targetGraph.isTaskFinished().toString());
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
             }
             else {
@@ -101,6 +102,7 @@ public class TasksServlet extends HttpServlet {
     //----------------------------------------------------doPost----------------------------------------//
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        System.out.println("entered to dopost");
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
 
         if(req.getHeader("simulation") != null) //Uploaded simulation task
