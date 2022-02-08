@@ -11,6 +11,7 @@ public class TaskDetailsDto {
     private final TargetGraph.TaskType taskType;
     private final String graphName;
     private final String uploader;
+
     private Integer targets = 0;
     private Integer roots = 0;
     private Integer middles = 0;

@@ -64,7 +64,8 @@ public class TasksManager {
         return usersTasks.get(userName.toLowerCase());
     }
 
-    public synchronized void addTaskDetailsDTO(String taskName, String creatorName, TargetGraph.TaskType taskType,Set<String> targetsToExecute, TargetGraph targetGraph)
+    public synchronized void addTaskDetailsDTO(String taskName, String creatorName,
+                                               TargetGraph.TaskType taskType,Set<String> targetsToExecute, TargetGraph targetGraph)
     {
         taskDetailsDTOMap.put(taskName.toLowerCase(), new TaskDetailsDto(taskName, creatorName, taskType, targetsToExecute, targetGraph));
     }
