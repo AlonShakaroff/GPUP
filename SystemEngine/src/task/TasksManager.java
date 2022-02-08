@@ -2,7 +2,11 @@ package task;
 
 import dtos.TaskDetailsDto;
 import target.TargetGraph;
+import task.copilation.CompilationParameters;
+import task.copilation.CompilationTask;
 import task.copilation.CompilationTaskInformation;
+import task.simulation.SimulationParameters;
+import task.simulation.SimulationTask;
 import task.simulation.SimulationTaskInformation;
 
 import java.util.HashMap;
@@ -18,12 +22,14 @@ public class TasksManager {
     private static final Set<String> listOfAllTasks = new HashSet<>();
     private static final Map<String, TaskDetailsDto> taskDetailsDTOMap = new HashMap<>();
     private static final Map<String, TaskForServerSide> taskForServerSideMap = new HashMap<>();
+    private static final Map<String, ExecutorThread> taskExecutorThreadMap = new HashMap<>();
 
     public synchronized boolean isTaskExists(String taskName) {
         return simulationTasksMap.containsKey(taskName.toLowerCase()) || compilationTasksMap.containsKey(taskName.toLowerCase());
     }
 
     public synchronized boolean isSimulationTask(String taskName) { return simulationTasksMap.containsKey(taskName.toLowerCase()); }
+    public synchronized boolean isCompilationTask(String taskName) { return simulationTasksMap.containsKey(taskName.toLowerCase()); }
 
     public synchronized CompilationTaskInformation getCompilationTaskInformation(String taskName) {
         return compilationTasksMap.get(taskName.toLowerCase());
@@ -81,5 +87,20 @@ public class TasksManager {
 
     public synchronized  TaskForServerSide getTaskForServerSide(String taskName) {
         return taskForServerSideMap.get(taskName.toLowerCase());
+    }
+
+    public synchronized void addTaskExecutorThread(String taskName, boolean isIncremental) {
+        TargetGraph targetGraph = getTaskForServerSide(taskName).getTargetGraph();
+        if(isSimulationTask(taskName)) {
+            SimulationParameters parameters = getSimulationTaskInformation(taskName).getSimulationParameters();
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, taskName,
+                                         parameters.getSuccessWithWarnings(), parameters.getSuccessRate(),
+                                                parameters.isRandom(),parameters.getProcessingTime(), isIncremental));
+        }
+        else if(isCompilationTask(taskName)) {
+            CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,taskName,
+                                parameters.getSourcePath(),parameters.getDestinationPath(), isIncremental));
+        }
     }
 }

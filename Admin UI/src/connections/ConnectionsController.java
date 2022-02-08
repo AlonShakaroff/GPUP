@@ -447,7 +447,7 @@ public class ConnectionsController {
             Integer pricing = this.targetGraph.getTaskPricing().get(TargetGraph.TaskType.COMPILATION);
 
             CompilationParameters compilationParameters = new CompilationParameters(
-                    new File(compileTaskSourceTextField.getText()), new File(compileTaskDestTextField.getText()));
+                    compileTaskSourceTextField.getText(),compileTaskDestTextField.getText());
 
             CompilationTaskInformation taskInfo = new CompilationTaskInformation(
                     taskName, uploader, graphName, TaskTargets, pricing, compilationParameters,false);

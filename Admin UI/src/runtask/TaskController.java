@@ -30,30 +30,16 @@ import org.jetbrains.annotations.NotNull;
 import runtask.tableview.TargetInfoTableItem;
 import target.Target;
 import target.TargetGraph;
-import task.ExecutorThread;
-import task.GPUPTask;
-import task.TasksManager;
-import task.copilation.CompilationTaskInformation;
-import task.simulation.SimulationTaskInformation;
 import util.http.HttpClientUtil;
 
-import java.awt.*;
-import java.io.File;
+import javax.print.DocFlavor;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TaskController {
 
     private TargetGraph targetGraph;
-    private GPUPTask currentGPUPTask;
-    private SimulationTaskInformation simulationTaskInformation = null;
-    private CompilationTaskInformation compilationTaskInformation = null;
     private AdminMainController mainController;
-    private ExecutorThread taskThread;
-    private Thread dataRefreshThread;
     private Task<Void> task;
     private String lastTask = "";
     private SimpleBooleanProperty isPaused;
@@ -78,6 +64,9 @@ public class TaskController {
     private ObservableList<String> currentSelectedWaitingList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedInProcessList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedFinishedList = FXCollections.observableArrayList();
+
+    private int currTaskAmountOfChosenTargets;
+    private int currTaskAmountOfFinishedTargets;
 
     public TaskController() {
         isPaused = new SimpleBooleanProperty(false);
@@ -298,7 +287,29 @@ public class TaskController {
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_OPERATION_PATH)
+                .newBuilder()
+                .addQueryParameter("operation", "start")
+                .build()
+                .toString();
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .addHeader("taskName",mainController.getTaskName())
+                .addHeader("isIncremental", mainController.isCurTaskIncremental().toString())
+                .build();
 
+
+        HttpClientUtil.runAsyncWithRequest(request, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+            }
+
+        });
     }
 
     public void setTargetGraph(TargetGraph targetGraph) {
@@ -307,7 +318,7 @@ public class TaskController {
 
     @FXML
     void stopTaskButtonClicked(ActionEvent event) {
-        taskThread.setStopped(true);
+        //taskThread.setStopped(true);
         stopTaskButton.setDisable(true);
         pauseTaskButton.setDisable(true);
         isPaused.setValue(false);
@@ -322,7 +333,7 @@ public class TaskController {
     @FXML
     void pauseResumeTaskButtonClicked(ActionEvent event) {
         isPaused.setValue(!isPaused.getValue());
-        taskThread.setPaused(isPaused.getValue());
+        //taskThread.setPaused(isPaused.getValue());
     }
 
     private void setAllTargetsNameList() {
@@ -333,18 +344,6 @@ public class TaskController {
         name.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Name"));
         type.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Type"));
         status.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Status"));
-    }
-
-    public void setSimulationTaskInformation(SimulationTaskInformation simulationTaskInformation) {
-        this.simulationTaskInformation = simulationTaskInformation;
-    }
-
-    public void setCompilationTaskInformation(CompilationTaskInformation compilationTaskInformation) {
-        this.compilationTaskInformation = compilationTaskInformation;
-    }
-
-    public void setCurrentGPUPTask(GPUPTask currentGPUPTask) {
-        this.currentGPUPTask = currentGPUPTask;
     }
 
     private void displaySelectedTaskInfo(String selectedTaskName) {
@@ -403,48 +402,6 @@ public class TaskController {
     public void setNewTask() {
         String taskName = mainController.getTaskName();
         displaySelectedTaskInfo(taskName);
-
-        String finalUrl = HttpUrl
-                .parse(Constants.TASKS_PATH)
-                .newBuilder()
-                .addQueryParameter("task", taskName)
-                .build()
-                .toString();
-         HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
-
-             @Override
-             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                 Platform.runLater(() ->
-                         errorPopup(e.getMessage()));
-             }
-
-             @Override
-             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                 if (response.code() >= 200 && response.code() < 300) //Success
-                 {
-                     Gson gson = new Gson();
-                     ResponseBody responseBody = response.body();
-                     if (TaskTypeTextField.getText().equals(TargetGraph.TaskType.SIMULATION.toString())) // if Simulation
-                     {
-                         simulationTaskInformation = gson.fromJson(responseBody.string(), SimulationTaskInformation.class);
-                     }
-                     else { //if compilation
-                         compilationTaskInformation = gson.fromJson(responseBody.string(), CompilationTaskInformation.class);
-                     }
-                     responseBody.close();
-                 } else //Failed
-                 {
-                     Platform.runLater(() -> errorPopup(response.message()));
-                 }
-             }
-         });
-    }
-    public void errorPopup(String message) {
-        Toolkit.getDefaultToolkit().beep();
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Loading error");
-        alert.setHeaderText(message);
-        Optional<ButtonType> result = alert.showAndWait();
     }
 
     public void setMainController(AdminMainController mainController) {
@@ -533,15 +490,14 @@ public class TaskController {
         task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                int maxSize = targetGraph.getAllTargets().values().stream().filter(Target::isChosen).collect(Collectors.toSet()).size();
-                while(taskThread.isAlive())
+                updateProgressFromServer();
+                while(getCurrTaskAmountOfFinishedTargets() < getCurrTaskAmountOfChosenTargets())
                 {
                     Thread.sleep(200);
-                    updateProgress(targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
-                            .filter(target -> target.getRunStatus().equals(Target.Status.FINISHED) ||
-                                    target.getRunStatus().equals(Target.Status.SKIPPED)).collect(Collectors.toSet()).size(), maxSize);
+
+                    updateProgress(getCurrTaskAmountOfFinishedTargets(),getCurrTaskAmountOfChosenTargets());
                 }
-                updateProgress(maxSize,maxSize);
+                updateProgress(getCurrTaskAmountOfChosenTargets(),getCurrTaskAmountOfChosenTargets());
                 return null;
             }
         };
@@ -565,6 +521,50 @@ public class TaskController {
         WaitingListView.setItems(waitingTargetsNameList);
         InProcessListView.setItems(inProcessTargetsNameList);
         FinishedListView.setItems(finishedTargetsNameList);
+    }
+
+    private int updateProgressFromServer() {
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("getProgress", mainController.getTaskName())
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    Platform.runLater(() ->
+                            {
+                                setCurrTaskAmountOfChosenTargets(Integer.getInteger(response.header("amountOfChosenTargets")));
+                                setCurrTaskAmountOfFinishedTargets(Integer.getInteger(response.header("amountOfFinishedOrSkipped")));
+                            }
+                    );
+                }
+            }
+        });
+    }
+
+    public int getCurrTaskAmountOfChosenTargets() {
+        return currTaskAmountOfChosenTargets;
+    }
+
+    public void setCurrTaskAmountOfChosenTargets(int currTaskAmountOfChosenTargets) {
+        this.currTaskAmountOfChosenTargets = currTaskAmountOfChosenTargets;
+    }
+
+    public int getCurrTaskAmountOfFinishedTargets() {
+        return currTaskAmountOfFinishedTargets;
+    }
+
+    public void setCurrTaskAmountOfFinishedTargets(int currTaskAmountOfFinishedTargets) {
+        this.currTaskAmountOfFinishedTargets = currTaskAmountOfFinishedTargets;
     }
 }
 

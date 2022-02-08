@@ -47,6 +47,7 @@ public class AdminMainController {
 
     private Stage aboutStage = null;
     private Stage primaryStage;
+    private boolean isCurTaskIncremental = false;
     private RotateTransition rotate;
     private ScaleTransition scale;
     private final SimpleBooleanProperty isFileSelected;
@@ -362,6 +363,13 @@ public class AdminMainController {
         this.mainChangingScene.setContent(dashboardComponent);
         dashboardButton.setSelected(true);
         dashboardController.expandTaskTitledPane();
+    }
+    public Boolean isCurTaskIncremental() {
+        return isCurTaskIncremental;
+    }
+
+    public void setCurTaskIncremental(boolean curTaskIncremental) {
+        isCurTaskIncremental = curTaskIncremental;
     }
 
     public String getTaskName() {

@@ -202,7 +202,7 @@ public class DashboardController {
 
     @FXML
     void ReloadTaskButtonClicked(ActionEvent event) {
-
+        adminMainController.setCurTaskIncremental(IncrementalRadioButton.isSelected());
     }
 
         @FXML
@@ -297,6 +297,7 @@ public class DashboardController {
             return;
 
         adminMainController.setSelectedTaskTextField(selectedTaskName);
+        adminMainController.setCurTaskIncremental(false);
         this.myTasksListView.getSelectionModel().clearSelection();
         adminMainController.setSceneToTask();
     }

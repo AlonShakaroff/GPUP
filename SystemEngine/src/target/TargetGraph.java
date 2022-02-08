@@ -134,6 +134,16 @@ public class TargetGraph implements Serializable {
                 (target.getRunStatus() == Target.Status.FINISHED || target.getRunStatus() == Target.Status.SKIPPED));
     }
 
+    public Integer howMuchAreChosen() {
+        return getAllTargets().values().stream().filter(Target::isChosen).collect(Collectors.toSet()).size();
+    }
+
+    public Integer howMuchAreFinishedOrSkipped() {
+        return getAllTargets().values().stream().filter(Target::isChosen)
+                .filter(target -> target.getRunStatus().equals(Target.Status.FINISHED) ||
+                        target.getRunStatus().equals(Target.Status.SKIPPED)).collect(Collectors.toSet()).size();
+    }
+
     public boolean didAllTargetsSucceed(){
         return allTargets.values().stream().filter(Target::isChosen).allMatch(target ->
                 (target.getRunResult() == Target.Result.SUCCESS || target.getRunResult() == Target.Result.WARNING));

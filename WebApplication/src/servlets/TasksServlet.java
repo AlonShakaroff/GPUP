@@ -71,7 +71,23 @@ public class TasksServlet extends HttpServlet {
             }
             else //Task not exists in the system
             {
-                resp.getWriter().println("Task not exists!");
+                resp.getWriter().println("The task " + taskName + " doesn't exist in the system!");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        }
+        else if(req.getParameter("getProgress") != null)
+        {
+            String taskName = req.getParameter("getProgress");
+            if(tasksManager.isTaskExists(taskName)) {
+                TargetGraph targetGraph = tasksManager.getTaskForServerSide(taskName).getTargetGraph();
+                Integer amountOfChosenTargets = targetGraph.howMuchAreChosen();
+                Integer amountOfFinishedOrSkipped = targetGraph.howMuchAreFinishedOrSkipped();
+                resp.addHeader("amountOfChosenTargets", amountOfChosenTargets.toString());
+                resp.addHeader("amountOfFinishedOrSkipped", amountOfFinishedOrSkipped.toString());
+                resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+            }
+            else {
+                resp.getWriter().println("The task " + taskName + " doesn't exist in the system!");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }

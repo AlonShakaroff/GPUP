@@ -45,7 +45,7 @@ public class ExecutorThread extends Thread{
         initTasksList(isIncremental);
     }
 
-    public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath,int numOfThreads, boolean isIncremental, TextArea runLogTextArea) {
+    public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath, boolean isIncremental) {
         this.isStopped = false;
         this.targetGraph = targetGraph;
         this.tasksList = new LinkedList<>();

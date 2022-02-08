@@ -3,21 +3,21 @@ package task.copilation;
 import java.io.File;
 
 public class CompilationParameters {
-    private final File sourceCodeDirectory;
-    private final File destinationDirectory;
+    private final String sourcePath;
+    private final String destinationPath;
     private String ExtraData;
 
-    public CompilationParameters(File sourceCodeDirectory, File destinationDirectory) {
-        this.sourceCodeDirectory = sourceCodeDirectory;
-        this.destinationDirectory = destinationDirectory;
+    public CompilationParameters(String sourcePath, String destinationPath) {
+        this.sourcePath = sourcePath;
+        this.destinationPath = destinationPath;
     }
 
-    public File getSourceCodeDirectory() {
-        return this.sourceCodeDirectory;
+    public String getSourcePath() {
+        return this.sourcePath;
     }
 
-    public File getDestinationDirectory() {
-        return this.destinationDirectory;
+    public String getDestinationPath() {
+        return this.destinationPath;
     }
 
     public String getExtraData() {
