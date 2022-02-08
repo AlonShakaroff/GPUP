@@ -375,4 +375,8 @@ public class AdminMainController {
     public String getTaskName() {
         return SelectedTaskTextField.getText();
     }
+
+    public void createIncrementalTask(String newTaskName, String selectedReloadTaskName, boolean isIncremental) {
+
+    }
 }

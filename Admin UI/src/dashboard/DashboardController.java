@@ -204,6 +204,18 @@ public class DashboardController {
     @FXML
     void ReloadTaskButtonClicked(ActionEvent event) {
         adminMainController.setCurTaskIncremental(IncrementalRadioButton.isSelected());
+        String selectedReloadTaskName = this.myTasksListView.getSelectionModel().getSelectedItem();
+        String NewTaskName;
+        int copyNum = 0;
+        do{
+            NewTaskName = selectedReloadTaskName.concat("(" + copyNum + ")");
+            copyNum++;
+        }while (allTasksList.contains(NewTaskName));
+
+        adminMainController.createIncrementalTask(NewTaskName, selectedReloadTaskName, IncrementalRadioButton.isSelected());
+        adminMainController.setSelectedTaskTextField(NewTaskName);
+        this.AllTasksListView.getSelectionModel().clearSelection();
+        adminMainController.setSceneToTask();
     }
 
         @FXML
