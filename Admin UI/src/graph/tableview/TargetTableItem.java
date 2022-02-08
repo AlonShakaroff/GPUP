@@ -20,7 +20,6 @@ public class TargetTableItem {
         this.dependsOnTotal = target.getAmountOfTotalDependsOn();
         this.requiredForDirectly = target.getAmountOfDirectlyRequiredFor();
         this.requiredForTotal = target.getAmountOfTotalRequiredFor();
-        this.amountOfSerialSets = target.getAmountOfSerialSets();
         this.extraData = target.getExtraData();
     }
 
