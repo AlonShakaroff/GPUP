@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import target.FileChecker;
 import target.TargetGraph;
 import task.TasksManager;
 import task.copilation.CompilationTaskInformation;
@@ -95,9 +96,15 @@ public class TasksServlet extends HttpServlet {
 
                 resp.addHeader("message", "The task " + newTaskInfo.getTaskName() + " uploaded successfully!");
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-                TargetGraph targetGraph = ServletUtils.getGraphsManager(getServletContext()).getGraph(newTaskInfo.getGraphName().toLowerCase());
-                tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
-                        TargetGraph.TaskType.SIMULATION,newTaskInfo.getTargetsToExecute(), targetGraph);
+                FileChecker fileChecker = new FileChecker();
+                try {
+                    TargetGraph targetGraph = fileChecker.createTargetGraphFromXml(ServletUtils.getGraphsManager(getServletContext()).getGraphFile(newTaskInfo.getGraphName().toLowerCase()).toPath());
+                    tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
+                            TargetGraph.TaskType.SIMULATION, newTaskInfo.getTargetsToExecute(), targetGraph);
+                    tasksManager.addTaskForServerSide(newTaskInfo.getTaskName(), TargetGraph.TaskType.SIMULATION,"New" ,targetGraph);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             else //A task with the same name already exists in the system
             {
@@ -114,9 +121,15 @@ public class TasksServlet extends HttpServlet {
 
                 resp.addHeader("message", "The task " + newTaskInfo.getTaskName() + " uploaded successfully!");
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-                TargetGraph targetGraph = ServletUtils.getGraphsManager(getServletContext()).getGraph(newTaskInfo.getGraphName().toLowerCase());
-                tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
-                         TargetGraph.TaskType.COMPILATION, newTaskInfo.getTargetsToExecute(), targetGraph);
+                FileChecker fileChecker = new FileChecker();
+                try {
+                    TargetGraph targetGraph = fileChecker.createTargetGraphFromXml(ServletUtils.getGraphsManager(getServletContext()).getGraphFile(newTaskInfo.getGraphName().toLowerCase()).toPath());
+                    tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
+                                                TargetGraph.TaskType.COMPILATION, newTaskInfo.getTargetsToExecute(), targetGraph);
+                    tasksManager.addTaskForServerSide(newTaskInfo.getTaskName(), TargetGraph.TaskType.COMPILATION,"New" ,targetGraph);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             else //A task with the same name already exists in the system
             {

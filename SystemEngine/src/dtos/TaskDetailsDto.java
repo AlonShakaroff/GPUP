@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class TaskDetailsDto {
-
     private final String taskName;
     private final TargetGraph.TaskType taskType;
     private final String graphName;
@@ -21,6 +20,7 @@ public class TaskDetailsDto {
     private Integer totalWorkers;
     private String taskStatus;
     private Set<String> targetsToExecute;
+    private Boolean canRunIncrementally;
 
     public TaskDetailsDto(String taskName, String creatorName, TargetGraph.TaskType taskType,Set<String> targetsToExecute ,TargetGraph targetGraph) {
         this.taskName = taskName;
@@ -118,5 +118,13 @@ public class TaskDetailsDto {
 
     public Set<String> getTargetsToExecute() {
         return targetsToExecute;
+    }
+
+    public Boolean getCanRunIncrementally() {
+        return canRunIncrementally;
+    }
+
+    public void setCanRunIncrementally(Boolean canRunIncrementally) {
+        this.canRunIncrementally = canRunIncrementally;
     }
 }

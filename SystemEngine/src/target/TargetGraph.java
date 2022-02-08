@@ -20,16 +20,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TargetGraph implements Serializable {
-
-    public Map<TaskType, Integer> getTaskPricing() {
-        return taskPricing;
-    }
-
-    public void setTaskPricing(Map<TaskType, Integer> taskPricing) {
-        this.taskPricing = taskPricing;
-    }
-
-    static public enum TaskType {SIMULATION, COMPILATION};
+    public enum TaskType {SIMULATION, COMPILATION};
+    public enum pathDirection {DEPENDS_ON, REQUIRED_FOR};
 
     private final Map<String, Target> allTargets;
     private Map<TaskType, Integer>  taskPricing;
@@ -42,12 +34,26 @@ public class TargetGraph implements Serializable {
 
     public String getCurrentTaskLog() { return currentTaskLog; }
 
+    public TargetGraph(String name) {
+        this.graphName = name;
+        this.allTargets = new HashMap<>();
+        canRunIncrementally = false;
+        currentTaskLog = "";
+    }
+
     public static String getDurationAsString(Duration duration) {
         return String.format("%02d:%02d:%02d", duration.toHours(),
                                     duration.toMinutes() % 60,
                                              duration.getSeconds() - (duration.toHours() * 3600));
     }
 
+    public Map<TaskType, Integer> getTaskPricing() {
+        return taskPricing;
+    }
+
+    public void setTaskPricing(Map<TaskType, Integer> taskPricing) {
+        this.taskPricing = taskPricing;
+    }
 
     public String getGraphName() {
         return graphName;
@@ -59,15 +65,6 @@ public class TargetGraph implements Serializable {
 
     public void setUploaderName(String uploaderName) {
         this.uploaderName = uploaderName;
-    }
-
-    static public enum pathDirection {DEPENDS_ON, REQUIRED_FOR}
-
-    public TargetGraph(String name) {
-        this.graphName = name;
-        this.allTargets = new HashMap<>();
-        canRunIncrementally = false;
-        currentTaskLog = "";
     }
 
     public void InitializeTypes() {
@@ -257,8 +254,6 @@ public class TargetGraph implements Serializable {
         curTarget.setVisited(false);
         return circleFound;
     }
-
-
 
     public static TargetGraph createTargetGraphFromXml(Path filePath) throws Exception {
         File file = new File(filePath.toString());

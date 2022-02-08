@@ -17,6 +17,7 @@ public class TasksManager {
     private static final Map<String, Set<String>> usersTasks = new HashMap<>();
     private static final Set<String> listOfAllTasks = new HashSet<>();
     private static final Map<String, TaskDetailsDto> taskDetailsDTOMap = new HashMap<>();
+    private static final Map<String, TaskForServerSide> taskForServerSideMap = new HashMap<>();
 
     public synchronized boolean isTaskExists(String taskName) {
         return simulationTasksMap.containsKey(taskName.toLowerCase()) || compilationTasksMap.containsKey(taskName.toLowerCase());
@@ -71,5 +72,13 @@ public class TasksManager {
     public synchronized TaskDetailsDto getTaskDetailsDTO(String taskName)
     {
         return taskDetailsDTOMap.get(taskName.toLowerCase());
+    }
+
+    public synchronized void addTaskForServerSide(String taskName, TargetGraph.TaskType taskType, String taskStatus, TargetGraph targetGraph){
+        taskForServerSideMap.put(taskName.toLowerCase(),(new TaskForServerSide(taskName, taskType, taskStatus, targetGraph)));
+    }
+
+    public synchronized  TaskForServerSide getTaskForServerSide(String taskName) {
+        return taskForServerSideMap.get(taskName.toLowerCase());
     }
 }

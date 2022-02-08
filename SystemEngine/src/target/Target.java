@@ -10,11 +10,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class Target implements Serializable {
+public class Target implements Serializable, Cloneable {
 
     public enum Status {FROZEN, SKIPPED, WAITING, IN_PROCESS, FINISHED}
     public enum Result {SUCCESS, WARNING, FAILURE, SKIPPED}
-    public enum Type {LEAF, MIDDLE, ROOT, INDEPENDENT}
+    public enum Type   {LEAF, MIDDLE, ROOT, INDEPENDENT}
 
     private final String name;
     private final String ExtraData;
@@ -25,19 +25,9 @@ public class Target implements Serializable {
     private Type nodeType;
     private Duration targetTaskTime;
     private Instant targetTaskBegin,targetTaskEnd;
-
-    public void setStartTimeInCurState() {
-        this.startTimeInCurState = Instant.now();
-    }
-
-    public long getTimeInState(){
-        return Duration.between(startTimeInCurState, Instant.now()).toMillis();
-    }
-
     private Instant startTimeInCurState;
     private boolean isVisited;
     private boolean isChosen;
-    private final Set<String> serialSets;
     private final Set<Target> responsibleTargets;
 
     public Target(String name, String extraData)
@@ -50,7 +40,6 @@ public class Target implements Serializable {
         this.dependsOnSet = new HashSet<>();
         this.requiredForSet = new HashSet<>();
         this.responsibleTargets = new HashSet<>();
-        this.serialSets = new HashSet<>();
         determineInitialType();
         this.resetTarget();
     }
@@ -71,6 +60,14 @@ public class Target implements Serializable {
         this(gpupTarget.getName(),gpupTarget.getGPUPUserData());
     }
 
+    public void setStartTimeInCurState() {
+        this.startTimeInCurState = Instant.now();
+    }
+
+    public long getTimeInState(){
+        return Duration.between(startTimeInCurState, Instant.now()).toMillis();
+    }
+
     public boolean isChosen() { return isChosen; }
 
     public void setIsChosen(boolean isChosen) { this.isChosen = isChosen; }
@@ -78,12 +75,6 @@ public class Target implements Serializable {
     public Set<Target> getResponsibleTargets() {
         return responsibleTargets;
     }
-
-    public Set<String> getSerialSets() {
-        return serialSets;
-    }
-
-    public void addSerialSet(String setName) { serialSets.add(setName); }
 
     public Duration getTargetTaskTime() {
         return targetTaskTime;
@@ -316,10 +307,6 @@ public class Target implements Serializable {
 
     public int getAmountOfTotalRequiredFor() {
         return getAllRequiredForTargets().size();
-    }
-
-    public int getAmountOfSerialSets() {
-        return getSerialSets().size();
     }
 
     public String getRunStatusAsString() {
