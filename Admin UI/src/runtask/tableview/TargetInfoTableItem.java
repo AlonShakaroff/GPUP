@@ -14,7 +14,6 @@ public class TargetInfoTableItem {
     public TargetInfoTableItem(Target target) {
         this.name = target.getName();
         this.type = target.getNodeTypeAsString();
-        this.serialSets = target.getSerialSets();
         this.status = target.getRunStatusAsString();
     }
 

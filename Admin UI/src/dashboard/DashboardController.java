@@ -78,6 +78,7 @@ public class DashboardController {
         };
         currentSelectedAllTasksListListener = change -> {
             displaySelectedTaskInfo();
+            FromScratchRadioButton.setSelected(true);
             isAllTaskSelectedAndRanAlready.setValue(change.getList().size() != 0 && selectedAllTaskFinished.getValue());
         };
     }
