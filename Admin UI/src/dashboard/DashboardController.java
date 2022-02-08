@@ -6,6 +6,7 @@ import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.GraphInfoDto;
 import dtos.TaskDetailsDto;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -24,7 +25,6 @@ import main.AdminMainController;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import org.omg.PortableInterceptor.NON_EXISTENT;
 import users.UsersLists;
 import util.http.HttpClientUtil;
 
@@ -51,6 +51,9 @@ public class DashboardController {
     private ListChangeListener<String> currentSelectedAllTasksListListener;
     private SimpleBooleanProperty isGraphSelected;
     private SimpleBooleanProperty isMyTaskSelected;
+    private SimpleBooleanProperty isAllTaskSelectedAndRanAlready;
+    private SimpleBooleanProperty selectedAllTaskFinished;
+    private SimpleBooleanProperty selectedAllTaskCanRunIncrementally;
 
     private Stage primaryStage;
     private String userName;
@@ -62,6 +65,10 @@ public class DashboardController {
     public DashboardController() {
         isGraphSelected = new SimpleBooleanProperty(false);
         isMyTaskSelected = new SimpleBooleanProperty(false);
+        isAllTaskSelectedAndRanAlready = new SimpleBooleanProperty(false);
+        selectedAllTaskFinished = new SimpleBooleanProperty(false);
+        selectedAllTaskCanRunIncrementally = new SimpleBooleanProperty(false);
+
         currentSelectedGraphListListener = change -> {
             displaySelectedGraphInfo();
             isGraphSelected.setValue(change.getList().size() != 0);
@@ -71,10 +78,15 @@ public class DashboardController {
         };
         currentSelectedAllTasksListListener = change -> {
             displaySelectedTaskInfo();
+            isAllTaskSelectedAndRanAlready.setValue(change.getList().size() != 0 && selectedAllTaskFinished.getValue());
         };
     }
 
     public void initialize() {
+        IncrementalRadioButton.disableProperty().bind(Bindings.or(FromScratchRadioButton.disableProperty() , selectedAllTaskCanRunIncrementally.not()));
+        FromScratchRadioButton.disableProperty().bind(ReloadTaskButton.disableProperty());
+        ReloadTaskButton.disableProperty().bind(isAllTaskSelectedAndRanAlready.not());
+
         LoadGraphButton.disableProperty().bind(isGraphSelected.not());
         loadSelectedTaskButton.disableProperty().bind(isMyTaskSelected.not());
         currentSelectedGraphList = OnlineGraphsListView.getSelectionModel().getSelectedItems();
@@ -475,6 +487,10 @@ public class DashboardController {
                                     if (responseBody != null) {
                                         TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
                                         responseBody.close();
+
+                                        //selectedAllTaskCanRunIncrementally.setValue(taskDetailsDto.getCanRunIncrementally());
+                                        selectedAllTaskFinished.setValue(taskDetailsDto.getTaskStatus().equals("Finished"));
+
                                         displaySelectedTaskInfoFromDto(taskDetailsDto);
                                     }
                                 } catch (IOException e) {
@@ -492,7 +508,6 @@ public class DashboardController {
         this.CreatedByTextField.setText(taskDetailsDto.getUploader());
         this.TaskOnGraphTextField.setText(taskDetailsDto.getGraphName());
         this.TaskTypeTextField.setText(taskDetailsDto.getTaskTypeAsString());
-
         updateTaskDetailsTables(taskDetailsDto);
     }
 
@@ -688,5 +703,17 @@ public class DashboardController {
 
     public void expandTaskTitledPane() {
         OnlineTasksTiltedPane.setExpanded(true);
+    }
+
+    public boolean getSelectedAllTaskCanRunIncrementally() {
+        return selectedAllTaskCanRunIncrementally.get();
+    }
+
+    public SimpleBooleanProperty selectedAllTaskCanRunIncrementallyProperty() {
+        return selectedAllTaskCanRunIncrementally;
+    }
+
+    public void setSelectedAllTaskCanRunIncrementally(boolean selectedAllTaskCanRunIncrementally) {
+        this.selectedAllTaskCanRunIncrementally.set(selectedAllTaskCanRunIncrementally);
     }
 }
