@@ -16,12 +16,7 @@ public class TaskOperationServlet extends HttpServlet {
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
 
         if(req.getParameter("operation").equalsIgnoreCase("start")) {
-            Boolean isIncremental;
-            if(req.getHeader("isIncremental").equalsIgnoreCase("true"))
-                isIncremental = true;
-            else
-                isIncremental = false;
-            tasksManager.addTaskExecutorThread(req.getHeader("taskName"), isIncremental);
+            tasksManager.addTaskExecutorThread(req.getHeader("taskName"));
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
     }

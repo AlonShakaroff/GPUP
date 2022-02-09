@@ -68,6 +68,9 @@ public class ConnectionsController {
     private final ObservableList<String> filteredTargetsNameList = FXCollections.observableArrayList();
     private final ObservableList<String> addedTargetsList = FXCollections.observableArrayList();
 
+    private CompilationTaskInformation compilationTaskInformation;
+    private SimulationTaskInformation simulationTaskInformation;
+
     private ObservableList<String>  currentSelectedList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedInAddedTargetsList = FXCollections.observableArrayList();
 
@@ -457,6 +460,74 @@ public class ConnectionsController {
         }
 
         uploadTaskToServer(stringObject, taskTypeRequest);
+    }
+
+    public void uploadCopyTaskToServer(String newTaskName, String oldTaskName, String type, String userName, boolean isIncremental){
+        String taskTypeRequest = null;
+        String stringObject = null;
+        int attempts = 0;
+        compilationTaskInformation = null;
+        simulationTaskInformation = null;
+
+        getCurrInformation(oldTaskName, type);
+        while (compilationTaskInformation == null && simulationTaskInformation == null && attempts < 1000 ){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ignore) {}
+            attempts++;
+        }
+        if(type.equals("Simulation"))
+        {
+            taskTypeRequest = "Simulation";
+            SimulationTaskInformation newSimulationTaskInformation = new SimulationTaskInformation(newTaskName, userName,
+                    simulationTaskInformation.getGraphName(), simulationTaskInformation.getTargetsToExecute(),
+                    simulationTaskInformation.getPricingForTarget(), simulationTaskInformation.getSimulationParameters(),isIncremental);
+            stringObject = this.gson.toJson(newSimulationTaskInformation);
+        }
+        else if(type.equals("Compilation"))
+        {
+            taskTypeRequest = "Compilation";
+            CompilationTaskInformation newCompilationTaskInformation = new CompilationTaskInformation(newTaskName, userName,
+                    compilationTaskInformation.getGraphName(), compilationTaskInformation.getTargetsToExecute(),
+                    compilationTaskInformation.getPricingForTarget(), compilationTaskInformation.getCompilationParameters(),isIncremental);
+            stringObject = this.gson.toJson(newCompilationTaskInformation);
+        }
+        if (stringObject != null && taskTypeRequest != null)
+             uploadTaskToServer(stringObject, taskTypeRequest);
+    }
+
+    private void getCurrInformation(String oldTaskName, String type) {
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("task", oldTaskName)
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        errorPopup(e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    Gson gson = new Gson();
+                    ResponseBody responseBody = response.body();
+                    if (type.equals("Simulation"))
+                        simulationTaskInformation = gson.fromJson(responseBody.string(), SimulationTaskInformation.class);
+                    else
+                        compilationTaskInformation = gson.fromJson(responseBody.string(), CompilationTaskInformation.class);
+                    responseBody.close();
+                } else //Failed
+                {
+                    Platform.runLater(() -> errorPopup(response.message()));
+                }
+            }
+        });
     }
 
     @FXML

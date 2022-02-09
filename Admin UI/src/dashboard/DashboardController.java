@@ -86,7 +86,7 @@ public class DashboardController {
     public void initialize() {
         IncrementalRadioButton.disableProperty().bind(Bindings.or(FromScratchRadioButton.disableProperty() , selectedAllTaskCanRunIncrementally.not()));
         FromScratchRadioButton.disableProperty().bind(ReloadTaskButton.disableProperty());
-        ReloadTaskButton.disableProperty().bind(isAllTaskSelectedAndRanAlready.not());
+//        ReloadTaskButton.disableProperty().bind(isAllTaskSelectedAndRanAlready.not());
 
         LoadGraphButton.disableProperty().bind(isGraphSelected.not());
         loadSelectedTaskButton.disableProperty().bind(isMyTaskSelected.not());
@@ -203,19 +203,17 @@ public class DashboardController {
 
     @FXML
     void ReloadTaskButtonClicked(ActionEvent event) {
-        adminMainController.setCurTaskIncremental(IncrementalRadioButton.isSelected());
-        String selectedReloadTaskName = this.myTasksListView.getSelectionModel().getSelectedItem();
+        String selectedReloadTaskName = this.AllTasksListView.getSelectionModel().getSelectedItem();
         String NewTaskName;
-        int copyNum = 0;
+        int copyNum = 1;
         do{
-            NewTaskName = selectedReloadTaskName.concat("(" + copyNum + ")");
+            NewTaskName = selectedReloadTaskName.concat(" (copy "+ copyNum + ")");
             copyNum++;
         }while (allTasksList.contains(NewTaskName));
 
-        adminMainController.createIncrementalTask(NewTaskName, selectedReloadTaskName, IncrementalRadioButton.isSelected());
-        adminMainController.setSelectedTaskTextField(NewTaskName);
+        adminMainController.createIncrementalTask(NewTaskName, selectedReloadTaskName,
+                TaskTypeTextField.getText(),IncrementalRadioButton.isSelected());
         this.AllTasksListView.getSelectionModel().clearSelection();
-        adminMainController.setSceneToTask();
     }
 
         @FXML
@@ -310,7 +308,6 @@ public class DashboardController {
             return;
 
         adminMainController.setSelectedTaskTextField(selectedTaskName);
-        adminMainController.setCurTaskIncremental(false);
         this.myTasksListView.getSelectionModel().clearSelection();
         adminMainController.setSceneToTask();
     }

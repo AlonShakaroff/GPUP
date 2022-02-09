@@ -290,9 +290,11 @@ public class TaskController {
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
+        stopTaskButton.setDisable(false);
+        pauseTaskButton.setDisable(false);
+
         RequestBody body = RequestBody.create("",MediaType.parse("application/json"));
         String taskName = mainController.getTaskName();
-        String isIncremental = mainController.isCurTaskIncremental().toString();
 
         String finalUrl = HttpUrl
                 .parse(Constants.TASKS_OPERATION_PATH)
@@ -304,7 +306,6 @@ public class TaskController {
                 .url(finalUrl)
                 .post(body)
                 .addHeader("taskName",taskName)
-                .addHeader("isIncremental",isIncremental)
                 .build();
 
 

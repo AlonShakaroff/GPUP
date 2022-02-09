@@ -88,18 +88,29 @@ public class TasksManager {
         return taskForServerSideMap.get(taskName.toLowerCase());
     }
 
-    public synchronized void addTaskExecutorThread(String taskName, boolean isIncremental) {
+    public synchronized void addTaskExecutorThread(String taskName) {
         TargetGraph targetGraph = getTaskForServerSide(taskName).getTargetGraph();
         if(isSimulationTask(taskName)) {
             SimulationParameters parameters = getSimulationTaskInformation(taskName).getSimulationParameters();
             taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, "simulation",
                                          parameters.getSuccessWithWarnings(), parameters.getSuccessRate(),
+<<<<<<< Updated upstream
                                                 parameters.isRandom(),parameters.getProcessingTime(), isIncremental,this));
         }
         else if(isCompilationTask(taskName)) {
             CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
             taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,"compilation",
                                 parameters.getSourcePath(),parameters.getDestinationPath(), isIncremental,this));
+=======
+                                                parameters.isRandom(),parameters.getProcessingTime(),
+                                                    getSimulationTaskInformation(taskName).isIncremental()));
+        }
+        else if(isCompilationTask(taskName)) {
+            CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,taskName,
+                                parameters.getSourcePath(),parameters.getDestinationPath(),
+                                        getSimulationTaskInformation(taskName).isIncremental()));
+>>>>>>> Stashed changes
         }
     }
 

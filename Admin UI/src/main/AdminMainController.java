@@ -47,7 +47,6 @@ public class AdminMainController {
 
     private Stage aboutStage = null;
     private Stage primaryStage;
-    private boolean isCurTaskIncremental = false;
     private RotateTransition rotate;
     private ScaleTransition scale;
     private final SimpleBooleanProperty isFileSelected;
@@ -364,19 +363,12 @@ public class AdminMainController {
         dashboardButton.setSelected(true);
         dashboardController.expandTaskTitledPane();
     }
-    public Boolean isCurTaskIncremental() {
-        return isCurTaskIncremental;
-    }
-
-    public void setCurTaskIncremental(boolean curTaskIncremental) {
-        isCurTaskIncremental = curTaskIncremental;
-    }
 
     public String getTaskName() {
         return SelectedTaskTextField.getText();
     }
 
-    public void createIncrementalTask(String newTaskName, String selectedReloadTaskName, boolean isIncremental) {
-
+    public void createIncrementalTask(String newTaskName, String selectedReloadTaskName, String type, boolean isIncremental) {
+        connectionsController.uploadCopyTaskToServer(newTaskName, selectedReloadTaskName, type, userName, isIncremental);
     }
 }
