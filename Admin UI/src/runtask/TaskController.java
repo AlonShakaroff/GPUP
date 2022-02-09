@@ -34,6 +34,7 @@ import util.http.HttpClientUtil;
 
 import javax.print.DocFlavor;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TaskController {
@@ -65,9 +66,10 @@ public class TaskController {
     private ObservableList<String> currentSelectedInProcessList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedFinishedList = FXCollections.observableArrayList();
 
-    private Integer currTaskAmountOfChosenTargets;
-    private Integer currTaskAmountOfFinishedTargets;
+    private Integer currTaskAmountOfChosenTargets = 1;
+    private Integer currTaskAmountOfFinishedTargets = 0;
     private Boolean isTaskFinished = false;
+    private Thread progressBarThread = null;
 
     public TaskController() {
         isPaused = new SimpleBooleanProperty(false);
@@ -503,13 +505,13 @@ public class TaskController {
             @Override
             protected Void call() throws Exception {
                 updateProgressFromServer();
-                while(getCurrTaskAmountOfFinishedTargets() < getCurrTaskAmountOfChosenTargets())
+                while(currTaskAmountOfFinishedTargets < currTaskAmountOfChosenTargets)
                 {
                     Thread.sleep(200);
 
-                    updateProgress(getCurrTaskAmountOfFinishedTargets(),getCurrTaskAmountOfChosenTargets());
+                    updateProgress(currTaskAmountOfFinishedTargets, currTaskAmountOfChosenTargets);
                 }
-                updateProgress(getCurrTaskAmountOfChosenTargets(),getCurrTaskAmountOfChosenTargets());
+                updateProgress(currTaskAmountOfFinishedTargets, currTaskAmountOfChosenTargets);
                 return null;
             }
         };
@@ -517,7 +519,9 @@ public class TaskController {
         this.progressBarLabel.textProperty().bind
                 (Bindings.concat(Bindings.format("%.0f", Bindings.multiply(task.progressProperty(), 100)), " %"));
 
-        Thread progressBarThread = new Thread(task);
+        if(progressBarThread != null)
+            progressBarThread.interrupt();
+        this.progressBarThread = new Thread(task);
         progressBarThread.setDaemon(true);
         progressBarThread.start();
     }
@@ -552,13 +556,9 @@ public class TaskController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
-                    Platform.runLater(() ->
-                            {
-                                setCurrTaskAmountOfChosenTargets(Integer.getInteger(response.header("amountOfChosenTargets")));
-                                setCurrTaskAmountOfFinishedTargets(Integer.getInteger(response.header("amountOfFinishedOrSkipped")));
-                                setTaskFinished(Boolean.getBoolean(response.header("isFinished")));
-                            }
-                    );
+                        currTaskAmountOfChosenTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfChosenTargets"))));
+                        currTaskAmountOfFinishedTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfFinishedOrSkipped"))));
+                        isTaskFinished = (Boolean.parseBoolean(response.header("isFinished")));
                 }
             }
         });
