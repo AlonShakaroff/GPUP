@@ -1,11 +1,8 @@
 package task.copilation;
 
-import javafx.application.Platform;
-import javafx.scene.control.TextArea;
 import target.Target;
 import target.TargetForWorker;
 import target.TargetGraph;
-import task.ExecutorThread;
 import task.GPUPTask;
 
 import java.io.BufferedReader;
@@ -21,7 +18,7 @@ public class CompilationTask extends GPUPTask {
 
     public CompilationTask(String taskName, String sourceFilePath, String destinationFilePath,
                            TargetForWorker target) {
-        super(taskName, target);
+        super(taskName, target, "Compilation");
         this.sourceFolderPath = sourceFilePath;
         this.destinationPath = destinationFilePath;
     }

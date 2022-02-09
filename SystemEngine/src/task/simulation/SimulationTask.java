@@ -1,15 +1,9 @@
 package task.simulation;
 
-import javafx.application.Platform;
-import javafx.scene.control.TextArea;
 import target.Target;
 import target.TargetForWorker;
-import task.ExecutorThread;
 import task.GPUPTask;
-//import userinterface.Communicator;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Random;
 
 public class SimulationTask extends GPUPTask {
@@ -20,8 +14,9 @@ public class SimulationTask extends GPUPTask {
     private final double warningChance;
     private final Random random;
 
-    public SimulationTask(String taskName, int processTimeInMS, boolean isRandom, double successChance, double warningChance, TargetForWorker target) {
-        super(taskName, target);
+    public SimulationTask(String taskName, int processTimeInMS, boolean isRandom, double successChance,
+                            double warningChance, TargetForWorker target) {
+        super(taskName, target, "Simulation");
         this.processTimeInMS = processTimeInMS;
         this.isRandom = isRandom;
         this.successChance = successChance;

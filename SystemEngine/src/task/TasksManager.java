@@ -9,10 +9,7 @@ import task.simulation.SimulationParameters;
 import task.simulation.SimulationTask;
 import task.simulation.SimulationTaskInformation;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TasksManager {
 
@@ -23,6 +20,7 @@ public class TasksManager {
     private static final Map<String, TaskDetailsDto> taskDetailsDTOMap = new HashMap<>();
     private static final Map<String, TaskForServerSide> taskForServerSideMap = new HashMap<>();
     private static final Map<String, ExecutorThread> taskExecutorThreadMap = new HashMap<>();
+    private static final LinkedList<GPUPTask> tasksThatAreReadyForWorkersList = new LinkedList<>();
 
     public synchronized boolean isTaskExists(String taskName) {
         return simulationTasksMap.containsKey(taskName.toLowerCase()) || compilationTasksMap.containsKey(taskName.toLowerCase());
@@ -95,12 +93,20 @@ public class TasksManager {
             SimulationParameters parameters = getSimulationTaskInformation(taskName).getSimulationParameters();
             taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, taskName,
                                          parameters.getSuccessWithWarnings(), parameters.getSuccessRate(),
-                                                parameters.isRandom(),parameters.getProcessingTime(), isIncremental));
+                                                parameters.isRandom(),parameters.getProcessingTime(), isIncremental,this));
         }
         else if(isCompilationTask(taskName)) {
             CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
             taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,taskName,
-                                parameters.getSourcePath(),parameters.getDestinationPath(), isIncremental));
+                                parameters.getSourcePath(),parameters.getDestinationPath(), isIncremental,this));
         }
+    }
+
+    public synchronized void addTaskReadyForWorker(GPUPTask task) {
+        tasksThatAreReadyForWorkersList.addLast(task);
+    }
+
+    public synchronized GPUPTask pollTaskReadyForWorker() {
+        return tasksThatAreReadyForWorkersList.pollFirst();
     }
 }

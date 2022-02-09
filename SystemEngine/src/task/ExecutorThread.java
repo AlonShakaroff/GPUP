@@ -15,8 +15,8 @@ import java.util.concurrent.*;
 public class ExecutorThread extends Thread{
     private TargetGraph targetGraph;
     private LinkedList<GPUPTask> tasksList;
-    private LinkedList<GPUPTask> readyTasksList;
     private String taskName;
+    private TasksManager tasksManager;
 
     /*---------------------Simulation parameters-----------------------------*/
     private double warningChance;
@@ -33,7 +33,7 @@ public class ExecutorThread extends Thread{
     /*-----------------------------------------------------------------------*/
 
     public ExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
-                          boolean isRandom, int processTimeInMS, boolean isIncremental){
+                          boolean isRandom, int processTimeInMS, boolean isIncremental, TasksManager tasksManager){
         this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.warningChance = warningChance;
@@ -41,17 +41,19 @@ public class ExecutorThread extends Thread{
         this.isRandom = isRandom;
         this.processTimeInMS = processTimeInMS;
         this.tasksList = new LinkedList<>();
-        this.readyTasksList = new LinkedList<>();
+        this.tasksManager = tasksManager;
         initTasksList(isIncremental);
     }
 
-    public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath, String DestFolderPath, boolean isIncremental) {
+    public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath,
+                          String DestFolderPath, boolean isIncremental, TasksManager tasksManager) {
         this.isStopped = false;
         this.targetGraph = targetGraph;
         this.tasksList = new LinkedList<>();
         this.taskName = taskName;
         this.SourceFolderPath = SourceFolderPath;
         this.DestFolderPath = DestFolderPath;
+        this.tasksManager = tasksManager;
         initTasksList(isIncremental);
     }
     private void initTasksList(boolean isIncremental){
@@ -78,7 +80,6 @@ public class ExecutorThread extends Thread{
         targetGraph.getAllTargets().values().forEach(Target::setStartTimeInCurState);
         while (!tasksList.isEmpty()) {
             if (isStopped) { // break if stopped
-                readyTasksList.clear();
                 break;
             }
 
@@ -94,7 +95,7 @@ public class ExecutorThread extends Thread{
                         curTask.getTarget().setRunLog(curTask.getTarget().getRunLog().concat("Target " + curTask.getTarget().getName() +
                             " is skipped because " + curTarget.getResponsibleTargets().toString() + " failed \n\n"));
                 } else {
-                     readyTasksList.add(curTask);
+                     tasksManager.addTaskReadyForWorker(curTask);
                 }
             }
             targetGraph.refreshWaiting();
