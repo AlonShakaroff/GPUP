@@ -9,13 +9,13 @@ import utils.ServletUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = "TasksServlet", urlPatterns = "/tasks/operation")
+@WebServlet(name = "TasksOperationServlet", urlPatterns = "/tasks/operation")
 public class TaskOperationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
 
-        if(req.getHeader("operation").equalsIgnoreCase("start")) {
+        if(req.getParameter("operation").equalsIgnoreCase("start")) {
             Boolean isIncremental;
             if(req.getHeader("isIncremental").equalsIgnoreCase("true"))
                 isIncremental = true;

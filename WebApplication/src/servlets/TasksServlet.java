@@ -117,6 +117,7 @@ public class TasksServlet extends HttpServlet {
                 FileChecker fileChecker = new FileChecker();
                 try {
                     TargetGraph targetGraph = fileChecker.createTargetGraphFromXml(ServletUtils.getGraphsManager(getServletContext()).getGraphFile(newTaskInfo.getGraphName().toLowerCase()).toPath());
+                    targetGraph.markTargetsAsChosen(newTaskInfo.getTargetsToExecute());
                     tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
                             TargetGraph.TaskType.SIMULATION, newTaskInfo.getTargetsToExecute(), targetGraph);
                     tasksManager.addTaskForServerSide(newTaskInfo.getTaskName(), TargetGraph.TaskType.SIMULATION,"New" ,targetGraph);

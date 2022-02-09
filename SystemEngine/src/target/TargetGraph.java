@@ -348,7 +348,7 @@ public class TargetGraph implements Serializable {
         return StringPath;
     }
 
-    public void markTargetsAsChosen(List<String> chosenTargets) {
+    public void markTargetsAsChosen(Set<String> chosenTargets) {
         clearChosenTargets();
         for (String curTarget : chosenTargets) {
             getTarget(curTarget).setIsChosen(true);

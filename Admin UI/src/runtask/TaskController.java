@@ -191,8 +191,8 @@ public class TaskController {
         currentSelectedWaitingList.addListener(currentSelectedWaitingListener);
         currentSelectedInProcessList.addListener(currentSelectedInProcessListener);
         currentSelectedFinishedList.addListener(currentSelectedFinishedListener);
-        runTaskButton.disableProperty().bind(Bindings.and(stopTaskButton.disableProperty(),
-                pauseTaskButton.disableProperty()));
+        runTaskButton.disableProperty().bind(Bindings.and(stopTaskButton.disableProperty().not(),
+                pauseTaskButton.disableProperty().not()));
         FrozenListView.setItems(frozenTargetsNameList);
         SkippedListView.setItems(skippedTargetsNameList);
         WaitingListView.setItems(waitingTargetsNameList);
@@ -288,6 +288,10 @@ public class TaskController {
 
     @FXML
     void runTaskButtonClicked(ActionEvent event) {
+        RequestBody body = RequestBody.create("",MediaType.parse("application/json"));
+        String taskName = mainController.getTaskName();
+        String isIncremental = mainController.isCurTaskIncremental().toString();
+
         String finalUrl = HttpUrl
                 .parse(Constants.TASKS_OPERATION_PATH)
                 .newBuilder()
@@ -296,8 +300,9 @@ public class TaskController {
                 .toString();
         Request request = new Request.Builder()
                 .url(finalUrl)
-                .addHeader("taskName",mainController.getTaskName())
-                .addHeader("isIncremental", mainController.isCurTaskIncremental().toString())
+                .post(body)
+                .addHeader("taskName",taskName)
+                .addHeader("isIncremental",isIncremental)
                 .build();
 
 
@@ -310,7 +315,9 @@ public class TaskController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if(response.code() == 202)
                 {
-                    createNewProgressBar();
+                    Platform.runLater(()->{
+                        createNewProgressBar();
+                    });
                 }
             }
 

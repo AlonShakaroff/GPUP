@@ -29,7 +29,7 @@ public class TasksManager {
     }
 
     public synchronized boolean isSimulationTask(String taskName) { return simulationTasksMap.containsKey(taskName.toLowerCase()); }
-    public synchronized boolean isCompilationTask(String taskName) { return simulationTasksMap.containsKey(taskName.toLowerCase()); }
+    public synchronized boolean isCompilationTask(String taskName) { return compilationTasksMap.containsKey(taskName.toLowerCase()); }
 
     public synchronized CompilationTaskInformation getCompilationTaskInformation(String taskName) {
         return compilationTasksMap.get(taskName.toLowerCase());
