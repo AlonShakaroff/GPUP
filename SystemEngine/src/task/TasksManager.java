@@ -10,6 +10,7 @@ import task.simulation.SimulationTask;
 import task.simulation.SimulationTaskInformation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TasksManager {
 
@@ -106,7 +107,13 @@ public class TasksManager {
         tasksThatAreReadyForWorkersList.addLast(task);
     }
 
-    public synchronized GPUPTask pollTaskReadyForWorker() {
-        return tasksThatAreReadyForWorkersList.pollFirst();
+    public synchronized GPUPTask pollTaskReadyForWorker(Set<String> tasksThatWorkerIsSignedTo) {
+        List<GPUPTask> filteredList = tasksThatAreReadyForWorkersList.stream().filter(gpupTask -> tasksThatWorkerIsSignedTo.contains(gpupTask.taskName)).collect(Collectors.toList());
+        if(!filteredList.isEmpty()) {
+            tasksThatWorkerIsSignedTo.remove(filteredList.get(0));
+            return filteredList.get(0);
+        }
+        else //filtered list is empty
+            return null;
     }
 }

@@ -10,6 +10,7 @@ import task.TasksManager;
 import utils.ServletUtils;
 
 import java.io.IOException;
+import java.util.Set;
 
 @WebServlet(name = "WorkerTaskServlet", urlPatterns = "/worker/task")
 public class WorkerTaskServlet extends HttpServlet {
@@ -22,9 +23,11 @@ public class WorkerTaskServlet extends HttpServlet {
 
         if(req.getParameter("getTaskToDo") != null)
         {
-            GPUPTask gpupTask = tasksManager.pollTaskReadyForWorker();
+            Set<String> signedToTasks = gson.fromJson(req.getReader(), Set.class);
+            GPUPTask gpupTask = tasksManager.pollTaskReadyForWorker(signedToTasks);
             String gpupTaskJson = gson.toJson(gpupTask, GPUPTask.class);
             resp.getWriter().write(gpupTaskJson);
+            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
     }
 }
