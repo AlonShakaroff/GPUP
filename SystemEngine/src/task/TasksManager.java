@@ -94,23 +94,14 @@ public class TasksManager {
             SimulationParameters parameters = getSimulationTaskInformation(taskName).getSimulationParameters();
             taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, "simulation",
                                          parameters.getSuccessWithWarnings(), parameters.getSuccessRate(),
-<<<<<<< Updated upstream
-                                                parameters.isRandom(),parameters.getProcessingTime(), isIncremental,this));
+                                                parameters.isRandom(),parameters.getProcessingTime(),
+                    getSimulationTaskInformation(taskName).isIncremental(), this));
         }
         else if(isCompilationTask(taskName)) {
             CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
             taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,"compilation",
-                                parameters.getSourcePath(),parameters.getDestinationPath(), isIncremental,this));
-=======
-                                                parameters.isRandom(),parameters.getProcessingTime(),
-                                                    getSimulationTaskInformation(taskName).isIncremental()));
-        }
-        else if(isCompilationTask(taskName)) {
-            CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
-            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,taskName,
                                 parameters.getSourcePath(),parameters.getDestinationPath(),
-                                        getSimulationTaskInformation(taskName).isIncremental()));
->>>>>>> Stashed changes
+                    getCompilationTaskInformation(taskName).isIncremental(),this));
         }
     }
 

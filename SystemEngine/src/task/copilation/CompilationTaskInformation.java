@@ -46,4 +46,8 @@ public class CompilationTaskInformation {
     public Integer getPricingForTarget() {
         return this.pricingForTarget;
     }
+
+    public boolean isIncremental() {
+        return isIncremental;
+    }
 }
