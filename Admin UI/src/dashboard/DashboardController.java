@@ -86,7 +86,7 @@ public class DashboardController {
     public void initialize() {
         IncrementalRadioButton.disableProperty().bind(Bindings.or(FromScratchRadioButton.disableProperty() , selectedAllTaskCanRunIncrementally.not()));
         FromScratchRadioButton.disableProperty().bind(ReloadTaskButton.disableProperty());
-//        ReloadTaskButton.disableProperty().bind(isAllTaskSelectedAndRanAlready.not());
+        ReloadTaskButton.disableProperty().bind(isAllTaskSelectedAndRanAlready.not());
 
         LoadGraphButton.disableProperty().bind(isGraphSelected.not());
         loadSelectedTaskButton.disableProperty().bind(isMyTaskSelected.not());
