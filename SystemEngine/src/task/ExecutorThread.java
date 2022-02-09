@@ -1,7 +1,5 @@
 package task;
 
-import javafx.application.Platform;
-import javafx.scene.control.TextArea;
 import target.Target;
 import target.TargetGraph;
 import task.copilation.CompilationTask;
@@ -10,13 +8,13 @@ import task.simulation.SimulationTask;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.*;
 
 public class ExecutorThread extends Thread{
-    private TargetGraph targetGraph;
-    private LinkedList<GPUPTask> tasksList;
-    private String taskName;
-    private TasksManager tasksManager;
+    private final TargetGraph targetGraph;
+    private final LinkedList<GPUPTask> tasksList;
+    private final String taskName;
+    private final String taskType;
+    private final TasksManager tasksManager;
 
     /*---------------------Simulation parameters-----------------------------*/
     private double warningChance;
@@ -42,10 +40,11 @@ public class ExecutorThread extends Thread{
         this.processTimeInMS = processTimeInMS;
         this.tasksList = new LinkedList<>();
         this.tasksManager = tasksManager;
+        this.taskType = "simulation";
         initTasksList(isIncremental);
     }
 
-    public ExecutorThread(TargetGraph targetGraph, String taskName,String SourceFolderPath,
+    public ExecutorThread(TargetGraph targetGraph, String taskName, String SourceFolderPath,
                           String DestFolderPath, boolean isIncremental, TasksManager tasksManager) {
         this.isStopped = false;
         this.targetGraph = targetGraph;
@@ -54,19 +53,20 @@ public class ExecutorThread extends Thread{
         this.SourceFolderPath = SourceFolderPath;
         this.DestFolderPath = DestFolderPath;
         this.tasksManager = tasksManager;
+        this.taskType = "compilation";
         initTasksList(isIncremental);
     }
     private void initTasksList(boolean isIncremental){
         tasksList.clear();
         for(Target target : targetGraph.getTargetsToRunOnAndResetExtraData(isIncremental)) {
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
-                if(this.taskName.equalsIgnoreCase("simulation"))
+                if(this.taskType.equalsIgnoreCase("simulation"))
                     tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, Target.extractTargetForWorkerFromTarget(target, taskName)));
                 else /*compilation*/
                     tasksList.addFirst(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,Target.extractTargetForWorkerFromTarget(target, taskName)));
             }
             else {
-                if(this.taskName.equalsIgnoreCase("simulation"))
+                if(this.taskType.equalsIgnoreCase("simulation"))
                     tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, Target.extractTargetForWorkerFromTarget(target, taskName)));
                 else /*compilation*/
                     tasksList.addLast(new CompilationTask(taskName, SourceFolderPath, DestFolderPath, Target.extractTargetForWorkerFromTarget(target, taskName)));

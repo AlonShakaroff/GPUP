@@ -91,13 +91,13 @@ public class TasksManager {
         TargetGraph targetGraph = getTaskForServerSide(taskName).getTargetGraph();
         if(isSimulationTask(taskName)) {
             SimulationParameters parameters = getSimulationTaskInformation(taskName).getSimulationParameters();
-            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, taskName,
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, "simulation",
                                          parameters.getSuccessWithWarnings(), parameters.getSuccessRate(),
                                                 parameters.isRandom(),parameters.getProcessingTime(), isIncremental,this));
         }
         else if(isCompilationTask(taskName)) {
             CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
-            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,taskName,
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,"compilation",
                                 parameters.getSourcePath(),parameters.getDestinationPath(), isIncremental,this));
         }
     }

@@ -15,4 +15,10 @@ public class WorkersConstants {
     public static final String CHALKBOARD_CSS = "/main/css/chalkBoard.css";
     public static final String STREET_CSS = "/main/css/street.css";
     public static final String AVIAD_CSS = "/main/css/aviad.css";
+
+    /*--------------------------------------------Servlets---------------------------------------------------*/
+    public final static String BASE_DOMAIN = "localhost";
+    private final static String FULL_SERVER_PATH = "http://" + BASE_DOMAIN + ":8080";
+
+    public static final String WORKER_TASK_PAGE = FULL_SERVER_PATH + "/worker/task";
 }
