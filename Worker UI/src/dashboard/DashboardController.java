@@ -29,6 +29,7 @@ import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class DashboardController {
@@ -170,6 +171,7 @@ public class DashboardController {
     private void refreshDashboardData() {
         while (refreshDashboardDataThread.isAlive()) {
             getUsersLists();
+            getOnlineTasksList();
         }
     }
 
@@ -214,36 +216,48 @@ public class DashboardController {
     }
 
     public void getOnlineTasksList() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         String finalUrl = HttpUrl
-                .parse(Constants.USERS_LISTS)
+                .parse(Constants.TASKS_LIST_PATH)
                 .newBuilder()
+                .addQueryParameter("onlineTasksList", "onlineTasksList")
                 .build()
                 .toString();
 
-
         HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
-
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Gson gson = new Gson();
-                ResponseBody responseBody = response.body();
-                UsersLists usersLists = gson.fromJson(responseBody.string(), UsersLists.class);
-                responseBody.close();
-                Platform.runLater(() -> {
-                    updateUsersLists(usersLists);
-                });
+                if (response.code() >= 200 && response.code() < 300)
+                {
+                    Platform.runLater(() ->
+                            {
+                                Gson gson = new Gson();
+                                ResponseBody responseBody = response.body();
+                                try {
+                                    if (responseBody != null) {
+                                        Set<String> taskList = gson.fromJson(responseBody.string(), Set.class);
+                                        updateOnlineTasksList(taskList);
+                                        responseBody.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    );
+                }
             }
         });
+    }
+
+    private void updateOnlineTasksList(Set<String> taskList) {
+        onlineTasksList.removeAll(onlineTasksList.stream().filter(task -> !taskList.contains(task)).collect(Collectors.toSet()));
+        for (String task: taskList) {
+            if(!onlineTasksList.contains(task))
+                onlineTasksList.add(task);
+        }
     }
 
     private void logout() {

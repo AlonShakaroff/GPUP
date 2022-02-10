@@ -16,7 +16,9 @@ public class TaskOperationServlet extends HttpServlet {
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
 
         if(req.getParameter("operation").equalsIgnoreCase("start")) {
-            tasksManager.addTaskExecutorThread(req.getHeader("taskName"));
+            String taskName = req.getHeader("taskName");
+            tasksManager.addTaskExecutorThread(taskName);
+            tasksManager.getTaskForServerSide(taskName).setTaskStatus("Running");
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
     }
