@@ -41,7 +41,7 @@ public class WorkerMainController {
 
     @FXML
     public void initialize(Stage primaryStage) throws IOException {
-        taskExecutor = new WorkerTaskManager(allocatedThreads);
+        taskExecutor = new WorkerTaskManager(allocatedThreads,userName);
         userNameLabel.setText("User name: " + userName);
         //taskExecutor.run();
         this.primaryStage = primaryStage;

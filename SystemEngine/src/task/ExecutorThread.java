@@ -61,15 +61,19 @@ public class ExecutorThread extends Thread{
         for(Target target : targetGraph.getTargetsToRunOnAndResetExtraData(isIncremental)) {
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
                 if(this.taskType.equalsIgnoreCase("simulation"))
-                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, Target.extractTargetForWorkerFromTarget(target, taskName)));
+                    tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance,
+                            Target.extractTargetForWorkerFromTarget(target, taskName,targetGraph.getTaskPricing().get(TargetGraph.TaskType.SIMULATION))));
                 else /*compilation*/
-                    tasksList.addFirst(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,Target.extractTargetForWorkerFromTarget(target, taskName)));
+                    tasksList.addFirst(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,
+                            Target.extractTargetForWorkerFromTarget(target, taskName,targetGraph.getTaskPricing().get(TargetGraph.TaskType.COMPILATION))));
             }
             else {
                 if(this.taskType.equalsIgnoreCase("simulation"))
-                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance, Target.extractTargetForWorkerFromTarget(target, taskName)));
+                    tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance,
+                            Target.extractTargetForWorkerFromTarget(target, taskName,targetGraph.getTaskPricing().get(TargetGraph.TaskType.SIMULATION))));
                 else /*compilation*/
-                    tasksList.addLast(new CompilationTask(taskName, SourceFolderPath, DestFolderPath, Target.extractTargetForWorkerFromTarget(target, taskName)));
+                    tasksList.addLast(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,
+                            Target.extractTargetForWorkerFromTarget(target, taskName, targetGraph.getTaskPricing().get(TargetGraph.TaskType.COMPILATION))));
             }
         }
     }
