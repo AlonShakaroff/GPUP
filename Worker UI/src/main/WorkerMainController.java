@@ -38,6 +38,8 @@ public class WorkerMainController {
     private Stage aboutStage = null;
     private Stage primaryStage;
     private String userName;
+    private Integer allocatedThreads;
+    private Integer amountOfTasksRegisteredTo = 0;
 
     @FXML
     public void initialize(Stage primaryStage) throws IOException {
@@ -144,4 +146,11 @@ public class WorkerMainController {
         aboutStage.show();
     }
 
+    public Integer getAllocatedThreads() {
+        return allocatedThreads;
+    }
+
+    public void setAllocatedThreads(Integer allocatedThreads) {
+        this.allocatedThreads = allocatedThreads;
+    }
 }

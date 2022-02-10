@@ -92,7 +92,6 @@ public class WorkerLoginController {
                             VBox mainMenuComponent = null;
                             mainMenuComponent = fxmlLoader.load(url.openStream());
                             WorkerMainController workerMainController = fxmlLoader.getController();
-
                             Scene scene = new Scene(mainMenuComponent,1280, 800);
                             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(WorkersConstants.CLASSIC_CSS)).toExternalForm());
 
@@ -101,6 +100,7 @@ public class WorkerLoginController {
                             primaryStage.centerOnScreen();
                             primaryStage.show();
 
+                            workerMainController.setAllocatedThreads(ThreadsAmountValueFactory.getValue());
                             workerMainController.setUserName(currentUser);
                             workerMainController.initialize(primaryStage);
                         }
