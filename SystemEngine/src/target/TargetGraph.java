@@ -375,5 +375,4 @@ public class TargetGraph implements Serializable {
         target.setResult(targetForWorker.getResult());
         target.setRunLog(targetForWorker.getRunLog());
     }
-
 }

@@ -2,7 +2,7 @@ package task;
 
 import target.Target;
 import target.TargetGraph;
-import task.copilation.CompilationTask;
+import task.compilation.CompilationTask;
 import task.simulation.SimulationTask;
 
 import java.time.Duration;

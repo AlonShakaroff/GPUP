@@ -14,6 +14,7 @@ import users.UserManager;
 import utils.ServletUtils;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.Set;
 
@@ -22,9 +23,11 @@ public class WorkerTaskServlet extends HttpServlet {
     public Gson gson = new Gson();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
+
+        PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
 
         if(req.getParameter("getTaskToDo") != null)
@@ -32,15 +35,9 @@ public class WorkerTaskServlet extends HttpServlet {
             Set<String> signedToTasks = gson.fromJson(req.getReader(), Set.class);
             GPUPTask gpupTask = tasksManager.pollTaskReadyForWorker(signedToTasks);
             String gpupTaskJson = gson.toJson(gpupTask, GPUPTask.class);
-            resp.getWriter().write(gpupTaskJson);
+            out.write(gpupTaskJson);
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
-        UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         if(req.getHeader("updateStatus") != null) {
             TargetForWorker targetForWorker = gson.fromJson(req.getReader(), TargetForWorker.class);

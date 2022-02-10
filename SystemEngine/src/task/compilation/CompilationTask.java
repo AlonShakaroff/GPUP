@@ -1,4 +1,4 @@
-package task.copilation;
+package task.compilation;
 
 import target.Target;
 import target.TargetForWorker;

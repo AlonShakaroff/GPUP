@@ -1,9 +1,11 @@
 package target;
 
+import java.util.Locale;
+
 public class TargetForWorker {
     private String name;
-    private Target.Result result;
-    private Target.Status status;
+    private String result;
+    private String status;
     private String runLog;
     private String extraData;
     private String taskName;
@@ -23,11 +25,11 @@ public class TargetForWorker {
     }
 
     public Target.Result getResult() {
-        return result;
+        return Target.Result.valueOf(result);
     }
 
     public void setResult(Target.Result result) {
-        this.result = result;
+        this.result = result.toString();
     }
 
     public String getRunLog() {
@@ -39,11 +41,11 @@ public class TargetForWorker {
     }
 
     public Target.Status getStatus() {
-        return status;
+        return Target.Status.valueOf(status.toUpperCase());
     }
 
     public void setStatus(Target.Status status) {
-        this.status = status;
+        this.status = status.toString();
     }
 
     public String getExtraData() {

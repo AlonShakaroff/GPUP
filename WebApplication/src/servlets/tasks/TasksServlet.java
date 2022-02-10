@@ -9,12 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import target.FileChecker;
 import target.TargetGraph;
 import task.TasksManager;
-import task.copilation.CompilationTaskInformation;
+import task.compilation.CompilationTaskInformation;
 import task.simulation.SimulationTaskInformation;
 import utils.ServletUtils;
 
 import java.io.IOException;
-import java.util.Locale;
 
 @WebServlet(name = "TasksServlet", urlPatterns = "/tasks")
 public class TasksServlet extends HttpServlet {

@@ -165,6 +165,7 @@ public class DashboardController {
         String selectedItem = OnlineTasksListView.getSelectionModel().getSelectedItem();
         if(selectedItem != null) {
             registerToTask(selectedItem);
+            workerMainController.setSceneToTask();
         }
     }
 
@@ -462,6 +463,8 @@ public class DashboardController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.code() > 300 || response.code() < 200)
                     Platform.runLater(()-> errorPopup(response.header("message")));
+                else
+                    workerMainController.getTaskExecutor().addRegisteredTask(taskName);
             }
         });
     }

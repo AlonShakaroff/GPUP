@@ -45,6 +45,11 @@ public class WorkerTaskManager extends Thread {
         amountOfTasksRegisteredTo--;
     }
 
+    public void setTasksRegisteredToSet(Set<String> tasksRegisteredToSet) {
+        this.tasksRegisteredToSet = tasksRegisteredToSet;
+        this.amountOfTasksRegisteredTo = tasksRegisteredToSet.size();
+    }
+
     @Override
     public void run() {
         while(true) {
@@ -68,7 +73,7 @@ public class WorkerTaskManager extends Thread {
                 .build()
                 .toString();
 
-        HttpClientUtil.runAsync(finalUrl, "GET", body, new Callback() {
+        HttpClientUtil.runAsync(finalUrl, "POST", body, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -79,12 +84,11 @@ public class WorkerTaskManager extends Thread {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
                     Gson gson = new Gson();
-                    ResponseBody responseBody = response.body();
-                    GPUPTask gpupTask = gson.fromJson(responseBody.string(), GPUPTask.class);
-                    gpupTask.setWorkerName(workerName);
-                    if(gpupTask != null)
+                    GPUPTask gpupTask = gson.fromJson(response.message(), GPUPTask.class);
+                    if(gpupTask != null) {
+                        gpupTask.setWorkerName(workerName);
                         threadPool.execute(gpupTask);
-                    responseBody.close();
+                    }
                 }
             }
         });

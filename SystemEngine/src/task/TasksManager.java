@@ -3,11 +3,9 @@ package task;
 import dtos.TaskDetailsDto;
 import target.TargetForWorker;
 import target.TargetGraph;
-import task.copilation.CompilationParameters;
-import task.copilation.CompilationTask;
-import task.copilation.CompilationTaskInformation;
+import task.compilation.CompilationParameters;
+import task.compilation.CompilationTaskInformation;
 import task.simulation.SimulationParameters;
-import task.simulation.SimulationTask;
 import task.simulation.SimulationTaskInformation;
 
 import java.util.*;
@@ -100,17 +98,19 @@ public class TasksManager {
         TargetGraph targetGraph = getTaskForServerSide(taskName).getTargetGraph();
         if(isSimulationTask(taskName)) {
             SimulationParameters parameters = getSimulationTaskInformation(taskName).getSimulationParameters();
-            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, "simulation",
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, taskName,
                                          parameters.getSuccessWithWarnings(), parameters.getSuccessRate(),
                                                 parameters.isRandom(),parameters.getProcessingTime(),
                     getSimulationTaskInformation(taskName).isIncremental(), this));
         }
         else if(isCompilationTask(taskName)) {
             CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
-            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,"compilation",
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,taskName,
                                 parameters.getSourcePath(),parameters.getDestinationPath(),
                     getCompilationTaskInformation(taskName).isIncremental(),this));
         }
+
+        taskExecutorThreadMap.get(taskName.toLowerCase()).start();
     }
 
     public synchronized void addTaskReadyForWorker(GPUPTask task) {
@@ -118,9 +118,9 @@ public class TasksManager {
     }
 
     public synchronized GPUPTask pollTaskReadyForWorker(Set<String> tasksThatWorkerIsSignedTo) {
-        List<GPUPTask> filteredList = tasksThatAreReadyForWorkersList.stream().filter(gpupTask -> tasksThatWorkerIsSignedTo.contains(gpupTask.taskName)).collect(Collectors.toList());
+        List<GPUPTask> filteredList = tasksThatAreReadyForWorkersList.stream().filter(gpupTask -> tasksThatWorkerIsSignedTo.contains(gpupTask.getTaskName())).collect(Collectors.toList());
         if(!filteredList.isEmpty()) {
-            tasksThatWorkerIsSignedTo.remove(filteredList.get(0));
+            tasksThatAreReadyForWorkersList.remove(filteredList.get(0));
             return filteredList.get(0);
         }
         else //filtered list is empty
@@ -129,5 +129,9 @@ public class TasksManager {
 
     public synchronized void updateTargetsStatusAndResult(TargetForWorker target) {
         taskForServerSideMap.get(target.getTaskName()).getTargetGraph().updateTargetsStatusAndResult(target);
+    }
+
+    public ExecutorThread getTaskExecutorThread(String taskName) {
+        return taskExecutorThreadMap.get(taskName);
     }
 }
