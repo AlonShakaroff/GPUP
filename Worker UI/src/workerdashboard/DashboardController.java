@@ -1,8 +1,7 @@
-package dashboard;
+package workerdashboard;
 
 import com.google.gson.Gson;
 import dashboard.tableitems.TargetsInfoTableItem;
-import dtos.GraphInfoDto;
 import dtos.TaskDetailsDto;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

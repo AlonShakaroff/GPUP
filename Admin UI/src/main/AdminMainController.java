@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -64,6 +65,7 @@ public class AdminMainController {
 
     @FXML
     public void initialize(Stage primaryStage) throws IOException {
+
         this.primaryStage = primaryStage;
         graphButton.disableProperty().bind(isFileSelected.not());
         connectionsButton.disableProperty().bind(isFileSelected.not());
@@ -103,6 +105,8 @@ public class AdminMainController {
 
         SlideBox2.setVisible(false);
         SlideBox1.setVisible(false);
+
+        userNameLabel.setText("User name: " + userName);
     }
 
     private void refreshComponentsAndControllers() throws IOException {
@@ -197,6 +201,9 @@ public class AdminMainController {
 
     @FXML
     private MenuItem AnimationsOffButton;
+
+    @FXML
+    private Label userNameLabel;
 
 
     @FXML
