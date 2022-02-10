@@ -19,7 +19,7 @@ public class GetWorkerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-        String workerName = req.getHeader("workerName");
+        String workerName = req.getParameter("workerName");
         WorkerDetailsDto workerDetailsDto = userManager.getWorkerDetailsDto(workerName);
         String workerDetailsDtoJson = gson.toJson(workerDetailsDto,WorkerDetailsDto.class);
         resp.getWriter().write(workerDetailsDtoJson);

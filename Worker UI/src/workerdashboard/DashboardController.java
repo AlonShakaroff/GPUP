@@ -1,9 +1,11 @@
 package workerdashboard;
 
 import com.google.gson.Gson;
+import constants.WorkersConstants;
 import dashboard.tableitems.SelectedTaskStatusTableItem;
 import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.TaskDetailsDto;
+import dtos.WorkerDetailsDto;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -206,7 +208,7 @@ public class DashboardController {
     private void displaySelectedTaskInfoFromDto(TaskDetailsDto taskDetailsDto) {
         this.TaskNameTextField.setText(taskDetailsDto.getTaskName());
         this.UploadedByTextField.setText(taskDetailsDto.getUploader());
-        this.AmIRegisteredTextField.setText("");
+        this.AmIRegisteredTextField.setText(RegisteredTasks.contains(taskDetailsDto.getTaskName())? "Yes" : "No");
         this.TaskTypeTextField.setText(taskDetailsDto.getTaskTypeAsString());
         updateTaskDetailsTables(taskDetailsDto);
     }
@@ -251,6 +253,45 @@ public class DashboardController {
     }
 
     private void getCreditsEarnedAntRegisteredTasks() {
+
+        String finalUrl = HttpUrl
+                .parse(WorkersConstants.GET_WORKER_PAGE)
+                .newBuilder()
+                .addQueryParameter("workerName", userName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    Platform.runLater(() ->
+                            {
+                                Gson gson = new Gson();
+                                ResponseBody responseBody = response.body();
+                                try {
+                                    if (responseBody != null) {
+                                        WorkerDetailsDto workerDetailsDto = gson.fromJson(responseBody.string(), WorkerDetailsDto.class);
+                                        responseBody.close();
+
+                                        creditsEarned = workerDetailsDto.getEarnedCredits();
+                                        CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
+                                        RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    );
+                }
+            }
+        });
+
     }
 
     private void getUsersLists() {
@@ -265,7 +306,6 @@ public class DashboardController {
                 .newBuilder()
                 .build()
                 .toString();
-
 
         HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
 
