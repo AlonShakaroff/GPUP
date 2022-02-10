@@ -46,6 +46,8 @@ public class TaskController {
     private SimpleBooleanProperty isPaused;
     private final SimpleBooleanProperty isATargetSelected;
     private final SimpleBooleanProperty isIncrementalPossible;
+    private final SimpleBooleanProperty isCurTaskFinished;
+
     private final ChangeListener<Boolean> isPausedListener;
     private final ListChangeListener<String> currentSelectedFrozenListener;
     private final ListChangeListener<String> currentSelectedSkippedListener;
@@ -73,6 +75,7 @@ public class TaskController {
 
     public TaskController() {
         isPaused = new SimpleBooleanProperty(false);
+        isCurTaskFinished = new SimpleBooleanProperty(false);
         isATargetSelected = new SimpleBooleanProperty(false);
         isIncrementalPossible = new SimpleBooleanProperty(false);
         currentSelectedFrozenListener = change -> {
@@ -182,7 +185,6 @@ public class TaskController {
     @FXML
     public void initialize() {
         initializeTargetInfoTable();
-
         currentSelectedFrozenList = FrozenListView.getSelectionModel().getSelectedItems();
         currentSelectedSkippedList = SkippedListView.getSelectionModel().getSelectedItems();
         currentSelectedWaitingList = WaitingListView.getSelectionModel().getSelectedItems();
@@ -193,8 +195,8 @@ public class TaskController {
         currentSelectedWaitingList.addListener(currentSelectedWaitingListener);
         currentSelectedInProcessList.addListener(currentSelectedInProcessListener);
         currentSelectedFinishedList.addListener(currentSelectedFinishedListener);
-        runTaskButton.disableProperty().bind(Bindings.and(stopTaskButton.disableProperty().not(),
-                pauseTaskButton.disableProperty().not()));
+        runTaskButton.disableProperty().bind(Bindings.or(isCurTaskFinished ,Bindings.and(stopTaskButton.disableProperty().not(),
+                pauseTaskButton.disableProperty().not())));
         FrozenListView.setItems(frozenTargetsNameList);
         SkippedListView.setItems(skippedTargetsNameList);
         WaitingListView.setItems(waitingTargetsNameList);
@@ -538,6 +540,63 @@ public class TaskController {
         WaitingListView.setItems(waitingTargetsNameList);
         InProcessListView.setItems(inProcessTargetsNameList);
         FinishedListView.setItems(finishedTargetsNameList);
+    }
+    public void setStopAndPauseInit(){
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("selectedTaskName", mainController.getTaskName())
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    Platform.runLater(() ->
+                            {
+                                Gson gson = new Gson();
+                                ResponseBody responseBody = response.body();
+                                try {
+                                    if (responseBody != null) {
+                                        TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
+                                        responseBody.close();
+                                        switch (taskDetailsDto.getTaskStatus()) {
+                                            case "Stopped":
+                                            case "New":
+                                            case "Finished":
+                                                stopTaskButton.setDisable(true);
+                                                pauseTaskButton.setDisable(true);
+                                                pauseTaskButton.setText("pause");
+                                                isPaused.setValue(false);
+                                                break;
+                                            case "Paused":
+                                                stopTaskButton.setDisable(false);
+                                                pauseTaskButton.setDisable(false);
+                                                pauseTaskButton.setText("resume");
+                                                isPaused.setValue(true);
+                                                break;
+                                            case "In process":
+                                                stopTaskButton.setDisable(false);
+                                                pauseTaskButton.setDisable(false);
+                                                pauseTaskButton.setText("pause");
+                                                isPaused.setValue(false);
+                                                break;
+                                        }
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    );
+                }
+            }
+        });
     }
 
     private void updateProgressFromServer() {

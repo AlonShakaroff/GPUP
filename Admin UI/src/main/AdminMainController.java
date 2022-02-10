@@ -358,6 +358,7 @@ public class AdminMainController {
     }
     public void setSelectedTaskTextField(String taskName){
         this.SelectedTaskTextField.setText(taskName);
+        this.taskController.setStopAndPauseInit();
     }
 
     public void setSceneToTask() {
