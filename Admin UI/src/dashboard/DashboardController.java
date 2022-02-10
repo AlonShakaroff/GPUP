@@ -499,7 +499,7 @@ public class DashboardController {
                                         TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
                                         responseBody.close();
 
-                                        //selectedAllTaskCanRunIncrementally.setValue(taskDetailsDto.getCanRunIncrementally());
+                                        selectedAllTaskCanRunIncrementally.setValue(taskDetailsDto.getCanRunIncrementally());
                                         selectedAllTaskFinished.setValue(taskDetailsDto.getTaskStatus().equals("Finished"));
 
                                         displaySelectedTaskInfoFromDto(taskDetailsDto);

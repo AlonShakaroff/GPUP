@@ -1,6 +1,7 @@
 package workerdashboard;
 
 import com.google.gson.Gson;
+import dashboard.tableitems.SelectedTaskStatusTableItem;
 import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.TaskDetailsDto;
 import javafx.application.Platform;
@@ -39,6 +40,8 @@ public class DashboardController {
     private ObservableList<String> onlineWorkersList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedTaskList = FXCollections.observableArrayList();
     private ObservableList<TargetsInfoTableItem> targetsTypeInfoTableList = FXCollections.observableArrayList();
+    private ObservableList<SelectedTaskStatusTableItem> TaskInfoTableList = FXCollections.observableArrayList();
+    private int creditsEarned = 0;
 
     private ListChangeListener<String> currentSelectedTaskListListener;
 
@@ -49,6 +52,7 @@ public class DashboardController {
 
     public DashboardController() {
         currentSelectedTaskListListener = change -> { displaySelectedTaskInfo(); };
+
     }
 
     public void initialize() {
@@ -64,8 +68,6 @@ public class DashboardController {
         refreshDashboardDataThread.setDaemon(true);
         refreshDashboardDataThread.start();
     }
-
-
 
     @FXML
     private TitledPane OnlineAdminsTiltedPane;
@@ -116,16 +118,16 @@ public class DashboardController {
     private TableColumn<TargetsInfoTableItem, Integer> RootAmount;
 
     @FXML
-    private TableView<?> TaskInfoTableView;
+    private TableView<SelectedTaskStatusTableItem> TaskInfoTableView;
 
     @FXML
-    private TableColumn<?, ?> TaskStatus;
+    private TableColumn<SelectedTaskStatusTableItem, String> TaskStatus;
 
     @FXML
-    private TableColumn<?, ?> AmountOfWorkers;
+    private TableColumn<SelectedTaskStatusTableItem, Integer> AmountOfWorkers;
 
     @FXML
-    private TableColumn<?, ?> TaskWorkPayment;
+    private TableColumn<SelectedTaskStatusTableItem, Integer> TaskWorkPayment;
 
     @FXML
     private TextField TaskTypeTextField;
@@ -161,7 +163,68 @@ public class DashboardController {
             return;
 
         String selectedTaskName = currentSelectedTaskList.get(0);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("selectedTaskName", selectedTaskName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    Platform.runLater(() ->
+                            {
+                                Gson gson = new Gson();
+                                ResponseBody responseBody = response.body();
+                                try {
+                                    if (responseBody != null) {
+                                        TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
+                                        responseBody.close();
+
+                                        displaySelectedTaskInfoFromDto(taskDetailsDto);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    );
+                }
+            }
+        });
     }
+
+    private void displaySelectedTaskInfoFromDto(TaskDetailsDto taskDetailsDto) {
+        this.TaskNameTextField.setText(taskDetailsDto.getTaskName());
+        this.UploadedByTextField.setText(taskDetailsDto.getUploader());
+        this.AmIRegisteredTextField.setText("");
+        this.TaskTypeTextField.setText(taskDetailsDto.getTaskTypeAsString());
+        updateTaskDetailsTables(taskDetailsDto);
+    }
+
+    private void updateTaskDetailsTables(TaskDetailsDto taskDetailsDto) {
+
+        TargetsInfoTableItem targetsInfoTableItem = new TargetsInfoTableItem(taskDetailsDto.getRoots(),
+                taskDetailsDto.getMiddles(), taskDetailsDto.getLeaves(), taskDetailsDto.getIndependents(), taskDetailsDto.getTargets());
+        SelectedTaskStatusTableItem selectedTaskStatusTableItem =
+                new SelectedTaskStatusTableItem(taskDetailsDto.getTaskStatus(),taskDetailsDto.getTotalWorkers(),taskDetailsDto.getTotalPayment());
+
+        this.targetsTypeInfoTableList.clear();
+        this.targetsTypeInfoTableList.add(targetsInfoTableItem);
+        this.TaskInfoTableList.clear();
+        this.TaskInfoTableList.add(selectedTaskStatusTableItem);
+
+        this.TaskTypesAmountTableView.setItems(this.targetsTypeInfoTableList);
+        this.TaskInfoTableView.setItems(this.TaskInfoTableList);
+    }
+
 
     public void initializeTargetDetailsTable() {
         this.TargetsAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("targets"));
@@ -312,6 +375,7 @@ public class DashboardController {
 
     public void setUserName(String userName) {
         this.userName = userName;
+        WorkerNameTextField.setText(userName);
     }
 
     public void registerToTask(String taskName) {
