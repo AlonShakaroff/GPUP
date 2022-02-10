@@ -7,6 +7,7 @@ import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.TaskDetailsDto;
 import dtos.WorkerDetailsDto;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,7 +24,6 @@ import main.WorkerMainController;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import task.GPUPTask;
 import users.UsersLists;
 import util.http.HttpClientUtil;
 
@@ -43,6 +43,7 @@ public class DashboardController {
     private ObservableList<String> currentSelectedTaskList = FXCollections.observableArrayList();
     private ObservableList<TargetsInfoTableItem> targetsTypeInfoTableList = FXCollections.observableArrayList();
     private ObservableList<SelectedTaskStatusTableItem> TaskInfoTableList = FXCollections.observableArrayList();
+    private SimpleBooleanProperty isRegisteredToCurTask;
     private int creditsEarned = 0;
     private Set<String> RegisteredTasks = new HashSet<>();
 
@@ -54,7 +55,12 @@ public class DashboardController {
     private WorkerMainController workerMainController;
 
     public DashboardController() {
-        currentSelectedTaskListListener = change -> { displaySelectedTaskInfo(); };
+        this.isRegisteredToCurTask = new SimpleBooleanProperty(true);
+        currentSelectedTaskListListener = change -> {
+            displaySelectedTaskInfo();
+            if (change.getList().isEmpty())
+                isRegisteredToCurTask.set(true);
+        };
     }
 
     public void initialize() {
@@ -70,6 +76,7 @@ public class DashboardController {
         OnlineTasksListView.setItems(onlineTasksList);
         refreshDashboardDataThread.setDaemon(true);
         refreshDashboardDataThread.start();
+        JoinTaskButton.disableProperty().bind(isRegisteredToCurTask);
     }
 
     @FXML
@@ -159,7 +166,6 @@ public class DashboardController {
         if(selectedItem != null) {
             registerToTask(selectedItem);
         }
-        workerMainController.setSceneToTask();
     }
 
     private void displaySelectedTaskInfo() {
@@ -209,6 +215,7 @@ public class DashboardController {
         this.TaskNameTextField.setText(taskDetailsDto.getTaskName());
         this.UploadedByTextField.setText(taskDetailsDto.getUploader());
         this.AmIRegisteredTextField.setText(RegisteredTasks.contains(taskDetailsDto.getTaskName())? "Yes" : "No");
+        this.isRegisteredToCurTask.set(RegisteredTasks.contains(taskDetailsDto.getTaskName()));
         this.TaskTypeTextField.setText(taskDetailsDto.getTaskTypeAsString());
         updateTaskDetailsTables(taskDetailsDto);
     }
@@ -249,6 +256,9 @@ public class DashboardController {
             getUsersLists();
             getOnlineTasksList();
             getCreditsEarnedAntRegisteredTasks();
+            if (!currentSelectedTaskList.isEmpty()) {
+                displaySelectedTaskInfo();
+            }
         }
     }
 
@@ -280,6 +290,7 @@ public class DashboardController {
                                         responseBody.close();
 
                                         creditsEarned = workerDetailsDto.getEarnedCredits();
+                                        CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
                                         CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
                                         RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
                                     }

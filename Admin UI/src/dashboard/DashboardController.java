@@ -84,7 +84,8 @@ public class DashboardController {
     }
 
     public void initialize() {
-        IncrementalRadioButton.disableProperty().bind(Bindings.or(FromScratchRadioButton.disableProperty() , selectedAllTaskCanRunIncrementally.not()));
+        IncrementalRadioButton.disableProperty().bind(Bindings.or(FromScratchRadioButton.disableProperty() ,
+                selectedAllTaskCanRunIncrementally.not()));
         FromScratchRadioButton.disableProperty().bind(ReloadTaskButton.disableProperty());
         ReloadTaskButton.disableProperty().bind(isAllTaskSelectedAndRanAlready.not());
 
@@ -334,6 +335,8 @@ public class DashboardController {
             getUsersLists();
             refreshGraphList();
             refreshTaskLists();
+            if (!currentSelectedAllTasksList.isEmpty())
+                displaySelectedTaskInfo();
         }
     }
 
