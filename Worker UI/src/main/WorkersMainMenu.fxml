@@ -106,7 +106,7 @@
                               <ToggleGroup fx:id="mainoptions" />
                            </toggleGroup>
                         </ToggleButton>
-                        <ToggleButton fx:id="MyTasksButton" disable="true" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#MyTasksButtonClicked" text="My Tasks&#10;and Targets" textAlignment="CENTER" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
+                        <ToggleButton fx:id="MyTasksButton" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#MyTasksButtonClicked" text="My Tasks&#10;and Targets" textAlignment="CENTER" toggleGroup="$mainoptions" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>

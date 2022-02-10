@@ -1,6 +1,7 @@
 package servlets.tasks.worker;
 
 import com.google.gson.Gson;
+import dtos.WorkerDetailsDto;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,10 +51,19 @@ public class WorkerTaskServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
         else if(req.getParameter("registerToTask") != null) {
+            WorkerDetailsDto workerDetailsDto = userManager.getWorkerDetailsDto(req.getParameter("workerName").toLowerCase());
             String taskName = req.getParameter("taskName");
-            tasksManager.getTaskForServerSide(taskName).addWorker();
-            tasksManager.getTaskDetailsDTO(taskName).addWorker();
-            userManager.getWorkerDetailsDto(req.getParameter("workerName").toLowerCase()).registerToTask(taskName.toLowerCase());
+            if(workerDetailsDto.getRegisteredTasks().contains(taskName))
+            {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.addHeader("message","Already registered to task " + taskName);
+            }
+            else {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                tasksManager.getTaskForServerSide(taskName).addWorker();
+                tasksManager.getTaskDetailsDTO(taskName).addWorker();
+                workerDetailsDto.registerToTask(taskName.toLowerCase());
+            }
         }
         else if(req.getParameter("unregisterFromTask") != null) {
             String taskName = req.getParameter("taskName");

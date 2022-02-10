@@ -10,12 +10,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -28,8 +25,10 @@ import task.GPUPTask;
 import users.UsersLists;
 import util.http.HttpClientUtil;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -158,6 +157,7 @@ public class DashboardController {
         if(selectedItem != null) {
             registerToTask(selectedItem);
         }
+        workerMainController.setSceneToTask();
     }
 
     private void displaySelectedTaskInfo() {
@@ -409,9 +409,21 @@ public class DashboardController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
+                if(response.code() > 300 || response.code() < 200)
+                    Platform.runLater(()-> errorPopup(response.header("message")));
             }
         });
     }
 
+    public void errorPopup(String message) {
+        Toolkit.getDefaultToolkit().beep();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(message);
+        alert.initOwner(primaryStage);
+        Optional<ButtonType> result = alert.showAndWait();
+    }
+
+    public void setWorkerMainController(WorkerMainController workerMainController) {
+        this.workerMainController = workerMainController;
+    }
 }

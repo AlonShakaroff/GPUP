@@ -48,6 +48,7 @@ public class WorkerMainController {
 
         dashboardController.setPrimaryStage(primaryStage);
         dashboardController.setUserName(userName);
+        dashboardController.setWorkerMainController(this);
         taskExecutor.start();
     }
 
@@ -157,4 +158,9 @@ public class WorkerMainController {
     }
 
     public WorkerTaskManager getTaskExecutor() { return taskExecutor; }
+
+    public void setSceneToTask() {
+        this.mainChangingScene.setContent(runTaskComponent);
+        MyTasksButton.setSelected(true);
+    }
 }
