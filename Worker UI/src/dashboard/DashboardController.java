@@ -213,6 +213,39 @@ public class DashboardController {
         onlineWorkersList.addAll(usersLists.getWorkersList());
     }
 
+    public void getOnlineTasksList() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        String finalUrl = HttpUrl
+                .parse(Constants.USERS_LISTS)
+                .newBuilder()
+                .build()
+                .toString();
+
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Gson gson = new Gson();
+                ResponseBody responseBody = response.body();
+                UsersLists usersLists = gson.fromJson(responseBody.string(), UsersLists.class);
+                responseBody.close();
+                Platform.runLater(() -> {
+                    updateUsersLists(usersLists);
+                });
+            }
+        });
+    }
+
     private void logout() {
         if (userName == null)
             return;
@@ -247,7 +280,6 @@ public class DashboardController {
     }
 
     private void updateTargetTypesDetailsTable(TaskDetailsDto graphInfoDto) {
-
         TargetsInfoTableItem targetsInfoTableItem = new TargetsInfoTableItem(graphInfoDto.getRoots(),
                 graphInfoDto.getMiddles(), graphInfoDto.getLeaves(), graphInfoDto.getIndependents(), graphInfoDto.getTargets());
 

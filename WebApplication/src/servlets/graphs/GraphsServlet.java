@@ -1,4 +1,4 @@
-package servlets;
+package servlets.graphs;
 
 import com.google.gson.Gson;
 import dtos.GraphInfoDto;

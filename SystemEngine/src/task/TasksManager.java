@@ -1,6 +1,7 @@
 package task;
 
 import dtos.TaskDetailsDto;
+import target.TargetForWorker;
 import target.TargetGraph;
 import task.copilation.CompilationParameters;
 import task.copilation.CompilationTask;
@@ -69,6 +70,12 @@ public class TasksManager {
         return usersTasks.get(userName.toLowerCase());
     }
 
+    public synchronized Set<String> getOnlineTaskList() {
+        return listOfAllTasks.stream()
+                .filter(task -> !taskForServerSideMap.get(task).getTaskStatus()
+                        .equalsIgnoreCase("finished")).collect(Collectors.toSet());
+    }
+
     public synchronized void addTaskDetailsDTO(String taskName, String creatorName,
                                                TargetGraph.TaskType taskType,Set<String> targetsToExecute, TargetGraph targetGraph)
     {
@@ -117,5 +124,9 @@ public class TasksManager {
         }
         else //filtered list is empty
             return null;
+    }
+
+    public synchronized void updateTargetsStatusAndResult(TargetForWorker target) {
+        taskForServerSideMap.get(target.getTaskName()).getTargetGraph().updateTargetsStatusAndResult(target);
     }
 }

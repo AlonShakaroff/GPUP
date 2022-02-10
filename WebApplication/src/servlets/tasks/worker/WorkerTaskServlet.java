@@ -1,10 +1,11 @@
-package servlets;
+package servlets.tasks.worker;
 
 import com.google.gson.Gson;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import target.TargetForWorker;
 import task.GPUPTask;
 import task.TasksManager;
 import utils.ServletUtils;
@@ -29,5 +30,15 @@ public class WorkerTaskServlet extends HttpServlet {
             resp.getWriter().write(gpupTaskJson);
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
+
+        TargetForWorker targetForWorker = gson.fromJson(req.getReader(), TargetForWorker.class);
+
+        tasksManager.updateTargetsStatusAndResult(targetForWorker);
+        resp.setStatus(HttpServletResponse.SC_ACCEPTED);
     }
 }

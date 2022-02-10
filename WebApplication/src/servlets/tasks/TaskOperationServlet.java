@@ -1,4 +1,4 @@
-package servlets;
+package servlets.tasks;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

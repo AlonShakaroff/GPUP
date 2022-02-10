@@ -29,6 +29,7 @@ public class Target implements Serializable, Cloneable {
     private boolean isVisited;
     private boolean isChosen;
     private final Set<Target> responsibleTargets;
+    private String runLog;
 
     public Target(String name, String extraData)
     {
@@ -347,5 +348,13 @@ public class Target implements Serializable, Cloneable {
         targetForWorker.setStatus(target.getRunStatus());
         targetForWorker.setResult(target.getRunResult());
         return targetForWorker;
+    }
+
+    public String getRunLog() {
+        return runLog;
+    }
+
+    public void setRunLog(String runLog) {
+        this.runLog = runLog;
     }
 }

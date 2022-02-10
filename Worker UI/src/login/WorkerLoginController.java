@@ -138,4 +138,8 @@ public class WorkerLoginController {
             loginButtonClicked(new ActionEvent());
         }
     }
+
+    public WorkerMainController getWorkerMainController() {
+        return workerMainController;
+    }
 }

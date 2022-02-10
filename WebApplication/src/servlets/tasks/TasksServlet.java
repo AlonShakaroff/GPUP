@@ -1,4 +1,4 @@
-package servlets;
+package servlets.tasks;
 
 import com.google.gson.Gson;
 import dtos.TaskDetailsDto;

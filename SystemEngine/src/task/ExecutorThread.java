@@ -102,6 +102,7 @@ public class ExecutorThread extends Thread{
         }
         targetGraph.setTaskEndTime(Instant.now());
         targetGraph.setTotalTaskDuration(Duration.between(targetGraph.getTaskStartTime(), targetGraph.getTaskEndTime()));
+        tasksManager.getTaskForServerSide(taskName).setTaskStatus("Finished");
     }
 
 

@@ -1,4 +1,4 @@
-package servlets;
+package servlets.tasks;
 
 
 import com.google.gson.Gson;
@@ -29,15 +29,19 @@ public class TaskListServlet extends HttpServlet {
             tasksManager = ServletUtils.getTasksManager(getServletContext());
         }
 
-        if(req.getParameter("allTasksList") == null && req.getParameter("myTasksList") == null)
+        if(req.getParameter("allTasksList") == null &&
+                req.getParameter("myTasksList") == null && req.getParameter("onlineTasksList") == null)
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         else
         {
             Set<String> tasksList;
             if(req.getParameter("allTasksList") != null)
                 tasksList = tasksManager.getAllTaskList();
-            else
+            else if(req.getParameter("myTasksList") != null)
                 tasksList = tasksManager.getUserTaskList(req.getParameter("username"));
+            else // onlineTasksList
+                tasksList = tasksManager.getOnlineTaskList();
+
 
             listAsString = gson.toJson(tasksList);
 

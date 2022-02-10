@@ -1,4 +1,4 @@
-package servlets;
+package servlets.users;
 
 import com.google.gson.Gson;
 

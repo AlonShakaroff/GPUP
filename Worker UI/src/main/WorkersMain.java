@@ -19,6 +19,7 @@ import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
+import worker.taskmanagment.WorkerTaskManager;
 
 import java.awt.*;
 import java.io.IOException;

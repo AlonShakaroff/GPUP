@@ -18,6 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tasks.control.TaskController;
+import worker.taskmanagment.WorkerTaskManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -40,9 +41,12 @@ public class WorkerMainController {
     private String userName;
     private Integer allocatedThreads;
     private Integer amountOfTasksRegisteredTo = 0;
+    private WorkerTaskManager taskExecutor = null;
 
     @FXML
     public void initialize(Stage primaryStage) throws IOException {
+        taskExecutor = new WorkerTaskManager(allocatedThreads);
+        //taskExecutor.run();
         this.primaryStage = primaryStage;
         refreshComponentsAndControllers();
 
@@ -153,4 +157,6 @@ public class WorkerMainController {
     public void setAllocatedThreads(Integer allocatedThreads) {
         this.allocatedThreads = allocatedThreads;
     }
+
+    public WorkerTaskManager getTaskExecutor() { return taskExecutor; }
 }

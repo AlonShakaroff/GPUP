@@ -10,5 +10,8 @@
     <orderEntry type="module" module-name="Admin UI" />
     <orderEntry type="library" name="Tomcat 10.0.16" level="application_server_libraries" />
     <orderEntry type="module" module-name="WebApplication" />
+    <orderEntry type="library" name="okHttp" level="project" />
+    <orderEntry type="library" name="gson" level="project" />
+    <orderEntry type="module" module-name="Worker UI" />
   </component>
 </module>
