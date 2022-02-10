@@ -8,6 +8,7 @@ public class TaskForServerSide {
     private String taskStatus;
     private TargetGraph targetGraph;
     private Boolean canRunIncrementally;
+    private Integer amountOfWorkers = 0;
 
 
     public TaskForServerSide(String taskName, TargetGraph.TaskType taskType, String taskStatus,TargetGraph targetGraph) {
@@ -45,4 +46,8 @@ public class TaskForServerSide {
     public void setCanRunIncrementally(Boolean canRunIncrementally) {
         this.canRunIncrementally = canRunIncrementally;
     }
+
+    public void addWorker() { amountOfWorkers++; }
+
+    public void removeWorker() { amountOfWorkers--; }
 }

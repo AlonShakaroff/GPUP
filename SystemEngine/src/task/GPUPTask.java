@@ -52,6 +52,7 @@ public abstract class GPUPTask implements Runnable{
 
         Request request = new Request.Builder()
                 .url(Constants.WORKER_TASK_PAGE)
+                .addHeader("updateStatus","updateStatus")
                 .post(body)
                 .build();
 

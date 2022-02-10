@@ -36,9 +36,21 @@ public class WorkerTaskServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
 
-        TargetForWorker targetForWorker = gson.fromJson(req.getReader(), TargetForWorker.class);
+        if(req.getHeader("updateStatus") != null) {
+            TargetForWorker targetForWorker = gson.fromJson(req.getReader(), TargetForWorker.class);
 
-        tasksManager.updateTargetsStatusAndResult(targetForWorker);
-        resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+            tasksManager.updateTargetsStatusAndResult(targetForWorker);
+            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+        }
+        else if(req.getParameter("registerToTask") != null) {
+            String taskName = req.getHeader("taskName");
+            tasksManager.getTaskForServerSide(taskName).addWorker();
+            tasksManager.getTaskDetailsDTO(taskName).addWorker();
+        }
+        else if(req.getParameter("unregisterFromTask") != null) {
+            String taskName = req.getHeader("taskName");
+            tasksManager.getTaskForServerSide(taskName).removeWorker();
+            tasksManager.getTaskDetailsDTO(taskName).removeWorker();
+        }
     }
 }

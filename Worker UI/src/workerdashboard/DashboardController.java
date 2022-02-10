@@ -23,6 +23,7 @@ import main.WorkerMainController;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import task.GPUPTask;
 import users.UsersLists;
 import util.http.HttpClientUtil;
 
@@ -149,7 +150,10 @@ public class DashboardController {
 
     @FXML
     void JoinTaskButtonClicked(ActionEvent event) {
-
+        String selectedItem = OnlineTasksListView.getSelectionModel().getSelectedItem();
+        if(selectedItem != null) {
+            registerToTask(selectedItem);
+        }
     }
 
     private void displaySelectedTaskInfo() {
@@ -308,6 +312,27 @@ public class DashboardController {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void registerToTask(String taskName) {
+        String finalUrl = HttpUrl
+                .parse(Constants.WORKER_TASK_PAGE)
+                .newBuilder()
+                .addQueryParameter("registerToTask", "registerToTask")
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "POST", null, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+            }
+        });
     }
 
 }
