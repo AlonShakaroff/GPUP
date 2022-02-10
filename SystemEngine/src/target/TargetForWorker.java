@@ -7,13 +7,15 @@ public class TargetForWorker {
     private String runLog;
     private String extraData;
     private String taskName;
+    private Integer pricing;
 
 
-    public TargetForWorker(String name, String extraData, String taskName) {
+    public TargetForWorker(String name, String extraData, String taskName, Integer pricing) {
         this.name = name;
         this.extraData = extraData;
         this.runLog = "";
         this.taskName = taskName;
+        this.pricing = pricing;
     }
 
     public String getName() {
@@ -50,5 +52,9 @@ public class TargetForWorker {
 
     public String getTaskName() {
         return taskName;
+    }
+
+    public Integer getPricing() {
+        return pricing;
     }
 }

@@ -16,6 +16,7 @@ public abstract class GPUPTask implements Runnable{
     protected final String taskName;
     protected final TargetForWorker target;
     protected final String taskType;
+    protected String workerName;
 
     public TargetForWorker getTarget() {
         return target;
@@ -25,6 +26,7 @@ public abstract class GPUPTask implements Runnable{
         this.taskName = taskName;
         this.target = target;
         this.taskType = taskType;
+        this.workerName = "";
     }
     public String getTaskName() {
         return taskName;
@@ -53,6 +55,7 @@ public abstract class GPUPTask implements Runnable{
         Request request = new Request.Builder()
                 .url(Constants.WORKER_TASK_PAGE)
                 .addHeader("updateStatus","updateStatus")
+                .addHeader("workerName",workerName)
                 .post(body)
                 .build();
 
@@ -67,4 +70,8 @@ public abstract class GPUPTask implements Runnable{
             }
         });
     }
+
+    public String getWorkerName() { return workerName; }
+
+    public void setWorkerName(String workerName) { this.workerName = workerName; }
 }

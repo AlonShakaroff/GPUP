@@ -52,7 +52,6 @@ public class DashboardController {
 
     public DashboardController() {
         currentSelectedTaskListListener = change -> { displaySelectedTaskInfo(); };
-
     }
 
     public void initialize() {

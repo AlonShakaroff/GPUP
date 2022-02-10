@@ -59,5 +59,8 @@ public class SimulationTask extends GPUPTask {
             target.setStatus(Target.Status.SKIPPED);
             target.setResult(Target.Result.SKIPPED);
         }
+        finally{
+            uploadTaskResultToServer();
+        }
     }
 }

@@ -18,15 +18,17 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class WorkerTaskManager extends Thread {
+    private String workerName;
     private ThreadPoolExecutor threadPool;
     private Integer numberOfAllocatedThreads;
     private Integer amountOfTasksRegisteredTo = 0;
     private Set<String> tasksRegisteredToSet;
 
-    public WorkerTaskManager(int threadAmount) {
+    public WorkerTaskManager(int threadAmount, String workerName) {
         threadPool = new ThreadPoolExecutor(threadAmount,threadAmount, 1000000, TimeUnit.MINUTES, new LinkedBlockingDeque<>());
         this.numberOfAllocatedThreads = threadAmount;
         this.tasksRegisteredToSet = new HashSet<>();
+        this.workerName = workerName;
     }
 
     public Boolean isThreadPoolFull() {
@@ -79,6 +81,7 @@ public class WorkerTaskManager extends Thread {
                     Gson gson = new Gson();
                     ResponseBody responseBody = response.body();
                     GPUPTask gpupTask = gson.fromJson(responseBody.string(), GPUPTask.class);
+                    gpupTask.setWorkerName(workerName);
                     if(gpupTask != null)
                         threadPool.execute(gpupTask);
                     responseBody.close();
