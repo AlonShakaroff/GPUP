@@ -459,7 +459,7 @@ public class ConnectionsController {
             stringObject = this.gson.toJson(taskInfo);
         }
 
-        uploadTaskToServer(stringObject, taskTypeRequest);
+        uploadTaskToServer(stringObject, taskTypeRequest, null);
     }
 
     public void uploadCopyTaskToServer(String newTaskName, String oldTaskName, String type, String userName, boolean isIncremental){
@@ -492,8 +492,9 @@ public class ConnectionsController {
                     compilationTaskInformation.getPricingForTarget(), compilationTaskInformation.getCompilationParameters(),isIncremental);
             stringObject = this.gson.toJson(newCompilationTaskInformation);
         }
+
         if (stringObject != null && taskTypeRequest != null)
-             uploadTaskToServer(stringObject, taskTypeRequest);
+             uploadTaskToServer(stringObject, taskTypeRequest, oldTaskName);
     }
 
     private void getCurrInformation(String oldTaskName, String type) {
@@ -566,14 +567,24 @@ public class ConnectionsController {
         this.mainController = mainController;
     }
 
-    private void uploadTaskToServer(String stringObject, String taskTypeRequest) {
+    private void uploadTaskToServer(String stringObject, String taskTypeRequest, String oldTaskName) {
         RequestBody body = RequestBody.create(stringObject, MediaType.parse("application/json"));
-
-        Request request = new Request.Builder()
-                .url(Constants.TASKS_PATH)
-                .post(body)
-                .addHeader(taskTypeRequest, taskTypeRequest)
-                .build();
+        Request request;
+        if (oldTaskName != null) {
+            request = new Request.Builder()
+                    .url(Constants.TASKS_PATH)
+                    .post(body)
+                    .addHeader(taskTypeRequest, taskTypeRequest)
+                    .addHeader("oldTaskName", oldTaskName)
+                    .build();
+        }
+        else {
+            request = new Request.Builder()
+                    .url(Constants.TASKS_PATH)
+                    .post(body)
+                    .addHeader(taskTypeRequest, taskTypeRequest)
+                    .build();
+        }
 
         HttpClientUtil.runAsyncWithRequest(request, new Callback() {
             @Override

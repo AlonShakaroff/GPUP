@@ -102,7 +102,6 @@ public class TasksServlet extends HttpServlet {
     //----------------------------------------------------doPost----------------------------------------//
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        System.out.println("entered to dopost");
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
 
         if(req.getHeader("simulation") != null) //Uploaded simulation task
@@ -116,8 +115,12 @@ public class TasksServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
                 FileChecker fileChecker = new FileChecker();
                 try {
-                    TargetGraph targetGraph = fileChecker.createTargetGraphFromXml(ServletUtils.getGraphsManager(getServletContext()).getGraphFile(newTaskInfo.getGraphName().toLowerCase()).toPath());
+                    TargetGraph targetGraph = fileChecker.createTargetGraphFromXml(ServletUtils.getGraphsManager(getServletContext()).
+                            getGraphFile(newTaskInfo.getGraphName().toLowerCase()).toPath());
                     targetGraph.markTargetsAsChosen(newTaskInfo.getTargetsToExecute());
+                    if (newTaskInfo.isIncremental() && req.getHeader("oldTaskName") != null){
+                        targetGraph.copyStatusAndResult(tasksManager.getTaskForServerSide(req.getHeader("oldTaskName")).getTargetGraph());
+                    }
                     tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
                             TargetGraph.TaskType.SIMULATION, newTaskInfo.getTargetsToExecute(), targetGraph);
                     tasksManager.addTaskForServerSide(newTaskInfo.getTaskName(), TargetGraph.TaskType.SIMULATION,"New" ,targetGraph);
@@ -142,7 +145,12 @@ public class TasksServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
                 FileChecker fileChecker = new FileChecker();
                 try {
-                    TargetGraph targetGraph = fileChecker.createTargetGraphFromXml(ServletUtils.getGraphsManager(getServletContext()).getGraphFile(newTaskInfo.getGraphName().toLowerCase()).toPath());
+                    TargetGraph targetGraph = fileChecker.createTargetGraphFromXml(ServletUtils.getGraphsManager(getServletContext()).
+                            getGraphFile(newTaskInfo.getGraphName().toLowerCase()).toPath());
+                    targetGraph.markTargetsAsChosen(newTaskInfo.getTargetsToExecute());
+                    if (newTaskInfo.isIncremental() && req.getHeader("oldTaskName") != null){
+                        targetGraph.copyStatusAndResult(tasksManager.getTaskForServerSide(req.getHeader("oldTaskName")).getTargetGraph());
+                    }
                     tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
                                                 TargetGraph.TaskType.COMPILATION, newTaskInfo.getTargetsToExecute(), targetGraph);
                     tasksManager.addTaskForServerSide(newTaskInfo.getTaskName(), TargetGraph.TaskType.COMPILATION,"New" ,targetGraph);

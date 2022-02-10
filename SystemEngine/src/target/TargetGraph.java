@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TargetGraph implements Serializable {
+
     public enum TaskType {SIMULATION, COMPILATION};
     public enum pathDirection {DEPENDS_ON, REQUIRED_FOR};
 
@@ -353,6 +354,13 @@ public class TargetGraph implements Serializable {
         for (String curTarget : chosenTargets) {
             getTarget(curTarget).setIsChosen(true);
         }
+    }
+
+    public void copyStatusAndResult(TargetGraph oldTargetGraph) {
+        allTargets.forEach((key, target) -> {
+            target.setStatus(oldTargetGraph.allTargets.get(key).getRunStatus());
+            target.setResult(oldTargetGraph.allTargets.get(key).getRunResult());
+        } );
     }
 
     private void clearChosenTargets(){
