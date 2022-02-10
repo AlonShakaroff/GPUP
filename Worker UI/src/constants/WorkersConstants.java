@@ -3,7 +3,7 @@ package constants;
 public class WorkersConstants {
     /*------------------------------------------FXMLs-------------------------------------------------------*/
     public static final String WORKERS_LOGIN_FXML_RESOURCE = "/login/WorkersLogin.fxml";
-    public static final String WORKERS_DASHBOARD_FXML_RESOURCE = "/dashboard/WorkersDashboard.fxml";
+    public static final String WORKERS_DASHBOARD_FXML_RESOURCE = "/workerdashboard/WorkersDashboard.fxml";
     public static final String WORKERS_MAIN_MENU_FXML_RESOURCE = "/main/WorkersMainMenu.fxml";
     public static final String WORKERS_TASKS_CONTROL_FXML_RESOURCE = "/tasks/control/WorkersTasksControl.fxml";
     public static final String ABOUT_FXML_RESOURCE = "/aboutgpup/AboutGpup.fxml";

@@ -1,7 +1,7 @@
 package main;
 
 import constants.WorkersConstants;
-import dashboard.DashboardController;
+import workerdashboard.DashboardController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,10 +24,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
-import static constants.WorkersConstants.WORKERS_TASKS_CONTROL_FXML_RESOURCE;
-import static main.include.Constants.*;
-import static main.include.Constants.DASHBOARD_FXML_RESOURCE;
-
 public class WorkerMainController {
 
     @FXML private TabPane runTaskComponent;
@@ -46,6 +42,7 @@ public class WorkerMainController {
     @FXML
     public void initialize(Stage primaryStage) throws IOException {
         taskExecutor = new WorkerTaskManager(allocatedThreads);
+        userNameLabel.setText("User name: " + userName);
         //taskExecutor.run();
         this.primaryStage = primaryStage;
         refreshComponentsAndControllers();
@@ -70,6 +67,7 @@ public class WorkerMainController {
     @FXML private VBox SlideBox2;
     @FXML private Font x3;
     @FXML private Color x4;
+    @FXML private Label userNameLabel;
 
     @FXML
     void streetSkinButtonClicked(ActionEvent event) {
