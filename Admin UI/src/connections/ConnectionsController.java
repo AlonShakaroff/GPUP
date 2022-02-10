@@ -336,6 +336,7 @@ public class ConnectionsController {
         isSimulationPossible.setValue(targetGraph.getTaskPricing().containsKey(TargetGraph.TaskType.SIMULATION));
         isCompilationPossible.setValue(targetGraph.getTaskPricing().containsKey(TargetGraph.TaskType.COMPILATION));
 
+        clearButtonClicked(new ActionEvent());
         pathList.clear();
     }
 
