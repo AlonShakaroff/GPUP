@@ -21,4 +21,5 @@ public class WorkersConstants {
     private final static String FULL_SERVER_PATH = "http://" + BASE_DOMAIN + ":8080";
 
     public static final String WORKER_TASK_PAGE = FULL_SERVER_PATH + "/worker/task";
+    public static final String GET_WORKER_PAGE = FULL_SERVER_PATH + "/getWorker";
 }

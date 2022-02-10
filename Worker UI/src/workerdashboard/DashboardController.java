@@ -391,14 +391,17 @@ public class DashboardController {
     }
 
     public void registerToTask(String taskName) {
+        RequestBody body = RequestBody.create("null",MediaType.parse("application/json"));
         String finalUrl = HttpUrl
                 .parse(Constants.WORKER_TASK_PAGE)
                 .newBuilder()
                 .addQueryParameter("registerToTask", "registerToTask")
+                .addQueryParameter("taskName",taskName)
+                .addQueryParameter("workerName", userName)
                 .build()
                 .toString();
 
-        HttpClientUtil.runAsync(finalUrl, "POST", null, new Callback() {
+        HttpClientUtil.runAsync(finalUrl, "POST", body, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

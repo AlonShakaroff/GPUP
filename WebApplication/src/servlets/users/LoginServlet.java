@@ -8,6 +8,7 @@ import utils.ServletUtils;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 @WebServlet(name = "LoginServlet" , urlPatterns = "/login")
@@ -23,6 +24,8 @@ public class LoginServlet extends HttpServlet {
             isAdmin = false;
         }
         userName = userName.trim();
+        userName = userName.toLowerCase();
+
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         resp.setContentType("text/plain");
         if(userManager.isUserExists(userName)){

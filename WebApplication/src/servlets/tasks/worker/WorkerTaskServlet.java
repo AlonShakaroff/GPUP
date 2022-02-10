@@ -50,14 +50,16 @@ public class WorkerTaskServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
         else if(req.getParameter("registerToTask") != null) {
-            String taskName = req.getHeader("taskName");
+            String taskName = req.getParameter("taskName");
             tasksManager.getTaskForServerSide(taskName).addWorker();
             tasksManager.getTaskDetailsDTO(taskName).addWorker();
+            userManager.getWorkerDetailsDto(req.getParameter("workerName").toLowerCase()).registerToTask(taskName.toLowerCase());
         }
         else if(req.getParameter("unregisterFromTask") != null) {
-            String taskName = req.getHeader("taskName");
+            String taskName = req.getParameter("taskName");
             tasksManager.getTaskForServerSide(taskName).removeWorker();
             tasksManager.getTaskDetailsDTO(taskName).removeWorker();
+            userManager.getWorkerDetailsDto(req.getParameter("workerName").toLowerCase()).unregisterFromTask(taskName.toLowerCase());
         }
     }
 }

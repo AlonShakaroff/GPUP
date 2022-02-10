@@ -43,12 +43,12 @@ public class WorkerMainController {
     public void initialize(Stage primaryStage) throws IOException {
         taskExecutor = new WorkerTaskManager(allocatedThreads,userName);
         userNameLabel.setText("User name: " + userName);
-        //taskExecutor.run();
         this.primaryStage = primaryStage;
         refreshComponentsAndControllers();
 
         dashboardController.setPrimaryStage(primaryStage);
         dashboardController.setUserName(userName);
+        taskExecutor.start();
     }
 
     @FXML private MenuItem classicSkinButton;

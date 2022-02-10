@@ -12,8 +12,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import main.include.Constants;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+import util.http.HttpClientUtil;
+
+import java.io.IOException;
 
 public class TaskController {
+    String userName;
 
     @FXML
     private TitledPane OnlineTasksTiltedPane1;
@@ -106,4 +113,27 @@ public class TaskController {
 
     }
 
+    public void unregisterFromTask(String taskName) {
+        RequestBody body = RequestBody.create("null", MediaType.parse("application/json"));
+        String finalUrl = HttpUrl
+                .parse(Constants.WORKER_TASK_PAGE)
+                .newBuilder()
+                .addQueryParameter("unregisterFromTask", "unregisterFromTask")
+                .addQueryParameter("taskName",taskName)
+                .addQueryParameter("workerName", userName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "POST", body, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+            }
+        });
+    }
 }
