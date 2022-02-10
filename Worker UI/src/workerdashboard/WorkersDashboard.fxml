@@ -129,7 +129,7 @@
                         <TableView fx:id="TaskInfoTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="70.0" minWidth="-Infinity" prefHeight="70.0" prefWidth="307.0">
                            <columns>
                               <TableColumn fx:id="TaskStatus" minWidth="30.0" prefWidth="-1.0" text="Status" />
-                              <TableColumn fx:id="AmountOfWorkers" minWidth="13.0" prefWidth="-1.0" text="Amount of workers" />
+                              <TableColumn fx:id="currentWorkers" minWidth="13.0" prefWidth="-1.0" text="Amount of workers" />
                               <TableColumn fx:id="TaskWorkPayment" minWidth="30.0" prefWidth="-1.0" text="Payment per target $" />
                            </columns>
                            <columnResizePolicy>

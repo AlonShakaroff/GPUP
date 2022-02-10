@@ -29,6 +29,7 @@ import users.UsersLists;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,7 @@ public class DashboardController {
     private ObservableList<TargetsInfoTableItem> targetsTypeInfoTableList = FXCollections.observableArrayList();
     private ObservableList<SelectedTaskStatusTableItem> TaskInfoTableList = FXCollections.observableArrayList();
     private int creditsEarned = 0;
+    private Set<String> RegisteredTasks = new HashSet<>();
 
     private ListChangeListener<String> currentSelectedTaskListListener;
 
@@ -59,6 +61,7 @@ public class DashboardController {
         currentSelectedTaskList = OnlineTasksListView.getSelectionModel().getSelectedItems();
         currentSelectedTaskList.addListener(currentSelectedTaskListListener);
         initializeTargetDetailsTable();
+        initializeTaskStatusTable();
         refreshDashboardDataThread = new Thread(this::refreshDashboardData);
         Thread suddenExitHook = new Thread(this::logout);
         Runtime.getRuntime().addShutdownHook(suddenExitHook);
@@ -124,7 +127,7 @@ public class DashboardController {
     private TableColumn<SelectedTaskStatusTableItem, String> TaskStatus;
 
     @FXML
-    private TableColumn<SelectedTaskStatusTableItem, Integer> AmountOfWorkers;
+    private TableColumn<SelectedTaskStatusTableItem, Integer> currentWorkers;
 
     @FXML
     private TableColumn<SelectedTaskStatusTableItem, Integer> TaskWorkPayment;
@@ -234,11 +237,21 @@ public class DashboardController {
         this.IndependentAmount.setCellValueFactory(new PropertyValueFactory<TargetsInfoTableItem, Integer>("independents"));
     }
 
+    public void initializeTaskStatusTable() {
+        this.TaskStatus.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, String>("status"));
+        this.currentWorkers.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, Integer>("workers"));
+        this.TaskWorkPayment.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, Integer>("totalPayment"));
+    }
+
     private void refreshDashboardData() {
         while (refreshDashboardDataThread.isAlive()) {
             getUsersLists();
             getOnlineTasksList();
+            getCreditsEarnedAntRegisteredTasks();
         }
+    }
+
+    private void getCreditsEarnedAntRegisteredTasks() {
     }
 
     private void getUsersLists() {
