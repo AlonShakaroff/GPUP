@@ -24,8 +24,13 @@ public class TasksManager {
     private static final Map<String, ExecutorThread> taskExecutorThreadMap = new HashMap<>();
     private static final LinkedList<GPUPTaskDto> tasksThatAreReadyForWorkersList = new LinkedList<>();
 
+    /*----------------------------------------------Worker data members---------------------------------------------------*/
+
     /* The first key is the worker name, the second key is the task name, the value is the worker history with that task. */
     private static final Map<String, Map<String, TaskHistoryDto>> tasksHistoryMapForWorker = new HashMap<>();
+
+    /* The first key is the worker name, the second key is the target name, the value is the target's dto.*/
+    private static final Map<String, Map<String, TargetForWorker>> workersTargetMaps = new HashMap<>();
 
 
     public synchronized boolean isTaskExists(String taskName) {
@@ -150,4 +155,19 @@ public class TasksManager {
     public TaskHistoryDto getTaskHistoryForWorker(String workerName, String taskName) {
         return tasksHistoryMapForWorker.get(workerName).get(taskName);
     }
+
+    public void addTargetToWorkerMap(String workerName, TargetForWorker targetForWorker) {
+        if(!workersTargetMaps.containsKey(workerName))
+            workersTargetMaps.put(workerName,new HashMap<>());
+        workersTargetMaps.get(workerName).put(targetForWorker.getTargetId(),targetForWorker);
+    }
+
+    public Map<String,TargetForWorker> getWorkerTargetMap(String workerName) {
+        return workersTargetMaps.get(workerName);
+    }
+
+    public TargetForWorker getTargetFromWorkerMap(String workerName, String targetId) {
+        return workersTargetMaps.get(workerName).get(targetId);
+    }
 }
+

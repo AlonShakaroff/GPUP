@@ -1,6 +1,7 @@
 package servlets.tasks.worker;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import dtos.CompilationTaskDto;
 import dtos.GPUPTaskDto;
 import dtos.SimulationTaskDto;
@@ -19,67 +20,100 @@ import utils.ServletUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "WorkerTaskServlet", urlPatterns = "/worker/task")
 public class WorkerTaskServlet extends HttpServlet {
     public Gson gson = new Gson();
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-        PrintWriter out = resp.getWriter();
-        resp.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
 
-        if(req.getParameter("getTaskToDo") != null)
+        if(request.getParameter("getTaskToDo") != null)
         {
-            Set<String> signedToTasks = gson.fromJson(req.getReader(), Set.class);
+            Set<String> signedToTasks = gson.fromJson(request.getReader(), Set.class);
             GPUPTaskDto gpupTaskDto = tasksManager.pollTaskReadyForWorker(signedToTasks);
             String gpupTaskJson = null;
             if(gpupTaskDto != null) {
                 if (gpupTaskDto.getTaskType().equalsIgnoreCase("simulation")) {
                     gpupTaskJson = gson.toJson(gpupTaskDto, SimulationTaskDto.class);
-                    resp.addHeader("taskType", "simulation");
+                    response.addHeader("taskType", "simulation");
                 }
                 if (gpupTaskDto.getTaskType().equalsIgnoreCase("compilation")) {
                     gpupTaskJson = gson.toJson(gpupTaskDto, CompilationTaskDto.class);
-                    resp.addHeader("taskType", "compilation");
+                    response.addHeader("taskType", "compilation");
                 }
             }
             out.write(gpupTaskJson);
-            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
 
-        if(req.getHeader("updateStatus") != null) {
-            TargetForWorker targetForWorker = gson.fromJson(req.getReader(), TargetForWorker.class);
-
+        if(request.getHeader("updateStatus") != null) {
+            TargetForWorker targetForWorker = gson.fromJson(request.getReader(), TargetForWorker.class);
+            String workerName = request.getHeader("workerName").toLowerCase();
             tasksManager.updateTargetsStatusAndResult(targetForWorker);
-            if(targetForWorker.getTargetStatus() != Target.Status.SKIPPED)
-                userManager.getWorkerDetailsDto(req.getHeader("workerName").toLowerCase()).addCredits(targetForWorker.getPricing());
-            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+            if(targetForWorker.getTargetStatus() != Target.Status.SKIPPED) {
+                userManager.getWorkerDetailsDto(workerName).addCredits(targetForWorker.getPricing());
+                tasksManager.getTaskHistoryForWorker(workerName
+                        ,targetForWorker.getTaskName()).addTargetDone();
+                tasksManager.getTaskHistoryForWorker(workerName
+                        ,targetForWorker.getTaskName()).addCredits(targetForWorker.getPricing());
+            }
+            tasksManager.addTargetToWorkerMap(workerName,targetForWorker);
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
-        else if(req.getParameter("registerToTask") != null) {
-            WorkerDetailsDto workerDetailsDto = userManager.getWorkerDetailsDto(req.getParameter("workerName").toLowerCase());
-            String taskName = req.getParameter("taskName");
+        else if(request.getParameter("registerToTask") != null) {
+            WorkerDetailsDto workerDetailsDto = userManager.getWorkerDetailsDto(request.getParameter("workerName").toLowerCase());
+            String taskName = request.getParameter("taskName");
             if(workerDetailsDto.getRegisteredTasks().contains(taskName))
             {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.addHeader("message","Already registered to task " + taskName);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.addHeader("message","Already registered to task " + taskName);
             }
             else {
-                resp.setStatus(HttpServletResponse.SC_OK);
+                response.setStatus(HttpServletResponse.SC_OK);
                 tasksManager.getTaskForServerSide(taskName).addWorker();
                 tasksManager.getTaskDetailsDTO(taskName).addWorker();
                 workerDetailsDto.registerToTask(taskName.toLowerCase());
+                tasksManager.createTaskHistoryForWorker(workerDetailsDto.getUserName(),taskName);
             }
         }
-        else if(req.getParameter("unregisterFromTask") != null) {
-            String taskName = req.getParameter("taskName");
+        else if(request.getParameter("unregisterFromTask") != null) {
+            String taskName = request.getParameter("taskName");
             tasksManager.getTaskForServerSide(taskName).removeWorker();
             tasksManager.getTaskDetailsDTO(taskName).removeWorker();
-            userManager.getWorkerDetailsDto(req.getParameter("workerName").toLowerCase()).unregisterFromTask(taskName.toLowerCase());
+            userManager.getWorkerDetailsDto(request.getParameter("workerName").toLowerCase()).unregisterFromTask(taskName.toLowerCase());
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
+        PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
+
+        if(request.getParameter("targetId") != null) {
+            String targetId = request.getParameter("targetId");
+            String workerName = request.getParameter("workerName");
+
+            TargetForWorker targetForWorker = tasksManager.getTargetFromWorkerMap(workerName,targetId);
+            String targetForWorkerJson = gson.toJson(targetForWorker,TargetForWorker.class);
+            out.write(targetForWorkerJson);
+        }
+        else if(request.getParameter("workerName") != null){
+            String workerName = request.getParameter("workerName");
+            Set<String> targetForWorkerSet = new HashSet<>(tasksManager.getWorkerTargetMap(workerName).keySet());
+            String targetForWorkerSetJson = gson.toJson(targetForWorkerSet);
+            out.write(targetForWorkerSetJson);
         }
     }
 }

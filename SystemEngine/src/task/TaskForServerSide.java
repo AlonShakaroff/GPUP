@@ -50,4 +50,8 @@ public class TaskForServerSide {
     public void addWorker() { amountOfWorkers++; }
 
     public void removeWorker() { amountOfWorkers--; }
+
+    public Integer getAmountOfWorkers() {
+        return amountOfWorkers;
+    }
 }

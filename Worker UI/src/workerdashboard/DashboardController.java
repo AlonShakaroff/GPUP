@@ -273,6 +273,7 @@ public class DashboardController {
                     .parse(WorkersConstants.GET_WORKER_PAGE)
                     .newBuilder()
                     .addQueryParameter("workerName", userName)
+                    .addQueryParameter("getWorkerDto", "getWorkerDto")
                     .build()
                     .toString();
 

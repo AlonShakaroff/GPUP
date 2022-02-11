@@ -2,6 +2,7 @@ package target;
 
 public class TargetForWorker {
     private String name;
+    private String targetId;
     private String result;
     private String status;
     private String runLog;
@@ -14,6 +15,7 @@ public class TargetForWorker {
 
     public TargetForWorker(String name, String extraData, String taskName,String taskType ,Integer pricing, String nodeType) {
         this.name = name;
+        this.targetId = name + "("+ taskName + ")";
         this.extraData = extraData;
         this.runLog = "";
         this.taskName = taskName;
@@ -80,4 +82,12 @@ public class TargetForWorker {
     }
 
     public String getNodeType() { return nodeType; }
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
 }
