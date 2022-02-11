@@ -371,9 +371,8 @@ public class TargetGraph implements Serializable {
 
     public void updateTargetsStatusAndResult(TargetForWorker targetForWorker) {
         Target target = getTarget(targetForWorker.getName());
-        target.setStatus(targetForWorker.getStatus());
-        target.setResult(targetForWorker.getResult());
+        target.setStatus(targetForWorker.getTargetStatus());
+        target.setResult(targetForWorker.getTargetResult());
         target.setRunLog(targetForWorker.getRunLog());
     }
-
 }

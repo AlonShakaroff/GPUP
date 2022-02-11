@@ -254,8 +254,10 @@ public class DashboardController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if (response.code() < 200 || response.code() >= 300) {
-                    Platform.runLater(() -> errorPopup(response.header("message")));
+                    String message = response.header("message");
+                    Platform.runLater(() -> errorPopup(message));
                 }
+                response.close();
             }
         });
     }
@@ -295,8 +297,12 @@ public class DashboardController {
                     Platform.runLater(()-> adminMainController.LoadXMLFile(graphXMLFile));
                 } else //Failed
                 {
-                    Platform.runLater(() -> errorPopup(response.message()));
+                    String message = response.message();
+                    Platform.runLater(() -> {
+                        errorPopup(message);
+                    });
                 }
+                response.close();
             }
         });
     }
@@ -332,6 +338,11 @@ public class DashboardController {
 
     private void refreshDashboardData() {
         while (refreshDashboardDataThread.isAlive()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             getUsersLists();
             refreshGraphList();
             refreshTaskLists();
@@ -341,12 +352,6 @@ public class DashboardController {
     }
 
     private void getUsersLists() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         String finalUrl = HttpUrl
                 .parse(Constants.USERS_LISTS)
                 .newBuilder()
@@ -366,9 +371,8 @@ public class DashboardController {
                 ResponseBody responseBody = response.body();
                 UsersLists usersLists = gson.fromJson(responseBody.string(), UsersLists.class);
                 responseBody.close();
-                Platform.runLater(() -> {
-                    updateUsersLists(usersLists);
-                });
+                Platform.runLater(() -> updateUsersLists(usersLists));
+                response.close();
             }
         });
     }
@@ -421,6 +425,7 @@ public class DashboardController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.close();
             }
         });
     }
@@ -441,22 +446,19 @@ public class DashboardController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
-                                try {
-                                    if (responseBody != null) {
-                                        Set graphsSet = gson.fromJson(responseBody.string(), Set.class);
-                                        responseBody.close();
-                                        updateGraphListView(graphsSet);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
+                    ResponseBody responseBody = response.body();
+                    Gson gson = new Gson();
+                    try {
+                        if (responseBody != null) {
+                            Set graphsSet = gson.fromJson(responseBody.string(), Set.class);
+                            responseBody.close();
+                            Platform.runLater(() ->updateGraphListView(graphsSet));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                response.close();
             }
         });
     }
@@ -493,26 +495,21 @@ public class DashboardController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
-                                try {
-                                    if (responseBody != null) {
-                                        TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
-                                        responseBody.close();
-
-                                        selectedAllTaskCanRunIncrementally.setValue(taskDetailsDto.getCanRunIncrementally());
-                                        selectedAllTaskFinished.setValue(taskDetailsDto.getTaskStatus().equals("Finished"));
-
-                                        displaySelectedTaskInfoFromDto(taskDetailsDto);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
+                    ResponseBody responseBody = response.body();
+                    Gson gson = new Gson();
+                    try {
+                        if (responseBody != null) {
+                            TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
+                            responseBody.close();
+                            selectedAllTaskCanRunIncrementally.setValue(taskDetailsDto.getCanRunIncrementally());
+                            selectedAllTaskFinished.setValue(taskDetailsDto.getTaskStatus().equals("Finished"));
+                            Platform.runLater(() ->displaySelectedTaskInfoFromDto(taskDetailsDto));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                response.close();
             }
         });
     }
@@ -563,22 +560,19 @@ public class DashboardController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
-                                try {
-                                    if (responseBody != null) {
-                                        GraphInfoDto graphInfoDto = gson.fromJson(responseBody.string(), GraphInfoDto.class);
-                                        responseBody.close();
-                                        refreshGraphDetailsDTO(graphInfoDto);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
+                    ResponseBody responseBody = response.body();
+                    Gson gson = new Gson();
+                    try {
+                        if (responseBody != null) {
+                            GraphInfoDto graphInfoDto = gson.fromJson(responseBody.string(), GraphInfoDto.class);
+                            responseBody.close();
+                            Platform.runLater(() ->refreshGraphDetailsDTO(graphInfoDto));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                response.close();
             }
         });
     }
@@ -634,22 +628,19 @@ public class DashboardController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300)
                 {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
-                                try {
-                                    if (responseBody != null) {
-                                        Set taskList = gson.fromJson(responseBody.string(), Set.class);
-                                        updateAllTasksList(taskList);
-                                        responseBody.close();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
+                    ResponseBody responseBody = response.body();
+                    Gson gson = new Gson();
+                    try {
+                        if (responseBody != null) {
+                            Set taskList = gson.fromJson(responseBody.string(), Set.class);
+                            Platform.runLater(()->updateAllTasksList(taskList));
+                            responseBody.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                response.close();
             }
         });
     }
@@ -684,22 +675,14 @@ public class DashboardController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
-                                try {
-                                    if (responseBody != null) {
-                                        Set taskList = gson.fromJson(responseBody.string(), Set.class);
-                                        updateMyTasksList(taskList);
-                                        responseBody.close();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
+                    ResponseBody responseBody = response.body();
+                    Gson gson = new Gson();
+                    if (responseBody != null) {
+                        Set taskList = gson.fromJson(responseBody.string(), Set.class);
+                        Platform.runLater(() -> updateMyTasksList(taskList));
+                    }
                 }
+                response.close();
             }
         });
     }

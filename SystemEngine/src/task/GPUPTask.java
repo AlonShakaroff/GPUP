@@ -1,6 +1,7 @@
 package task;
 
 import com.google.gson.Gson;
+import dtos.GPUPTaskDto;
 import javafx.application.Platform;
 import main.include.Constants;
 import okhttp3.*;
@@ -27,6 +28,13 @@ public abstract class GPUPTask implements Runnable{
         this.target = target;
         this.taskType = taskType;
         this.workerName = "";
+    }
+
+    public GPUPTask(GPUPTaskDto gpupTaskDto) {
+        this.taskName = gpupTaskDto.getTaskName();
+        this.target = gpupTaskDto.getTarget();
+        this.taskType = gpupTaskDto.getTaskType();
+        this.workerName = gpupTaskDto.getWorkerName();
     }
     public String getTaskName() {
         return taskName;
@@ -67,6 +75,7 @@ public abstract class GPUPTask implements Runnable{
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
+                response.close();
             }
         });
     }

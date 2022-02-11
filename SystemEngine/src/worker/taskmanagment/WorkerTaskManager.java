@@ -1,12 +1,18 @@
 package worker.taskmanagment;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import dtos.CompilationTaskDto;
+import dtos.GPUPTaskDto;
+import dtos.SimulationTaskDto;
 import javafx.application.Platform;
 import main.WorkerMainController;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import task.GPUPTask;
+import task.compilation.CompilationTask;
+import task.simulation.SimulationTask;
 import util.http.HttpClientUtil;
 
 import java.io.File;
@@ -45,9 +51,18 @@ public class WorkerTaskManager extends Thread {
         amountOfTasksRegisteredTo--;
     }
 
+    public void setTasksRegisteredToSet(Set<String> tasksRegisteredToSet) {
+        this.tasksRegisteredToSet = tasksRegisteredToSet;
+        this.amountOfTasksRegisteredTo = tasksRegisteredToSet.size();
+    }
+
     @Override
     public void run() {
         while(true) {
+            try {
+                Thread.sleep(500);
+            }
+            catch (Exception ignore) {}
             if(!isThreadPoolFull() && amountOfTasksRegisteredTo > 0) {
                 getGPUPTaskToRunFromServer();
             }
@@ -68,7 +83,7 @@ public class WorkerTaskManager extends Thread {
                 .build()
                 .toString();
 
-        HttpClientUtil.runAsync(finalUrl, "GET", body, new Callback() {
+        HttpClientUtil.runAsync(finalUrl, "POST", body, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -79,13 +94,26 @@ public class WorkerTaskManager extends Thread {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
                     Gson gson = new Gson();
-                    ResponseBody responseBody = response.body();
-                    GPUPTask gpupTask = gson.fromJson(responseBody.string(), GPUPTask.class);
-                    gpupTask.setWorkerName(workerName);
-                    if(gpupTask != null)
-                        threadPool.execute(gpupTask);
-                    responseBody.close();
+                    String gpupTaskDtoJson = response.body().string();
+                    try {
+                        if(response.header("taskType").equalsIgnoreCase("simulation"))
+                        {
+                            SimulationTaskDto simulationTaskDto = gson.fromJson(gpupTaskDtoJson,SimulationTaskDto.class);
+                            if(simulationTaskDto != null)
+                                threadPool.execute(new SimulationTask(simulationTaskDto));
+                        }
+                        else if(response.header("taskType").equalsIgnoreCase("compilation"))
+                        {
+                            CompilationTaskDto compilationTaskDto = gson.fromJson(gpupTaskDtoJson,CompilationTaskDto.class);
+                            if(compilationTaskDto != null)
+                                threadPool.execute(new CompilationTask(compilationTaskDto));
+                        }
+                    }
+                    catch (Exception e) {
+                        System.out.println("json error: " + e.getMessage());
+                    }
                 }
+                response.close();
             }
         });
     }

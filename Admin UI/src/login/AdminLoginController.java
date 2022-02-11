@@ -75,9 +75,9 @@ public class AdminLoginController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
-                    String responseBody = response.body().string();
+                    String responseMessage = response.body().string();
                     Platform.runLater(() ->
-                            errorMessageProperty.set("Login failed: " + responseBody));
+                            errorMessageProperty.set("Login failed: " + responseMessage));
                 } else {
                     Platform.runLater(() -> {
                         try{
@@ -103,6 +103,7 @@ public class AdminLoginController {
                         catch(Exception ignore) {}
                     });
                 }
+                response.close();
             }
         });
     }

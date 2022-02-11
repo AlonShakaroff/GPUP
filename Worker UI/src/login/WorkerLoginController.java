@@ -1,6 +1,8 @@
 package login;
 
+import com.google.gson.Gson;
 import constants.WorkersConstants;
+import dtos.WorkerDetailsDto;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -82,9 +84,12 @@ public class WorkerLoginController {
                     String responseBody = response.body().string();
                     Platform.runLater(() ->
                             errorMessageProperty.set("Login failed: " + responseBody));
+                    response.close();
                 } else {
                     Platform.runLater(() -> {
                         try{
+                            Gson gson = new Gson();
+                            WorkerDetailsDto workerDetailsDto = gson.fromJson(response.body().string(),WorkerDetailsDto.class);
                             currentUser = userName;
                             URL url = getClass().getResource(WorkersConstants.WORKERS_MAIN_MENU_FXML_RESOURCE);
                             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -103,9 +108,13 @@ public class WorkerLoginController {
                             workerMainController.setAllocatedThreads(ThreadsAmountValueFactory.getValue());
                             workerMainController.setUserName(currentUser);
                             workerMainController.initialize(primaryStage);
+                            workerMainController.getTaskExecutor().setTasksRegisteredToSet(workerDetailsDto.getRegisteredTasks());
                         }
                         catch(Exception e) {
                             e.printStackTrace();
+                        }
+                        finally {
+                            response.close();
                         }
                     });
                 }

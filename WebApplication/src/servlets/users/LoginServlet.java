@@ -1,4 +1,6 @@
 package servlets.users;
+import com.google.gson.Gson;
+import dtos.WorkerDetailsDto;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,9 +38,13 @@ public class LoginServlet extends HttpServlet {
             req.getSession(true).setAttribute("username", userName);
             if(isAdmin)
                 userManager.addAdmin(userName);
-            else
+            else {
                 userManager.addWorker(userName);
-            resp.getWriter().println("Logged in successfully");
+                Gson gson = new Gson();
+                WorkerDetailsDto workerDetailsDto = userManager.getWorkerDetailsDto(userName);
+                String workerDetailsDtoJson = gson.toJson(workerDetailsDto,WorkerDetailsDto.class);
+                resp.getWriter().println(workerDetailsDtoJson);
+            }
             resp.setStatus(200);
         }
     }

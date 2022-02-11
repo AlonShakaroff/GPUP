@@ -1,13 +1,12 @@
 package task;
 
+import dtos.GPUPTaskDto;
 import dtos.TaskDetailsDto;
 import target.TargetForWorker;
 import target.TargetGraph;
-import task.copilation.CompilationParameters;
-import task.copilation.CompilationTask;
-import task.copilation.CompilationTaskInformation;
+import task.compilation.CompilationParameters;
+import task.compilation.CompilationTaskInformation;
 import task.simulation.SimulationParameters;
-import task.simulation.SimulationTask;
 import task.simulation.SimulationTaskInformation;
 
 import java.util.*;
@@ -22,7 +21,7 @@ public class TasksManager {
     private static final Map<String, TaskDetailsDto> taskDetailsDTOMap = new HashMap<>();
     private static final Map<String, TaskForServerSide> taskForServerSideMap = new HashMap<>();
     private static final Map<String, ExecutorThread> taskExecutorThreadMap = new HashMap<>();
-    private static final LinkedList<GPUPTask> tasksThatAreReadyForWorkersList = new LinkedList<>();
+    private static final LinkedList<GPUPTaskDto> tasksThatAreReadyForWorkersList = new LinkedList<GPUPTaskDto>();
 
     public synchronized boolean isTaskExists(String taskName) {
         return simulationTasksMap.containsKey(taskName.toLowerCase()) || compilationTasksMap.containsKey(taskName.toLowerCase());
@@ -97,30 +96,31 @@ public class TasksManager {
     }
 
     public synchronized void addTaskExecutorThread(String taskName) {
-        TargetGraph targetGraph = getTaskForServerSide(taskName).getTargetGraph();
         if(isSimulationTask(taskName)) {
             SimulationParameters parameters = getSimulationTaskInformation(taskName).getSimulationParameters();
-            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph, "simulation",
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(taskName,
                                          parameters.getSuccessWithWarnings(), parameters.getSuccessRate(),
                                                 parameters.isRandom(),parameters.getProcessingTime(),
                     getSimulationTaskInformation(taskName).isIncremental(), this));
         }
         else if(isCompilationTask(taskName)) {
             CompilationParameters parameters = getCompilationTaskInformation(taskName).getCompilationParameters();
-            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(targetGraph,"compilation",
+            taskExecutorThreadMap.put(taskName.toLowerCase(),new ExecutorThread(taskName,
                                 parameters.getSourcePath(),parameters.getDestinationPath(),
                     getCompilationTaskInformation(taskName).isIncremental(),this));
         }
+
+        taskExecutorThreadMap.get(taskName.toLowerCase()).start();
     }
 
-    public synchronized void addTaskReadyForWorker(GPUPTask task) {
+    public synchronized void addTaskReadyForWorker(GPUPTaskDto task) {
         tasksThatAreReadyForWorkersList.addLast(task);
     }
 
-    public synchronized GPUPTask pollTaskReadyForWorker(Set<String> tasksThatWorkerIsSignedTo) {
-        List<GPUPTask> filteredList = tasksThatAreReadyForWorkersList.stream().filter(gpupTask -> tasksThatWorkerIsSignedTo.contains(gpupTask.taskName)).collect(Collectors.toList());
+    public synchronized GPUPTaskDto pollTaskReadyForWorker(Set<String> tasksThatWorkerIsSignedTo) {
+        List<GPUPTaskDto> filteredList = tasksThatAreReadyForWorkersList.stream().filter(gpupTaskDto -> tasksThatWorkerIsSignedTo.contains(gpupTaskDto.getTaskName())).collect(Collectors.toList());
         if(!filteredList.isEmpty()) {
-            tasksThatWorkerIsSignedTo.remove(filteredList.get(0));
+            tasksThatAreReadyForWorkersList.remove(filteredList.get(0));
             return filteredList.get(0);
         }
         else //filtered list is empty
@@ -129,5 +129,9 @@ public class TasksManager {
 
     public synchronized void updateTargetsStatusAndResult(TargetForWorker target) {
         taskForServerSideMap.get(target.getTaskName()).getTargetGraph().updateTargetsStatusAndResult(target);
+    }
+
+    public ExecutorThread getTaskExecutorThread(String taskName) {
+        return taskExecutorThreadMap.get(taskName);
     }
 }

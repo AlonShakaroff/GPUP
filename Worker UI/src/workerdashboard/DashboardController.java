@@ -165,6 +165,7 @@ public class DashboardController {
         String selectedItem = OnlineTasksListView.getSelectionModel().getSelectedItem();
         if(selectedItem != null) {
             registerToTask(selectedItem);
+            workerMainController.setSceneToTask();
         }
     }
 
@@ -190,26 +191,23 @@ public class DashboardController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
-                                try {
-                                    if (responseBody != null) {
-                                        TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
-                                        responseBody.close();
-
-                                        displaySelectedTaskInfoFromDto(taskDetailsDto);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
+                    ResponseBody responseBody = response.body();
+                    Gson gson = new Gson();
+                    try {
+                        if (responseBody != null) {
+                            TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
+                            responseBody.close();
+                            Platform.runLater(() -> displaySelectedTaskInfoFromDto(taskDetailsDto));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                response.close();
             }
         });
     }
+
 
     private void displaySelectedTaskInfoFromDto(TaskDetailsDto taskDetailsDto) {
         this.TaskNameTextField.setText(taskDetailsDto.getTaskName());
@@ -253,6 +251,11 @@ public class DashboardController {
 
     private void refreshDashboardData() {
         while (refreshDashboardDataThread.isAlive()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             getUsersLists();
             getOnlineTasksList();
             getCreditsEarnedAntRegisteredTasks();
@@ -264,54 +267,48 @@ public class DashboardController {
 
     private void getCreditsEarnedAntRegisteredTasks() {
 
-        String finalUrl = HttpUrl
-                .parse(WorkersConstants.GET_WORKER_PAGE)
-                .newBuilder()
-                .addQueryParameter("workerName", userName)
-                .build()
-                .toString();
+            String finalUrl = HttpUrl
+                    .parse(WorkersConstants.GET_WORKER_PAGE)
+                    .newBuilder()
+                    .addQueryParameter("workerName", userName)
+                    .build()
+                    .toString();
 
-        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            }
+            HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                }
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() >= 200 && response.code() < 300) //Success
-                {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() >= 200 && response.code() < 300) //Success
+                    {
+                        ResponseBody responseBody = response.body();
+                        Gson gson = new Gson();
+                        if (responseBody != null) {
+                            Platform.runLater(() -> {
                                 try {
-                                    if (responseBody != null) {
-                                        WorkerDetailsDto workerDetailsDto = gson.fromJson(responseBody.string(), WorkerDetailsDto.class);
-                                        responseBody.close();
-
-                                        creditsEarned = workerDetailsDto.getEarnedCredits();
-                                        CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
-                                        CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
-                                        RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
-                                    }
+                                    WorkerDetailsDto workerDetailsDto = gson.fromJson(responseBody.string(), WorkerDetailsDto.class);
+                                    responseBody.close();
+                                    creditsEarned = workerDetailsDto.getEarnedCredits();
+                                    CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
+                                    CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
+                                    RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                } finally {
+                                    response.close();
                                 }
-                            }
-                    );
+                            });
+                        }
+
+                    } else
+                        response.close();
                 }
-            }
-        });
-
-    }
-
-    private void getUsersLists() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            });
         }
 
+    private void getUsersLists() {
         String finalUrl = HttpUrl
                 .parse(Constants.USERS_LISTS)
                 .newBuilder()
@@ -333,6 +330,7 @@ public class DashboardController {
                 Platform.runLater(() -> {
                     updateUsersLists(usersLists);
                 });
+                response.close();
             }
         });
     }
@@ -361,22 +359,19 @@ public class DashboardController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300)
                 {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
-                                try {
-                                    if (responseBody != null) {
-                                        Set<String> taskList = gson.fromJson(responseBody.string(), Set.class);
-                                        updateOnlineTasksList(taskList);
-                                        responseBody.close();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
+                    ResponseBody responseBody = response.body();
+                    Gson gson = new Gson();
+                    try {
+                        if (responseBody != null) {
+                            Set<String> taskList = gson.fromJson(responseBody.string(), Set.class);
+                            Platform.runLater(() ->updateOnlineTasksList(taskList));
+                            responseBody.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                response.close();
             }
         });
     }
@@ -460,8 +455,13 @@ public class DashboardController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if(response.code() > 300 || response.code() < 200)
-                    Platform.runLater(()-> errorPopup(response.header("message")));
+                if(response.code() > 300 || response.code() < 200) {
+                    String message = response.header("message");
+                    Platform.runLater(() -> errorPopup(message));
+                }
+                else
+                    workerMainController.getTaskExecutor().addRegisteredTask(taskName);
+                response.close();
             }
         });
     }

@@ -1,6 +1,4 @@
-package task.copilation;
-
-import java.io.File;
+package task.compilation;
 
 public class CompilationParameters {
     private final String sourcePath;

@@ -2,8 +2,8 @@ package target;
 
 public class TargetForWorker {
     private String name;
-    private Target.Result result;
-    private Target.Status status;
+    private String result;
+    private String status;
     private String runLog;
     private String extraData;
     private String taskName;
@@ -22,12 +22,20 @@ public class TargetForWorker {
         return name;
     }
 
-    public Target.Result getResult() {
+    public Target.Result getTargetResult() {
+        return Target.Result.valueOf(result.toUpperCase());
+    }
+
+    public void setTargetResult(Target.Result result) {
+        this.result = result.name();
+    }
+
+    public String getResult(){
         return result;
     }
 
-    public void setResult(Target.Result result) {
-        this.result = result;
+    public String getStatus() {
+        return status;
     }
 
     public String getRunLog() {
@@ -38,11 +46,15 @@ public class TargetForWorker {
         this.runLog = runLog;
     }
 
-    public Target.Status getStatus() {
-        return status;
+    public Target.Status getTargetStatus() {
+        return Target.Status.valueOf(status.toUpperCase());
     }
 
-    public void setStatus(Target.Status status) {
+    public void setTargetStatus(Target.Status status) {
+        this.status = status.name();
+    }
+
+    public void setStatus(String status) {
         this.status = status;
     }
 
