@@ -69,4 +69,9 @@ public class TargetForWorker {
     public Integer getPricing() {
         return pricing;
     }
+
+    public void updateData(Target target) {
+        this.setTargetStatus(target.getRunStatus());
+        this.setTargetResult(target.getRunResult());
+    }
 }

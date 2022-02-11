@@ -31,6 +31,7 @@ import util.http.HttpClientUtil;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -302,6 +303,7 @@ public class DashboardController {
                         errorPopup(message);
                     });
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
@@ -372,6 +374,7 @@ public class DashboardController {
                 UsersLists usersLists = gson.fromJson(responseBody.string(), UsersLists.class);
                 responseBody.close();
                 Platform.runLater(() -> updateUsersLists(usersLists));
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
@@ -451,13 +454,13 @@ public class DashboardController {
                     try {
                         if (responseBody != null) {
                             Set graphsSet = gson.fromJson(responseBody.string(), Set.class);
-                            responseBody.close();
                             Platform.runLater(() ->updateGraphListView(graphsSet));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
@@ -500,7 +503,6 @@ public class DashboardController {
                     try {
                         if (responseBody != null) {
                             TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
-                            responseBody.close();
                             selectedAllTaskCanRunIncrementally.setValue(taskDetailsDto.getCanRunIncrementally());
                             selectedAllTaskFinished.setValue(taskDetailsDto.getTaskStatus().equals("Finished"));
                             Platform.runLater(() ->displaySelectedTaskInfoFromDto(taskDetailsDto));
@@ -509,6 +511,7 @@ public class DashboardController {
                         e.printStackTrace();
                     }
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
@@ -565,13 +568,13 @@ public class DashboardController {
                     try {
                         if (responseBody != null) {
                             GraphInfoDto graphInfoDto = gson.fromJson(responseBody.string(), GraphInfoDto.class);
-                            responseBody.close();
                             Platform.runLater(() ->refreshGraphDetailsDTO(graphInfoDto));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
@@ -634,12 +637,12 @@ public class DashboardController {
                         if (responseBody != null) {
                             Set taskList = gson.fromJson(responseBody.string(), Set.class);
                             Platform.runLater(()->updateAllTasksList(taskList));
-                            responseBody.close();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                Objects.requireNonNull(response.body()).close();;
                 response.close();
             }
         });
@@ -682,6 +685,7 @@ public class DashboardController {
                         Platform.runLater(() -> updateMyTasksList(taskList));
                     }
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });

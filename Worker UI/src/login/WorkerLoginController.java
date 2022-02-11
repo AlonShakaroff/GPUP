@@ -81,7 +81,7 @@ public class WorkerLoginController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
-                    String responseBody = response.body().string();
+                    String responseBody = Objects.requireNonNull(response.body()).string();
                     Platform.runLater(() ->
                             errorMessageProperty.set("Login failed: " + responseBody));
                     response.close();
@@ -114,6 +114,7 @@ public class WorkerLoginController {
                             e.printStackTrace();
                         }
                         finally {
+                            Objects.requireNonNull(response.body()).close();
                             response.close();
                         }
                     });

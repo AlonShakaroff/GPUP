@@ -30,6 +30,7 @@ import util.http.HttpClientUtil;
 import java.awt.*;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -203,6 +204,7 @@ public class DashboardController {
                         e.printStackTrace();
                     }
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
@@ -330,6 +332,7 @@ public class DashboardController {
                 Platform.runLater(() -> {
                     updateUsersLists(usersLists);
                 });
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
@@ -365,12 +368,12 @@ public class DashboardController {
                         if (responseBody != null) {
                             Set<String> taskList = gson.fromJson(responseBody.string(), Set.class);
                             Platform.runLater(() ->updateOnlineTasksList(taskList));
-                            responseBody.close();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });

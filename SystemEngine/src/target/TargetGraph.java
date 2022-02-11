@@ -112,9 +112,10 @@ public class TargetGraph implements Serializable {
     }
 
     public void refreshWaiting(){
-        allTargets.values().stream().filter(Target::isChosen).
-                filter(target -> (target.getRunStatus().equals(Target.Status.FROZEN))).
-                forEach(Target::setStatusWaitingIfNeeded);
+        for (Target target: allTargets.values().stream().filter(Target::isChosen).
+                filter(target -> (target.getRunStatus().equals(Target.Status.FROZEN))).collect(Collectors.toSet())) {
+            target.setStatusWaitingIfNeeded();
+        }
     }
 
     public void addTargetToGraph(Target target) {

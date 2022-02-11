@@ -103,6 +103,7 @@ public class AdminLoginController {
                         catch(Exception ignore) {}
                     });
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });

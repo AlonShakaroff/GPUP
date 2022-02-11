@@ -18,6 +18,7 @@ import util.http.HttpClientUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -113,6 +114,7 @@ public class WorkerTaskManager extends Thread {
                         System.out.println("json error: " + e.getMessage());
                     }
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });

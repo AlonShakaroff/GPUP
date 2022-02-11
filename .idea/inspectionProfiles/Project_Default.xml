@@ -6,5 +6,8 @@
         <language minSize="130" name="Java" />
       </Languages>
     </inspection_tool>
+    <inspection_tool class="JDBCResource" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="insideTryAllowed" value="false" />
+    </inspection_tool>
   </profile>
 </component>

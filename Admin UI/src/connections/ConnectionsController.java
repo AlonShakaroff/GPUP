@@ -37,6 +37,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -529,6 +530,7 @@ public class ConnectionsController {
                     String message = response.message();
                     Platform.runLater(() -> errorPopup(message));
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });

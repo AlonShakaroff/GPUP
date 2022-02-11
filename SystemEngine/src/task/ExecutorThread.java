@@ -92,6 +92,7 @@ public class ExecutorThread extends Thread{
             }
 
             GPUPTask curTask = tasksList.poll();
+            curTask.getTarget().updateData(tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTarget(curTask.getTarget().getName()));
             if (curTask.target.getTargetStatus().equals(Target.Status.FROZEN)) { // target is frozen
                 tasksList.addLast(curTask);
             } else {    // target is waiting (but maybe needs to be skipped)

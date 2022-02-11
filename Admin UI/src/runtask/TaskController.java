@@ -387,13 +387,13 @@ public class TaskController {
                     try {
                         if (responseBody != null) {
                             TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
-                            responseBody.close();
                             Platform.runLater(() ->displaySelectedTaskInfoFromDto(taskDetailsDto));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
