@@ -376,4 +376,8 @@ public class TargetGraph implements Serializable {
         target.setResult(targetForWorker.getTargetResult());
         target.setRunLog(targetForWorker.getRunLog());
     }
+
+    public Set<Target> getAllChosenTargets() {
+        return allTargets.values().stream().filter(Target::isChosen).collect(Collectors.toSet());
+    }
 }

@@ -8,6 +8,7 @@ import task.compilation.CompilationParameters;
 import task.compilation.CompilationTaskInformation;
 import task.simulation.SimulationParameters;
 import task.simulation.SimulationTaskInformation;
+import worker.taskmanagment.TaskHistoryDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,7 +22,11 @@ public class TasksManager {
     private static final Map<String, TaskDetailsDto> taskDetailsDTOMap = new HashMap<>();
     private static final Map<String, TaskForServerSide> taskForServerSideMap = new HashMap<>();
     private static final Map<String, ExecutorThread> taskExecutorThreadMap = new HashMap<>();
-    private static final LinkedList<GPUPTaskDto> tasksThatAreReadyForWorkersList = new LinkedList<GPUPTaskDto>();
+    private static final LinkedList<GPUPTaskDto> tasksThatAreReadyForWorkersList = new LinkedList<>();
+
+    /* The first key is the worker name, the second key is the task name, the value is the worker history with that task. */
+    private static final Map<String, Map<String, TaskHistoryDto>> tasksHistoryMapForWorker = new HashMap<>();
+
 
     public synchronized boolean isTaskExists(String taskName) {
         return simulationTasksMap.containsKey(taskName.toLowerCase()) || compilationTasksMap.containsKey(taskName.toLowerCase());
@@ -133,5 +138,16 @@ public class TasksManager {
 
     public ExecutorThread getTaskExecutorThread(String taskName) {
         return taskExecutorThreadMap.get(taskName);
+    }
+
+    public void createTaskHistoryForWorker(String workerName,String taskName) {
+        if(!tasksHistoryMapForWorker.containsKey(workerName))
+            tasksHistoryMapForWorker.put(workerName, new HashMap<>());
+        if(!tasksHistoryMapForWorker.get(workerName).containsKey(taskName))
+            tasksHistoryMapForWorker.get(workerName).put(taskName,new TaskHistoryDto(taskName));
+    }
+
+    public TaskHistoryDto getTaskHistoryForWorker(String workerName, String taskName) {
+        return tasksHistoryMapForWorker.get(workerName).get(taskName);
     }
 }

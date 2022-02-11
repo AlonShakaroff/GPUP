@@ -21,6 +21,7 @@ public class Constants {
     public final static String TASKS_LIST_PATH = FULL_SERVER_PATH + "/tasks/list";
     public final static String TASKS_OPERATION_PATH = FULL_SERVER_PATH + "/tasks/operation";
     public static final String WORKER_TASK_PAGE = FULL_SERVER_PATH + "/worker/task";
+    public static final String GET_TARGETS_PAGE = FULL_SERVER_PATH + "/tasks/getTargets";
 
 
     public final static String CLASSIC_SKIN_CSS = "/main/classic.css";

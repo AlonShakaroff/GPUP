@@ -7,15 +7,19 @@ public class TargetForWorker {
     private String runLog;
     private String extraData;
     private String taskName;
+    private String taskType;
     private Integer pricing;
+    private String nodeType;
 
 
-    public TargetForWorker(String name, String extraData, String taskName, Integer pricing) {
+    public TargetForWorker(String name, String extraData, String taskName,String taskType ,Integer pricing, String nodeType) {
         this.name = name;
         this.extraData = extraData;
         this.runLog = "";
         this.taskName = taskName;
+        this.taskType = taskType;
         this.pricing = pricing;
+        this.nodeType = nodeType;
     }
 
     public String getName() {
@@ -74,4 +78,6 @@ public class TargetForWorker {
         this.setTargetStatus(target.getRunStatus());
         this.setTargetResult(target.getRunResult());
     }
+
+    public String getNodeType() { return nodeType; }
 }

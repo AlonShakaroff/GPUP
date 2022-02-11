@@ -1,6 +1,7 @@
 package runtask.tableview;
 
 import target.Target;
+import target.TargetForWorker;
 
 import java.util.List;
 import java.util.Set;
@@ -11,10 +12,10 @@ public class TargetInfoTableItem {
     private Set<String> serialSets;
     private String status;
 
-    public TargetInfoTableItem(Target target) {
+    public TargetInfoTableItem(TargetForWorker target) {
         this.name = target.getName();
-        this.type = target.getNodeTypeAsString();
-        this.status = target.getRunStatusAsString();
+        this.type = target.getNodeType();
+        this.status = target.getStatus();
     }
 
     public String getName() {

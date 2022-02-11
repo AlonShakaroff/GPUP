@@ -62,21 +62,21 @@ public class ExecutorThread extends Thread{
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
                 if(this.taskType.equalsIgnoreCase("simulation"))
                     tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance,
-                            Target.extractTargetForWorkerFromTarget(target, taskName,
+                            Target.extractTargetForWorkerFromTarget(target, taskName, taskType,
                                     tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskPricing().get(TargetGraph.TaskType.SIMULATION))));
                 else /*compilation*/
                     tasksList.addFirst(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,
-                            Target.extractTargetForWorkerFromTarget(target, taskName,
+                            Target.extractTargetForWorkerFromTarget(target, taskName, taskType,
                                     tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskPricing().get(TargetGraph.TaskType.COMPILATION))));
             }
             else {
                 if(this.taskType.equalsIgnoreCase("simulation"))
                     tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance,
-                            Target.extractTargetForWorkerFromTarget(target, taskName,
+                            Target.extractTargetForWorkerFromTarget(target, taskName, taskType,
                                     tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskPricing().get(TargetGraph.TaskType.SIMULATION))));
                 else /*compilation*/
                     tasksList.addLast(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,
-                            Target.extractTargetForWorkerFromTarget(target, taskName,
+                            Target.extractTargetForWorkerFromTarget(target, taskName, taskType,
                                     tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskPricing().get(TargetGraph.TaskType.COMPILATION))));
             }
         }

@@ -343,8 +343,8 @@ public class Target implements Serializable, Cloneable {
         }
     }
 
-    public static TargetForWorker extractTargetForWorkerFromTarget(Target target,String taskName, Integer pricing) {
-        TargetForWorker targetForWorker = new TargetForWorker(target.getName(),target.getExtraData(),taskName,pricing);
+    public static TargetForWorker extractTargetForWorkerFromTarget(Target target,String taskName,String taskType, Integer pricing) {
+        TargetForWorker targetForWorker = new TargetForWorker(target.getName(),target.getExtraData(),taskName,taskType,pricing,target.getNodeType().name());
         targetForWorker.setTargetStatus(target.getRunStatus());
         targetForWorker.setTargetResult(target.getRunResult());
         return targetForWorker;

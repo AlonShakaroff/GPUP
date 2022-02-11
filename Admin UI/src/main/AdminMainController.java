@@ -362,6 +362,7 @@ public class AdminMainController {
     }
 
     public void setSceneToTask() {
+        taskController.clearTaskDataLists();
         this.mainChangingScene.setContent(runTaskComponent);
         runTaskButton.setSelected(true);
     }

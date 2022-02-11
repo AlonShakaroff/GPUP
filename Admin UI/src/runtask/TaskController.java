@@ -1,6 +1,7 @@
 package runtask;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import dashboard.tableitems.SelectedTaskStatusTableItem;
 import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.TaskDetailsDto;
@@ -29,12 +30,15 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import runtask.tableview.TargetInfoTableItem;
 import target.Target;
+import target.TargetForWorker;
 import target.TargetGraph;
 import util.http.HttpClientUtil;
 
 import javax.print.DocFlavor;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TaskController {
@@ -72,6 +76,8 @@ public class TaskController {
     private Integer currTaskAmountOfFinishedTargets = 0;
     private Boolean isTaskFinished = false;
     private Thread progressBarThread = null;
+    private Gson gson = new Gson();
+    private Set<TargetForWorker> targetsDtoSet = new HashSet<>();
 
     public TaskController() {
         isPaused = new SimpleBooleanProperty(false);
@@ -138,13 +144,14 @@ public class TaskController {
 
     }
     private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
-        Target selectedTarget = targetGraph.getTarget(selectedTargetString.split(" ")[0]);
+        TargetForWorker selectedTarget = targetsDtoSet.stream()
+                .filter(targetForWorker -> (targetForWorker.getName().equalsIgnoreCase(selectedTargetString.split(" ")[0]))).findFirst().orElse(null);
         targetInfoTableList.clear();
         targetInfoTableList.add(new TargetInfoTableItem(selectedTarget));
         TargetInfoTableView.setItems(targetInfoTableList);
 
         TargetInfoTextArea.clear();
-        statusUniqueDataDisplay(selectedTarget, selectedTarget.getRunStatus());
+        //statusUniqueDataDisplay(selectedTarget, selectedTarget.getRunStatus());
     }
 
     private void statusUniqueDataDisplay(Target selectedTarget, Target.Status status) {
@@ -155,7 +162,7 @@ public class TaskController {
                         .filter(Target::isChosen)
                         .filter(target ->  (target.getRunStatus().equals(Target.Status.FROZEN) ||
                                 target.getRunStatus().equals(Target.Status.WAITING) || target.getRunStatus().equals(Target.Status.IN_PROCESS)))
-                        .collect(Collectors.toList()).toString() + "\nto finish running successfully.";
+                        .collect(Collectors.toList()) + "\nto finish running successfully.";
 
                 break;
             case SKIPPED:
@@ -328,6 +335,10 @@ public class TaskController {
             }
 
         });
+
+        Thread dataRefresherThread = new Thread(this::refreshTaskData);
+        dataRefresherThread.setDaemon(true);
+        dataRefresherThread.start();
     }
 
     public void setTargetGraph(TargetGraph targetGraph) {
@@ -434,15 +445,16 @@ public class TaskController {
     /*-------------------------------------------------data refreshing thread------------------------------------------------------------------------------------*/
 
     private void refreshTaskData() {
+        refreshTaskDataLists();
         while(!getTaskFinished()){
-            refreshTaskDataLists();
+            if(!isPaused.get())
+                refreshTaskDataLists();
         }
         refreshTaskDataLists();
         Platform.runLater(()->{
             pauseTaskButton.setDisable(true);
             isPaused.setValue(false);
             stopTaskButton.setDisable(true);
-            isIncrementalPossible.set(true);
         });
 
         if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
@@ -457,42 +469,65 @@ public class TaskController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        updateTargetsDataFromServer();
+    }
 
-        Platform.runLater(()->{
-            clearTaskDataLists();
-            updateTaskDataLists();
-            this.FrozenListView.refresh();
-            this.SkippedListView.refresh();
-            this.WaitingListView.refresh();
-            this.InProcessListView.refresh();
-            this.FinishedListView.refresh();
+    public void updateTargetsDataFromServer() {
+        String finalUrl = HttpUrl
+                .parse(Constants.GET_TARGETS_PAGE)
+                .newBuilder()
+                .addQueryParameter("taskName", mainController.getTaskName())
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        targetsDtoSet = gson.fromJson(Objects.requireNonNull(response.body()).string(),
+                                new TypeToken<Set<TargetForWorker>>(){}.getType());
+                        Objects.requireNonNull(response.body()).close();
+                        Platform.runLater(()->{
+                            clearTaskDataLists();
+                            updateTaskDataLists();
+                        });
+                        response.close();
+                    }
         });
+
     }
 
     private void updateTaskDataLists() {
-        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
-                .filter(target -> target.getRunStatus().equals(Target.Status.FROZEN)).collect(Collectors.toSet())) {
+        for (TargetForWorker target : targetsDtoSet.stream().filter(target -> target.getTargetStatus().equals(Target.Status.FROZEN)).collect(Collectors.toSet())) {
             frozenTargetsNameList.add(target.getName());
         }
-        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
-                .filter(target -> target.getRunStatus().equals(Target.Status.SKIPPED)).collect(Collectors.toSet())) {
+        for (TargetForWorker target : targetsDtoSet.stream().filter(target -> target.getTargetStatus().equals(Target.Status.SKIPPED)).collect(Collectors.toSet())) {
             skippedTargetsNameList.add(target.getName());
         }
-        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
-                .filter(target -> target.getRunStatus().equals(Target.Status.WAITING)).collect(Collectors.toSet())) {
+        for (TargetForWorker target : targetsDtoSet.stream().filter(target -> target.getTargetStatus().equals(Target.Status.WAITING)).collect(Collectors.toSet())) {
             waitingTargetsNameList.add(target.getName());
         }
-        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
-                .filter(target -> target.getRunStatus().equals(Target.Status.IN_PROCESS)).collect(Collectors.toSet())) {
+        for (TargetForWorker target : targetsDtoSet.stream().filter(target -> target.getTargetStatus().equals(Target.Status.IN_PROCESS)).collect(Collectors.toSet())) {
             inProcessTargetsNameList.add(target.getName());
         }
-        for (Target target: targetGraph.getAllTargets().values().stream().filter(Target::isChosen)
-                .filter(target -> target.getRunStatus().equals(Target.Status.FINISHED)).collect(Collectors.toSet())) {
-            finishedTargetsNameList.add(target.getName() + " - " +  target.getRunResultAsString());
+        for (TargetForWorker target : targetsDtoSet.stream().filter(target -> target.getTargetStatus().equals(Target.Status.FINISHED)).collect(Collectors.toSet())) {
+            finishedTargetsNameList.add(target.getName() + " - " +  target.getResult());
         }
+
+        if((finishedTargetsNameList.size() + skippedTargetsNameList.size()) == targetsDtoSet.size())
+            setTaskFinished(true);
+
+        frozenTargetsNameList.sort(String::compareTo);
+        skippedTargetsNameList.sort(String::compareTo);
+        waitingTargetsNameList.sort(String::compareTo);
+        inProcessTargetsNameList.sort(String::compareTo);
+        finishedTargetsNameList.sort(String::compareTo);
     }
 
-    private void clearTaskDataLists() {
+    public void clearTaskDataLists() {
         frozenTargetsNameList.clear();
         skippedTargetsNameList.clear();
         waitingTargetsNameList.clear();
