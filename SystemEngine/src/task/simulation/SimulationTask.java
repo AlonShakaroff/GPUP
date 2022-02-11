@@ -50,7 +50,7 @@ public class SimulationTask extends GPUPTask {
 
 
 
-            target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " woke up with result: " + target.getResult().toString() + "\n\n"));
+            target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " woke up with result: " + target.getTargetResult().toString() + "\n\n"));
 
             target.setStatus(Target.Status.FINISHED);
 

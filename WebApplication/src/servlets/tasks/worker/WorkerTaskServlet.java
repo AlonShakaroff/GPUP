@@ -15,7 +15,6 @@ import utils.ServletUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Locale;
 import java.util.Set;
 
 @WebServlet(name = "WorkerTaskServlet", urlPatterns = "/worker/task")
@@ -43,7 +42,7 @@ public class WorkerTaskServlet extends HttpServlet {
             TargetForWorker targetForWorker = gson.fromJson(req.getReader(), TargetForWorker.class);
 
             tasksManager.updateTargetsStatusAndResult(targetForWorker);
-            if(targetForWorker.getStatus() != Target.Status.SKIPPED)
+            if(targetForWorker.getTargetStatus() != Target.Status.SKIPPED)
                 userManager.getWorkerDetailsDto(req.getHeader("workerName").toLowerCase()).addCredits(targetForWorker.getPricing());
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }

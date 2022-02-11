@@ -526,8 +526,10 @@ public class ConnectionsController {
                     responseBody.close();
                 } else //Failed
                 {
-                    Platform.runLater(() -> errorPopup(response.message()));
+                    String message = response.message();
+                    Platform.runLater(() -> errorPopup(message));
                 }
+                response.close();
             }
         });
     }
@@ -596,10 +598,13 @@ public class ConnectionsController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
-                if(!(response.code() >= 200 && response.code() < 300))
-                    Platform.runLater(() -> errorPopup(response.header("message")));
+                if(!(response.code() >= 200 && response.code() < 300)) {
+                    String message = response.header("message");
+                    Platform.runLater(() -> errorPopup(message));
+                }
                 else // created task successfully
                    Platform.runLater(()-> mainController.setSceneToDashboardAndExpandTaskTitledPane());
+                response.close();
             }
         });
     }

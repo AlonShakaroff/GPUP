@@ -84,6 +84,7 @@ public class WorkerLoginController {
                     String responseBody = response.body().string();
                     Platform.runLater(() ->
                             errorMessageProperty.set("Login failed: " + responseBody));
+                    response.close();
                 } else {
                     Platform.runLater(() -> {
                         try{
@@ -111,6 +112,9 @@ public class WorkerLoginController {
                         }
                         catch(Exception e) {
                             e.printStackTrace();
+                        }
+                        finally {
+                            response.close();
                         }
                     });
                 }

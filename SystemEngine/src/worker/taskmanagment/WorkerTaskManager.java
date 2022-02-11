@@ -53,6 +53,10 @@ public class WorkerTaskManager extends Thread {
     @Override
     public void run() {
         while(true) {
+            try {
+                Thread.sleep(500);
+            }
+            catch (Exception ignore) {}
             if(!isThreadPoolFull() && amountOfTasksRegisteredTo > 0) {
                 getGPUPTaskToRunFromServer();
             }
@@ -84,12 +88,14 @@ public class WorkerTaskManager extends Thread {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
                     Gson gson = new Gson();
-                    GPUPTask gpupTask = gson.fromJson(response.message(), GPUPTask.class);
+                    String gpupTaskJson = response.body().string();
+                    GPUPTask gpupTask = gson.fromJson(gpupTaskJson, GPUPTask.class);
                     if(gpupTask != null) {
                         gpupTask.setWorkerName(workerName);
                         threadPool.execute(gpupTask);
                     }
                 }
+                response.close();
             }
         });
     }

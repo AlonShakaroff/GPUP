@@ -88,14 +88,14 @@ public class ExecutorThread extends Thread{
             }
 
             GPUPTask curTask = tasksList.poll();
-            if (curTask.target.getStatus().equals(Target.Status.FROZEN)) { // target is frozen
+            if (curTask.target.getTargetStatus().equals(Target.Status.FROZEN)) { // target is frozen
                 tasksList.addLast(curTask);
             } else {    // target is waiting (but maybe needs to be skipped)
                 Target curTarget = targetGraph.getTarget(curTask.getTarget().getName());
                 curTarget.checkIfNeedsToBeSkipped();
                 curTask.getTarget().setResult(curTarget.getRunResult());
                 curTask.getTarget().setStatus(curTarget.getRunStatus());
-                if (curTask.getTarget().getStatus().equals(Target.Status.SKIPPED)) {
+                if (curTask.getTarget().getTargetStatus().equals(Target.Status.SKIPPED)) {
                         curTask.getTarget().setRunLog(curTask.getTarget().getRunLog().concat("Target " + curTask.getTarget().getName() +
                             " is skipped because " + curTarget.getResponsibleTargets().toString() + " failed \n\n"));
                 } else {

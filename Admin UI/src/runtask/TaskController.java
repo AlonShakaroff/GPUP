@@ -322,6 +322,7 @@ public class TaskController {
                         createNewProgressBar();
                     });
                 }
+                response.close();
             }
 
         });
@@ -379,22 +380,19 @@ public class TaskController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
-                    Platform.runLater(() ->
-                            {
-                                Gson gson = new Gson();
-                                ResponseBody responseBody = response.body();
-                                try {
-                                    if (responseBody != null) {
-                                        TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
-                                        responseBody.close();
-                                        displaySelectedTaskInfoFromDto(taskDetailsDto);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
+                    ResponseBody responseBody = response.body();
+                    Gson gson = new Gson();
+                    try {
+                        if (responseBody != null) {
+                            TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
+                            responseBody.close();
+                            Platform.runLater(() ->displaySelectedTaskInfoFromDto(taskDetailsDto));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                response.close();
             }
         });
     }
@@ -453,7 +451,7 @@ public class TaskController {
     }
     private void refreshTaskDataLists() {
         try {
-            Thread.sleep(20);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -508,8 +506,8 @@ public class TaskController {
                 updateProgressFromServer();
                 while(currTaskAmountOfFinishedTargets < currTaskAmountOfChosenTargets)
                 {
-                    Thread.sleep(200);
-
+                    Thread.sleep(300);
+                    updateProgressFromServer();
                     updateProgress(currTaskAmountOfFinishedTargets, currTaskAmountOfChosenTargets);
                 }
                 updateProgress(currTaskAmountOfFinishedTargets, currTaskAmountOfChosenTargets);
@@ -561,6 +559,7 @@ public class TaskController {
                         currTaskAmountOfFinishedTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfFinishedOrSkipped"))));
                         isTaskFinished = (Boolean.parseBoolean(response.header("isFinished")));
                 }
+                response.close();
             }
         });
     }
