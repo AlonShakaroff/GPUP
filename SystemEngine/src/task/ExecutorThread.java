@@ -1,5 +1,8 @@
 package task;
 
+import dtos.CompilationTaskDto;
+import dtos.GPUPTaskDto;
+import dtos.SimulationTaskDto;
 import target.Target;
 import target.TargetGraph;
 import task.compilation.CompilationTask;
@@ -10,7 +13,6 @@ import java.time.Instant;
 import java.util.*;
 
 public class ExecutorThread extends Thread{
-    private final TargetGraph targetGraph;
     private final LinkedList<GPUPTask> tasksList;
     private final String taskName;
     private final String taskType;
@@ -30,25 +32,23 @@ public class ExecutorThread extends Thread{
     public Boolean isPauseDummy = false;
     /*-----------------------------------------------------------------------*/
 
-    public ExecutorThread(TargetGraph targetGraph, String taskName, double warningChance, double successChance,
+    public ExecutorThread( String taskName, double warningChance, double successChance,
                           boolean isRandom, int processTimeInMS, boolean isIncremental, TasksManager tasksManager){
-        this.targetGraph = targetGraph;
         this.taskName = taskName;
         this.warningChance = warningChance;
         this.successChance = successChance;
         this.isRandom = isRandom;
         this.processTimeInMS = processTimeInMS;
-        this.tasksList = new LinkedList<>();
+        this.tasksList = new LinkedList<GPUPTask>();
         this.tasksManager = tasksManager;
         this.taskType = "simulation";
         initTasksList(isIncremental);
     }
 
-    public ExecutorThread(TargetGraph targetGraph, String taskName, String SourceFolderPath,
+    public ExecutorThread(String taskName, String SourceFolderPath,
                           String DestFolderPath, boolean isIncremental, TasksManager tasksManager) {
         this.isStopped = false;
-        this.targetGraph = targetGraph;
-        this.tasksList = new LinkedList<>();
+        this.tasksList = new LinkedList<GPUPTask>();
         this.taskName = taskName;
         this.SourceFolderPath = SourceFolderPath;
         this.DestFolderPath = DestFolderPath;
@@ -58,30 +58,34 @@ public class ExecutorThread extends Thread{
     }
     private void initTasksList(boolean isIncremental){
         tasksList.clear();
-        for(Target target : targetGraph.getTargetsToRunOnAndResetExtraData(isIncremental)) {
+        for(Target target : tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTargetsToRunOnAndResetExtraData(isIncremental)) {
             if (target.getRunStatus().equals(Target.Status.WAITING)) {
                 if(this.taskType.equalsIgnoreCase("simulation"))
                     tasksList.addFirst(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance,
-                            Target.extractTargetForWorkerFromTarget(target, taskName,targetGraph.getTaskPricing().get(TargetGraph.TaskType.SIMULATION))));
+                            Target.extractTargetForWorkerFromTarget(target, taskName,
+                                    tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskPricing().get(TargetGraph.TaskType.SIMULATION))));
                 else /*compilation*/
                     tasksList.addFirst(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,
-                            Target.extractTargetForWorkerFromTarget(target, taskName,targetGraph.getTaskPricing().get(TargetGraph.TaskType.COMPILATION))));
+                            Target.extractTargetForWorkerFromTarget(target, taskName,
+                                    tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskPricing().get(TargetGraph.TaskType.COMPILATION))));
             }
             else {
                 if(this.taskType.equalsIgnoreCase("simulation"))
                     tasksList.addLast(new SimulationTask(taskName, processTimeInMS, isRandom, successChance, warningChance,
-                            Target.extractTargetForWorkerFromTarget(target, taskName,targetGraph.getTaskPricing().get(TargetGraph.TaskType.SIMULATION))));
+                            Target.extractTargetForWorkerFromTarget(target, taskName,
+                                    tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskPricing().get(TargetGraph.TaskType.SIMULATION))));
                 else /*compilation*/
                     tasksList.addLast(new CompilationTask(taskName, SourceFolderPath, DestFolderPath,
-                            Target.extractTargetForWorkerFromTarget(target, taskName, targetGraph.getTaskPricing().get(TargetGraph.TaskType.COMPILATION))));
+                            Target.extractTargetForWorkerFromTarget(target, taskName,
+                                    tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskPricing().get(TargetGraph.TaskType.COMPILATION))));
             }
         }
     }
 
     @Override
     public void run() {
-        targetGraph.setTaskStartTime(Instant.now());
-        targetGraph.getAllTargets().values().forEach(Target::setStartTimeInCurState);
+        tasksManager.getTaskForServerSide(taskName).getTargetGraph().setTaskStartTime(Instant.now());
+        tasksManager.getTaskForServerSide(taskName).getTargetGraph().getAllTargets().values().forEach(Target::setStartTimeInCurState);
         while (!tasksList.isEmpty()) {
             if (isStopped) { // break if stopped
                 break;
@@ -91,21 +95,32 @@ public class ExecutorThread extends Thread{
             if (curTask.target.getTargetStatus().equals(Target.Status.FROZEN)) { // target is frozen
                 tasksList.addLast(curTask);
             } else {    // target is waiting (but maybe needs to be skipped)
-                Target curTarget = targetGraph.getTarget(curTask.getTarget().getName());
+                Target curTarget = tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTarget(curTask.getTarget().getName());
                 curTarget.checkIfNeedsToBeSkipped();
-                curTask.getTarget().setResult(curTarget.getRunResult());
-                curTask.getTarget().setStatus(curTarget.getRunStatus());
+                curTask.getTarget().setTargetResult(curTarget.getRunResult());
+                curTask.getTarget().setTargetStatus(curTarget.getRunStatus());
                 if (curTask.getTarget().getTargetStatus().equals(Target.Status.SKIPPED)) {
                         curTask.getTarget().setRunLog(curTask.getTarget().getRunLog().concat("Target " + curTask.getTarget().getName() +
                             " is skipped because " + curTarget.getResponsibleTargets().toString() + " failed \n\n"));
                 } else {
-                     tasksManager.addTaskReadyForWorker(curTask);
+                    if(curTask.getTaskType().equalsIgnoreCase("simulation")) {
+                        SimulationTask simulationTask = (SimulationTask)curTask;
+                        SimulationTaskDto simulationTaskDto = new SimulationTaskDto(simulationTask);
+                        tasksManager.addTaskReadyForWorker(simulationTaskDto);
+                    }
+                    else //compilation
+                    {
+                        CompilationTask compilationTask = (CompilationTask)curTask;
+                        CompilationTaskDto compilationTaskDto = new CompilationTaskDto(compilationTask);
+                        tasksManager.addTaskReadyForWorker(compilationTaskDto);
+                    }
                 }
             }
-            targetGraph.refreshWaiting();
+            tasksManager.getTaskForServerSide(taskName).getTargetGraph().refreshWaiting();
         }
-        targetGraph.setTaskEndTime(Instant.now());
-        targetGraph.setTotalTaskDuration(Duration.between(targetGraph.getTaskStartTime(), targetGraph.getTaskEndTime()));
+        tasksManager.getTaskForServerSide(taskName).getTargetGraph().setTaskEndTime(Instant.now());
+        tasksManager.getTaskForServerSide(taskName).getTargetGraph().
+                setTotalTaskDuration(Duration.between(tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskStartTime(), tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskEndTime()));
         tasksManager.getTaskForServerSide(taskName).setTaskStatus("Finished");
     }
 
@@ -132,9 +147,5 @@ public class ExecutorThread extends Thread{
 
     public Boolean getIsPauseDummy() {
         return isPauseDummy;
-    }
-
-    public TargetGraph getTargetGraph() {
-        return targetGraph;
     }
 }

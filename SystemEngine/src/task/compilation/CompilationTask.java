@@ -1,5 +1,6 @@
 package task.compilation;
 
+import dtos.CompilationTaskDto;
 import target.Target;
 import target.TargetForWorker;
 import target.TargetGraph;
@@ -23,6 +24,12 @@ public class CompilationTask extends GPUPTask {
         this.destinationPath = destinationFilePath;
     }
 
+    public CompilationTask(CompilationTaskDto compilationTaskDto) {
+        super(compilationTaskDto);
+        this.sourceFolderPath = compilationTaskDto.getSourceFolderPath();
+        this.destinationPath = compilationTaskDto.getDestinationPath();
+    }
+
     @Override
     public void run() {
 
@@ -30,7 +37,7 @@ public class CompilationTask extends GPUPTask {
         String javaFilePath = sourceFolderPath + FQNToPath + ".java";
         try {
             Instant targetTaskBegin = Instant.now();
-            target.setStatus(Target.Status.IN_PROCESS);
+            target.setTargetStatus(Target.Status.IN_PROCESS);
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " is starting compilation\n\n"));
 
             ProcessBuilder processBuilder = new ProcessBuilder("javac", "-d", destinationPath, "-cp", destinationPath, javaFilePath);
@@ -40,11 +47,11 @@ public class CompilationTask extends GPUPTask {
             int code = process.waitFor();
 
             if (code == 0) {
-                target.setResult(Target.Result.SUCCESS);
+                target.setTargetResult(Target.Result.SUCCESS);
                 target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " compiled successfully with compilation time of: " +
                         TargetGraph.getDurationAsString(Duration.between(targetTaskBegin, Instant.now())) + "\n\n"));
             } else {
-                target.setResult(Target.Result.FAILURE);
+                target.setTargetResult(Target.Result.FAILURE);
                 String errorMsg = "";
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 for (String errorLine:bufferedReader.lines().collect(Collectors.toList())) {
@@ -55,14 +62,22 @@ public class CompilationTask extends GPUPTask {
                         "error message:\n" + finalErrorMsg + "\n\n"));
 
             }
-            target.setStatus(Target.Status.FINISHED);
+            target.setTargetStatus(Target.Status.FINISHED);
         }catch (Exception exception) {
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " was interrupted!\n\n"));
-            target.setStatus(Target.Status.SKIPPED);
-            target.setResult(Target.Result.SKIPPED);
+            target.setTargetStatus(Target.Status.SKIPPED);
+            target.setTargetResult(Target.Result.SKIPPED);
         }
         finally{
             uploadTaskResultToServer();
         }
+    }
+
+    public String getSourceFolderPath() {
+        return sourceFolderPath;
+    }
+
+    public String getDestinationPath() {
+        return destinationPath;
     }
 }

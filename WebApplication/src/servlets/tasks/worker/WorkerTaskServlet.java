@@ -1,6 +1,9 @@
 package servlets.tasks.worker;
 
 import com.google.gson.Gson;
+import dtos.CompilationTaskDto;
+import dtos.GPUPTaskDto;
+import dtos.SimulationTaskDto;
 import dtos.WorkerDetailsDto;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,6 +13,7 @@ import target.Target;
 import target.TargetForWorker;
 import task.GPUPTask;
 import task.TasksManager;
+import task.simulation.SimulationTask;
 import users.UserManager;
 import utils.ServletUtils;
 
@@ -32,8 +36,18 @@ public class WorkerTaskServlet extends HttpServlet {
         if(req.getParameter("getTaskToDo") != null)
         {
             Set<String> signedToTasks = gson.fromJson(req.getReader(), Set.class);
-            GPUPTask gpupTask = tasksManager.pollTaskReadyForWorker(signedToTasks);
-            String gpupTaskJson = gson.toJson(gpupTask, GPUPTask.class);
+            GPUPTaskDto gpupTaskDto = tasksManager.pollTaskReadyForWorker(signedToTasks);
+            String gpupTaskJson = null;
+            if(gpupTaskDto != null) {
+                if (gpupTaskDto.getTaskType().equalsIgnoreCase("simulation")) {
+                    gpupTaskJson = gson.toJson(gpupTaskDto, SimulationTaskDto.class);
+                    resp.addHeader("taskType", "simulation");
+                }
+                if (gpupTaskDto.getTaskType().equalsIgnoreCase("compilation")) {
+                    gpupTaskJson = gson.toJson(gpupTaskDto, CompilationTaskDto.class);
+                    resp.addHeader("taskType", "compilation");
+                }
+            }
             out.write(gpupTaskJson);
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         }

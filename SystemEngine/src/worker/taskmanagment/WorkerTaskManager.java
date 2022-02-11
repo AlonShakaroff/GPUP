@@ -1,12 +1,18 @@
 package worker.taskmanagment;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import dtos.CompilationTaskDto;
+import dtos.GPUPTaskDto;
+import dtos.SimulationTaskDto;
 import javafx.application.Platform;
 import main.WorkerMainController;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import task.GPUPTask;
+import task.compilation.CompilationTask;
+import task.simulation.SimulationTask;
 import util.http.HttpClientUtil;
 
 import java.io.File;
@@ -88,11 +94,23 @@ public class WorkerTaskManager extends Thread {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
                     Gson gson = new Gson();
-                    String gpupTaskJson = response.body().string();
-                    GPUPTask gpupTask = gson.fromJson(gpupTaskJson, GPUPTask.class);
-                    if(gpupTask != null) {
-                        gpupTask.setWorkerName(workerName);
-                        threadPool.execute(gpupTask);
+                    String gpupTaskDtoJson = response.body().string();
+                    try {
+                        if(response.header("taskType").equalsIgnoreCase("simulation"))
+                        {
+                            SimulationTaskDto simulationTaskDto = gson.fromJson(gpupTaskDtoJson,SimulationTaskDto.class);
+                            if(simulationTaskDto != null)
+                                threadPool.execute(new SimulationTask(simulationTaskDto));
+                        }
+                        else if(response.header("taskType").equalsIgnoreCase("compilation"))
+                        {
+                            CompilationTaskDto compilationTaskDto = gson.fromJson(gpupTaskDtoJson,CompilationTaskDto.class);
+                            if(compilationTaskDto != null)
+                                threadPool.execute(new CompilationTask(compilationTaskDto));
+                        }
+                    }
+                    catch (Exception e) {
+                        System.out.println("json error: " + e.getMessage());
                     }
                 }
                 response.close();

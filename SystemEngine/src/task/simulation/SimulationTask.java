@@ -1,5 +1,6 @@
 package task.simulation;
 
+import dtos.SimulationTaskDto;
 import target.Target;
 import target.TargetForWorker;
 import task.GPUPTask;
@@ -24,10 +25,19 @@ public class SimulationTask extends GPUPTask {
         this.random = new Random();
     }
 
+    public SimulationTask(SimulationTaskDto simulationTaskDto) {
+        super(simulationTaskDto);
+        this.processTimeInMS = simulationTaskDto.getProcessTimeInMS();
+        this.isRandom = simulationTaskDto.isRandom();
+        this.successChance = simulationTaskDto.getSuccessChance();
+        this.warningChance = simulationTaskDto.getWarningChance();
+        this.random = simulationTaskDto.getRandom();
+    }
+
     @Override
     public void run() {
         try {
-            target.setStatus(Target.Status.IN_PROCESS);
+            target.setTargetStatus(Target.Status.IN_PROCESS);
             int runTime;
             double randSuccess = random.nextDouble();
             double randWarning = random.nextDouble();
@@ -42,25 +52,46 @@ public class SimulationTask extends GPUPTask {
             Thread.sleep(runTime);
 
             if (randSuccess > successChance) {
-                target.setResult(Target.Result.FAILURE);
+                target.setTargetResult(Target.Result.FAILURE);
             } else if (randWarning < warningChance)
-                target.setResult(Target.Result.WARNING);
+                target.setTargetResult(Target.Result.WARNING);
             else
-                target.setResult(Target.Result.SUCCESS);
+                target.setTargetResult(Target.Result.SUCCESS);
 
 
 
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " woke up with result: " + target.getTargetResult().toString() + "\n\n"));
 
-            target.setStatus(Target.Status.FINISHED);
+            target.setTargetStatus(Target.Status.FINISHED);
 
         } catch (InterruptedException exception) {
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " was interrupted! \n\n"));
-            target.setStatus(Target.Status.SKIPPED);
-            target.setResult(Target.Result.SKIPPED);
+            target.setTargetStatus(Target.Status.SKIPPED);
+            target.setTargetResult(Target.Result.SKIPPED);
         }
         finally{
             uploadTaskResultToServer();
         }
     }
+
+    public int getProcessTimeInMS() {
+        return processTimeInMS;
+    }
+
+    public boolean isRandom() {
+        return isRandom;
+    }
+
+    public double getSuccessChance() {
+        return successChance;
+    }
+
+    public double getWarningChance() {
+        return warningChance;
+    }
+
+    public Random getRandom() {
+        return random;
+    }
+
 }

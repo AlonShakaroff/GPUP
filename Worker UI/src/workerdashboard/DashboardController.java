@@ -197,7 +197,7 @@ public class DashboardController {
                         if (responseBody != null) {
                             TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
                             responseBody.close();
-                            Platform.runLater(() ->displaySelectedTaskInfoFromDto(taskDetailsDto));
+                            Platform.runLater(() -> displaySelectedTaskInfoFromDto(taskDetailsDto));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -207,6 +207,7 @@ public class DashboardController {
             }
         });
     }
+
 
     private void displaySelectedTaskInfoFromDto(TaskDetailsDto taskDetailsDto) {
         this.TaskNameTextField.setText(taskDetailsDto.getTaskName());
@@ -266,44 +267,46 @@ public class DashboardController {
 
     private void getCreditsEarnedAntRegisteredTasks() {
 
-        String finalUrl = HttpUrl
-                .parse(WorkersConstants.GET_WORKER_PAGE)
-                .newBuilder()
-                .addQueryParameter("workerName", userName)
-                .build()
-                .toString();
+            String finalUrl = HttpUrl
+                    .parse(WorkersConstants.GET_WORKER_PAGE)
+                    .newBuilder()
+                    .addQueryParameter("workerName", userName)
+                    .build()
+                    .toString();
 
-        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            }
+            HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                }
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() >= 200 && response.code() < 300) //Success
-                {
-                    ResponseBody responseBody = response.body();
-                    Gson gson = new Gson();
-                    try {
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() >= 200 && response.code() < 300) //Success
+                    {
+                        ResponseBody responseBody = response.body();
+                        Gson gson = new Gson();
                         if (responseBody != null) {
-                            WorkerDetailsDto workerDetailsDto = gson.fromJson(responseBody.string(), WorkerDetailsDto.class);
-                            responseBody.close();
                             Platform.runLater(() -> {
-                                creditsEarned = workerDetailsDto.getEarnedCredits();
-                                CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
-                                CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
-                                RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
+                                try {
+                                    WorkerDetailsDto workerDetailsDto = gson.fromJson(responseBody.string(), WorkerDetailsDto.class);
+                                    responseBody.close();
+                                    creditsEarned = workerDetailsDto.getEarnedCredits();
+                                    CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
+                                    CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
+                                    RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    response.close();
+                                }
                             });
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                response.close();
-            }
-        });
 
-    }
+                    } else
+                        response.close();
+                }
+            });
+        }
 
     private void getUsersLists() {
         String finalUrl = HttpUrl
