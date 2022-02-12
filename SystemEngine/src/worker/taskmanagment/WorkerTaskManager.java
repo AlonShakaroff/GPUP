@@ -100,14 +100,18 @@ public class WorkerTaskManager extends Thread {
                         if(response.header("taskType").equalsIgnoreCase("simulation"))
                         {
                             SimulationTaskDto simulationTaskDto = gson.fromJson(gpupTaskDtoJson,SimulationTaskDto.class);
-                            if(simulationTaskDto != null)
+                            if(simulationTaskDto != null) {
+                                simulationTaskDto.setWorkerName(workerName);
                                 threadPool.execute(new SimulationTask(simulationTaskDto));
+                            }
                         }
                         else if(response.header("taskType").equalsIgnoreCase("compilation"))
                         {
                             CompilationTaskDto compilationTaskDto = gson.fromJson(gpupTaskDtoJson,CompilationTaskDto.class);
-                            if(compilationTaskDto != null)
+                            if(compilationTaskDto != null) {
+                                compilationTaskDto.setWorkerName(workerName);
                                 threadPool.execute(new CompilationTask(compilationTaskDto));
+                            }
                         }
                     }
                     catch (Exception e) {

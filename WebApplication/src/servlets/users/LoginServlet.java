@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import task.TasksManager;
 import users.UserManager;
 import utils.ServletUtils;
 
@@ -29,6 +30,7 @@ public class LoginServlet extends HttpServlet {
         userName = userName.toLowerCase();
 
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        TasksManager tasksManager = ServletUtils.getTasksManager(getServletContext());
         resp.setContentType("text/plain");
         if(userManager.isUserExists(userName)){
             resp.getWriter().println("The chosen user name is taken");
@@ -40,6 +42,7 @@ public class LoginServlet extends HttpServlet {
                 userManager.addAdmin(userName);
             else {
                 userManager.addWorker(userName);
+                tasksManager.addWorker(userName);
                 Gson gson = new Gson();
                 WorkerDetailsDto workerDetailsDto = userManager.getWorkerDetailsDto(userName);
                 String workerDetailsDtoJson = gson.toJson(workerDetailsDto,WorkerDetailsDto.class);

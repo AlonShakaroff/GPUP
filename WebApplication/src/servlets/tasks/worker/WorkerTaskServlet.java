@@ -61,7 +61,7 @@ public class WorkerTaskServlet extends HttpServlet {
             TargetForWorker targetForWorker = gson.fromJson(request.getReader(), TargetForWorker.class);
             String workerName = request.getHeader("workerName").toLowerCase();
             tasksManager.updateTargetsStatusAndResult(targetForWorker);
-            if(targetForWorker.getTargetStatus() != Target.Status.SKIPPED) {
+            if(targetForWorker.getTargetStatus() == Target.Status.FINISHED) {
                 userManager.getWorkerDetailsDto(workerName).addCredits(targetForWorker.getPricing());
                 tasksManager.getTaskHistoryForWorker(workerName
                         ,targetForWorker.getTaskName()).addTargetDone();
@@ -111,7 +111,7 @@ public class WorkerTaskServlet extends HttpServlet {
         }
         else if(request.getParameter("workerName") != null){
             String workerName = request.getParameter("workerName");
-            Set<String> targetForWorkerSet = new HashSet<>(tasksManager.getWorkerTargetMap(workerName).keySet());
+            Set<String> targetForWorkerSet = tasksManager.getWorkerTargetSet(workerName);
             String targetForWorkerSetJson = gson.toJson(targetForWorkerSet);
             out.write(targetForWorkerSetJson);
         }

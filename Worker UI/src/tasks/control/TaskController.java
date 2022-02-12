@@ -57,8 +57,8 @@ public class TaskController {
         };
 
         currentSelectedTargetListListener = change -> {
-          displaySelectedTargetInfo();
-          isTargetSelected.setValue(change.getList().size() != 0);
+            isTargetSelected.setValue(change.getList().size() != 0);
+            displaySelectedTargetInfo();
         };
     }
 
@@ -173,12 +173,14 @@ public class TaskController {
     }
 
     public void refreshData() {
-        try{
-            Thread.sleep(1000);
+        while (refreshDataThread.isAlive()) {
+            try {
+                Thread.sleep(1000);
+            } catch (Exception ignore) {
+            }
+            refreshMyTasksList();
+            refreshMyTargetsList();
         }
-        catch (Exception ignore) {}
-        refreshMyTasksList();
-        refreshMyTargetsList();
     }
 
     public void refreshMyTargetsList() {
@@ -214,8 +216,9 @@ public class TaskController {
 
     private void updateTargetList(Set<String> targetList) {
         for (String target: targetList) {
-            if(!registeredTasksList.contains(target))
-                registeredTasksList.add(target);
+            if(!usersTargetList.contains(target))
+                usersTargetList.add(target);
+            displaySelectedTargetInfo();
         }
     }
 
@@ -252,7 +255,7 @@ public class TaskController {
     }
 
     private void updateTasksList(Set<String> taskList) {
-        registeredTasksList.removeIf(task -> !taskList.contains(task));
+//        registeredTasksList.removeIf(task -> !taskList.contains(task));
         for (String task: taskList) {
             if(!registeredTasksList.contains(task))
                 registeredTasksList.add(task);

@@ -32,6 +32,12 @@ public class TasksManager {
     /* The first key is the worker name, the second key is the target name, the value is the target's dto.*/
     private static final Map<String, Map<String, TargetForWorker>> workersTargetMaps = new HashMap<>();
 
+    public void addWorker (String workerName){
+        if (!workersTargetMaps.containsKey(workerName))
+            workersTargetMaps.put(workerName,new HashMap<>());
+        if (!tasksHistoryMapForWorker.containsKey(workerName))
+            tasksHistoryMapForWorker.put(workerName, new HashMap<>());
+    }
 
     public synchronized boolean isTaskExists(String taskName) {
         return simulationTasksMap.containsKey(taskName.toLowerCase()) || compilationTasksMap.containsKey(taskName.toLowerCase());
@@ -164,6 +170,10 @@ public class TasksManager {
 
     public Map<String,TargetForWorker> getWorkerTargetMap(String workerName) {
         return workersTargetMaps.get(workerName);
+    }
+    public Set<String> getWorkerTargetSet(String workerName){
+        Set<String> targetsSet = workersTargetMaps.get(workerName).keySet();
+        return targetsSet;
     }
 
     public TargetForWorker getTargetFromWorkerMap(String workerName, String targetId) {

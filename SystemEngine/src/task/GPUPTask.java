@@ -2,7 +2,6 @@ package task;
 
 import com.google.gson.Gson;
 import dtos.GPUPTaskDto;
-import javafx.application.Platform;
 import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +54,7 @@ public abstract class GPUPTask implements Runnable{
         return sdfDate.format(now);
     }
 
-    protected void uploadTaskResultToServer() {
+    protected void uploadTaskStatusToServer() {
         Gson gson = new Gson();
         String targetForWorkerJson = gson.toJson(this.target,TargetForWorker.class);
         RequestBody body = RequestBody.create(targetForWorkerJson,MediaType.parse("application/json"));
@@ -70,7 +69,7 @@ public abstract class GPUPTask implements Runnable{
         HttpClientUtil.runAsyncWithRequest(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                uploadTaskResultToServer();
+                uploadTaskStatusToServer();
             }
 
             @Override

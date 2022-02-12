@@ -28,8 +28,9 @@ public class UserManager {
 
     public synchronized void addWorker(String username) {
         usersLists.getWorkersList().add(username);
-        if(!workerDetailsDtoMap.containsKey(username))
-            workerDetailsDtoMap.put(username,new WorkerDetailsDto(username.toLowerCase()));
+        if(!workerDetailsDtoMap.containsKey(username)) {
+            workerDetailsDtoMap.put(username, new WorkerDetailsDto(username.toLowerCase()));
+        }
     }
 
     public synchronized void removeUser(String username) {

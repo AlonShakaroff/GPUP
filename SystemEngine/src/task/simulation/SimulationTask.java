@@ -38,6 +38,7 @@ public class SimulationTask extends GPUPTask {
     public void run() {
         try {
             target.setTargetStatus(Target.Status.IN_PROCESS);
+            uploadTaskStatusToServer();
             int runTime;
             double randSuccess = random.nextDouble();
             double randWarning = random.nextDouble();
@@ -46,8 +47,8 @@ public class SimulationTask extends GPUPTask {
             else
                 runTime = processTimeInMS;
 
-
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " is going to sleep for " + runTime + " milliseconds\n\n"));
+            uploadTaskStatusToServer();
 
             Thread.sleep(runTime);
 
@@ -59,10 +60,9 @@ public class SimulationTask extends GPUPTask {
                 target.setTargetResult(Target.Result.SUCCESS);
 
 
-
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " woke up with result: " + target.getTargetResult().toString() + "\n\n"));
-
             target.setTargetStatus(Target.Status.FINISHED);
+            uploadTaskStatusToServer();
 
         } catch (InterruptedException exception) {
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " was interrupted! \n\n"));
@@ -70,7 +70,7 @@ public class SimulationTask extends GPUPTask {
             target.setTargetResult(Target.Result.SKIPPED);
         }
         finally{
-            uploadTaskResultToServer();
+            uploadTaskStatusToServer();
         }
     }
 

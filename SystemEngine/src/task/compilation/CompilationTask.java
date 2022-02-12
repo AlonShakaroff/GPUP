@@ -39,6 +39,7 @@ public class CompilationTask extends GPUPTask {
             Instant targetTaskBegin = Instant.now();
             target.setTargetStatus(Target.Status.IN_PROCESS);
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " is starting compilation\n\n"));
+            uploadTaskStatusToServer();
 
             ProcessBuilder processBuilder = new ProcessBuilder("javac", "-d", destinationPath, "-cp", destinationPath, javaFilePath);
             Process process;
@@ -50,6 +51,7 @@ public class CompilationTask extends GPUPTask {
                 target.setTargetResult(Target.Result.SUCCESS);
                 target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " compiled successfully with compilation time of: " +
                         TargetGraph.getDurationAsString(Duration.between(targetTaskBegin, Instant.now())) + "\n\n"));
+                uploadTaskStatusToServer();
             } else {
                 target.setTargetResult(Target.Result.FAILURE);
                 String errorMsg = "";
@@ -60,7 +62,7 @@ public class CompilationTask extends GPUPTask {
                 String finalErrorMsg = errorMsg;
                 target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " compilation failed!\n" +
                         "error message:\n" + finalErrorMsg + "\n\n"));
-
+                uploadTaskStatusToServer();
             }
             target.setTargetStatus(Target.Status.FINISHED);
         }catch (Exception exception) {
@@ -69,7 +71,7 @@ public class CompilationTask extends GPUPTask {
             target.setTargetResult(Target.Result.SKIPPED);
         }
         finally{
-            uploadTaskResultToServer();
+            uploadTaskStatusToServer();
         }
     }
 
