@@ -163,6 +163,20 @@ public class TasksServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }
+        else if (req.getParameter("selectedTaskName") != null && req.getParameter("status") != null){  //update task status
+            String selectedTaskName = req.getParameter("selectedTaskName");
+            String status = req.getParameter("status");
+            if(tasksManager.isTaskExists(selectedTaskName)) {
+                tasksManager.getTaskDetailsDTO(selectedTaskName).setTaskStatus(status);
+
+            }
+            else //Task not exists in the system
+            {
+                resp.getWriter().println("The task " + selectedTaskName + " doesn't exist in the system!");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+
+        }
         else //invalid header for uploading new task to system
         {
             resp.addHeader("message", "Error in uploading task to server!");

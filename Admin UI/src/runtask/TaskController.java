@@ -301,7 +301,7 @@ public class TaskController {
     void runTaskButtonClicked(ActionEvent event) {
         stopTaskButton.setDisable(false);
         pauseTaskButton.setDisable(false);
-
+        setTaskRunStatus("In process");
         RequestBody body = RequestBody.create("",MediaType.parse("application/json"));
         String taskName = mainController.getTaskName();
 
@@ -351,6 +351,7 @@ public class TaskController {
         stopTaskButton.setDisable(true);
         pauseTaskButton.setDisable(true);
         isPaused.setValue(false);
+        setTaskRunStatus("Stopped");
         isIncrementalPossible.set(true);
         if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
                 (target -> (target.getRunResult() == Target.Result.SUCCESS ||
@@ -362,6 +363,10 @@ public class TaskController {
     @FXML
     void pauseResumeTaskButtonClicked(ActionEvent event) {
         isPaused.setValue(!isPaused.getValue());
+        if (isPaused.getValue())
+            setTaskRunStatus("Paused");
+        else
+            setTaskRunStatus("In process");
         //taskThread.setPaused(isPaused.getValue());
     }
 
@@ -621,6 +626,7 @@ public class TaskController {
                                                 isPaused.setValue(false);
                                                 break;
                                         }
+                                        createNewProgressBar();
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -629,6 +635,26 @@ public class TaskController {
                     );
                 }
             }
+        });
+    }
+
+    private void setTaskRunStatus(String runStatus){
+        RequestBody body = RequestBody.create("",MediaType.parse("application/json"));
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("selectedTaskName", mainController.getTaskName())
+                .addQueryParameter("status", runStatus)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "POST", body, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {}
         });
     }
 
@@ -680,6 +706,7 @@ public class TaskController {
 
     public void setTaskFinished(Boolean taskFinished) {
         isTaskFinished = taskFinished;
+        setTaskRunStatus("Finished");
     }
 }
 
