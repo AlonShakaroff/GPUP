@@ -30,11 +30,13 @@ public class WorkerTaskManager extends Thread {
     private Integer numberOfAllocatedThreads;
     private Integer amountOfTasksRegisteredTo = 0;
     private Set<String> tasksRegisteredToSet;
+    private Set<String> pausedTasksSet;
 
     public WorkerTaskManager(int threadAmount, String workerName) {
         threadPool = new ThreadPoolExecutor(threadAmount,threadAmount, 1000000, TimeUnit.MINUTES, new LinkedBlockingDeque<>());
         this.numberOfAllocatedThreads = threadAmount;
         this.tasksRegisteredToSet = new HashSet<>();
+        this.pausedTasksSet = new HashSet<>();
         this.workerName = workerName;
     }
 
@@ -47,14 +49,30 @@ public class WorkerTaskManager extends Thread {
         amountOfTasksRegisteredTo++;
     }
 
-    public void removeFinishedTask(String taskName) {
+    public void removeRegisteredTask(String taskName) {
         tasksRegisteredToSet.remove(taskName);
         amountOfTasksRegisteredTo--;
+    }
+
+    public void pauseRegisteredTask(String taskName) {
+        tasksRegisteredToSet.remove(taskName);
+        pausedTasksSet.add(taskName);
+        amountOfTasksRegisteredTo--;
+    }
+
+    public void resumeRegisteredTask(String taskName) {
+        tasksRegisteredToSet.add(taskName);
+        pausedTasksSet.remove(taskName);
+        amountOfTasksRegisteredTo++;
     }
 
     public void setTasksRegisteredToSet(Set<String> tasksRegisteredToSet) {
         this.tasksRegisteredToSet = tasksRegisteredToSet;
         this.amountOfTasksRegisteredTo = tasksRegisteredToSet.size();
+    }
+
+    public Set<String> getPausedTasksSet() {
+        return pausedTasksSet;
     }
 
     @Override

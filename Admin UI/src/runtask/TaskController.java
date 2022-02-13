@@ -446,6 +446,7 @@ public class TaskController {
         while (!getTaskFinished()) {
             if (!isPaused.get())
                 refreshTaskDataLists();
+            displaySelectedTaskInfo(mainController.getTaskName());
         }
         refreshTaskDataLists();
         Platform.runLater(() -> {

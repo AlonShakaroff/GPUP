@@ -50,6 +50,8 @@ public class WorkerMainController {
         dashboardController.setUserName(userName);
         dashboardController.setWorkerMainController(this);
         taskController.setUserName(userName);
+        taskController.setPrimaryStage(primaryStage);
+        taskController.setWorkerMainController(this);
         taskExecutor.setDaemon(true);
         taskExecutor.start();
     }

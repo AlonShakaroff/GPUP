@@ -297,6 +297,7 @@ public class DashboardController {
                                         creditsEarned = workerDetailsDto.getEarnedCredits();
                                         CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
                                         CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
+                                        RegisteredTasks.clear();
                                         RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
                                     }
                                     else {
