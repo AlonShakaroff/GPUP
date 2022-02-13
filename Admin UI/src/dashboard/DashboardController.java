@@ -52,7 +52,7 @@ public class DashboardController {
     private ListChangeListener<String> currentSelectedAllTasksListListener;
     private SimpleBooleanProperty isGraphSelected;
     private SimpleBooleanProperty isMyTaskSelected;
-    private SimpleBooleanProperty isAllTaskSelectedAndRanAlready;
+    private SimpleBooleanProperty isAllTaskSelected;
     private SimpleBooleanProperty selectedAllTaskFinished;
     private SimpleBooleanProperty selectedAllTaskCanRunIncrementally;
 
@@ -66,7 +66,7 @@ public class DashboardController {
     public DashboardController() {
         isGraphSelected = new SimpleBooleanProperty(false);
         isMyTaskSelected = new SimpleBooleanProperty(false);
-        isAllTaskSelectedAndRanAlready = new SimpleBooleanProperty(false);
+        isAllTaskSelected = new SimpleBooleanProperty(false);
         selectedAllTaskFinished = new SimpleBooleanProperty(false);
         selectedAllTaskCanRunIncrementally = new SimpleBooleanProperty(false);
 
@@ -80,7 +80,7 @@ public class DashboardController {
         currentSelectedAllTasksListListener = change -> {
             displaySelectedTaskInfo();
             FromScratchRadioButton.setSelected(true);
-            isAllTaskSelectedAndRanAlready.setValue(change.getList().size() != 0 && selectedAllTaskFinished.getValue());
+            isAllTaskSelected.setValue(change.getList().size() != 0);
         };
     }
 
@@ -88,7 +88,7 @@ public class DashboardController {
         IncrementalRadioButton.disableProperty().bind(Bindings.or(FromScratchRadioButton.disableProperty() ,
                 selectedAllTaskCanRunIncrementally.not()));
         FromScratchRadioButton.disableProperty().bind(ReloadTaskButton.disableProperty());
-        ReloadTaskButton.disableProperty().bind(isAllTaskSelectedAndRanAlready.not());
+        ReloadTaskButton.disableProperty().bind(Bindings.and(isAllTaskSelected,selectedAllTaskFinished).not());
 
         LoadGraphButton.disableProperty().bind(isGraphSelected.not());
         loadSelectedTaskButton.disableProperty().bind(isMyTaskSelected.not());
@@ -505,7 +505,9 @@ public class DashboardController {
                             TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
                             selectedAllTaskCanRunIncrementally.setValue(taskDetailsDto.getCanRunIncrementally());
                             selectedAllTaskFinished.setValue(taskDetailsDto.getTaskStatus().equals("Finished"));
-                            Platform.runLater(() ->displaySelectedTaskInfoFromDto(taskDetailsDto));
+                            Platform.runLater(() ->{
+                                displaySelectedTaskInfoFromDto(taskDetailsDto);
+                            });
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

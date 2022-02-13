@@ -377,7 +377,8 @@ public class TaskController {
                         if (responseBody != null) {
                             TargetForWorker targetForWorker = gson.fromJson(responseBody.string(), TargetForWorker.class);
                             responseBody.close();
-                            Platform.runLater(() -> displaySelectedTargetInfoFromDto(targetForWorker));
+                            if (targetForWorker != null)
+                                Platform.runLater(() -> displaySelectedTargetInfoFromDto(targetForWorker));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

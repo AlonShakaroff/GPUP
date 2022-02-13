@@ -24,7 +24,6 @@ public class TargetGraph implements Serializable {
     private Map<TaskType, Integer>  taskPricing;
     private Duration totalTaskDuration;
     private Instant taskStartTime, taskEndTime;
-    private Boolean canRunIncrementally;
     private String graphName;
     public String currentTaskLog;
     private String uploaderName;
@@ -34,7 +33,6 @@ public class TargetGraph implements Serializable {
     public TargetGraph(String name) {
         this.graphName = name;
         this.allTargets = new HashMap<>();
-        canRunIncrementally = false;
         currentTaskLog = "";
     }
 
@@ -102,7 +100,6 @@ public class TargetGraph implements Serializable {
     public void resetGraph() {
         InitializeTypes();
         resetTargets();
-        canRunIncrementally = false;
     }
 
     private void resetTargets() {
@@ -181,11 +178,7 @@ public class TargetGraph implements Serializable {
     }
 
     public Boolean getCanRunIncrementally() {
-        return canRunIncrementally;
-    }
-
-    public void canRunIncrementally() {
-        canRunIncrementally = !didAllTargetsSucceed();
+        return !didAllTargetsSucceed();
     }
 
     public Target getTarget(String targetName) {
