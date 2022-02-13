@@ -91,6 +91,8 @@ public class ExecutorThread extends Thread{
                 break;
             }
 
+            while(isPaused) {}
+
             GPUPTask curTask = tasksList.poll();
             curTask.getTarget().updateData(tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTarget(curTask.getTarget().getName()));
             if (curTask.target.getTargetStatus().equals(Target.Status.FROZEN)) { // target is frozen
@@ -121,8 +123,12 @@ public class ExecutorThread extends Thread{
         }
         tasksManager.getTaskForServerSide(taskName).getTargetGraph().setTaskEndTime(Instant.now());
         tasksManager.getTaskForServerSide(taskName).getTargetGraph().
-                setTotalTaskDuration(Duration.between(tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskStartTime(), tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskEndTime()));
-        tasksManager.getTaskForServerSide(taskName).setTaskStatus("Finished");
+                setTotalTaskDuration(Duration.between(tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskStartTime()
+                        , tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTaskEndTime()));
+        if(isStopped)
+            tasksManager.getTaskForServerSide(taskName).setTaskStatus("Stopped");
+        else
+            tasksManager.getTaskForServerSide(taskName).setTaskStatus("Finished");
     }
 
 
