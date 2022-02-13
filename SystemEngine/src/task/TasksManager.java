@@ -89,7 +89,9 @@ public class TasksManager {
         return listOfAllTasks.stream()
                 .filter(task -> (!taskForServerSideMap.get(task).getTaskStatus()
                         .equalsIgnoreCase("finished"))&& (!taskForServerSideMap.get(task).getTaskStatus()
-                            .equalsIgnoreCase("new"))).collect(Collectors.toSet());
+                            .equalsIgnoreCase("new"))
+                                && (!taskForServerSideMap.get(task).getTaskStatus().equalsIgnoreCase("stopped")))
+                                    .collect(Collectors.toSet());
     }
 
     public synchronized void addTaskDetailsDTO(String taskName, String creatorName,

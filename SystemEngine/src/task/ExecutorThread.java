@@ -91,7 +91,13 @@ public class ExecutorThread extends Thread{
                 break;
             }
 
-            while(isPaused) {}
+            while(isPaused) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
             GPUPTask curTask = tasksList.poll();
             curTask.getTarget().updateData(tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTarget(curTask.getTarget().getName()));
@@ -137,11 +143,7 @@ public class ExecutorThread extends Thread{
     }
 
     public void setPaused(Boolean paused) {
-        synchronized (this.isPauseDummy) {
-            isPaused = paused;
-            if(!paused)
-                this.isPauseDummy.notifyAll();
-        }
+        isPaused = paused;
     }
 
     public Boolean getStopped() {

@@ -22,109 +22,6 @@
 
 <TabPane minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tasks.control.TaskController">
    <tabs>
-      <Tab closable="false" text="My Targets">
-         <content>
-            <ScrollPane fitToHeight="true" fitToWidth="true">
-               <content>
-                  <SplitPane dividerPositions="0.3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" styleClass="primaryBackground">
-                     <items>
-                        <ScrollPane fitToHeight="true" fitToWidth="true">
-                           <content>
-                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" styleClass="primaryBackground">
-                                 <children>
-                                    <ListView fx:id="MyTargetsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                              </VBox>
-                           </content>
-                        </ScrollPane>
-                        <ScrollPane fitToHeight="true" fitToWidth="true">
-                           <content>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" styleClass="primaryBackground">
-                                 <children>
-                                    <Label alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" styleClass="headLines" text="Selected Target information" textAlignment="CENTER" wrapText="false">
-                                       <font>
-                                          <Font size="18.0" fx:id="x11" />
-                                       </font>
-                                       <textFill>
-                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21" />
-                                       </textFill>
-                                    </Label>
-                                    <HBox alignment="CENTER">
-                                       <children>
-                                          <Label text="Target Name: " />
-                                          <TextField fx:id="TargetNameTextField" editable="false" promptText="target's name" />
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <HBox alignment="CENTER" minWidth="300.0" spacing="20.0" styleClass="trans" VBox.vgrow="NEVER">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" prefWidth="400.0">
-                                             <children>
-                                                <Label text="Task Name:    " />
-                                                <TextField fx:id="TargetTaskNameTextField" editable="false" promptText="task's name" />
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER_LEFT" prefWidth="400.0">
-                                             <children>
-                                                <Label text="Task Type:         " />
-                                                <TextField fx:id="TargetTaskTypeTextField" editable="false" promptText="task type" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets top="5.0" />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <HBox alignment="CENTER" minWidth="300.0" spacing="20.0" styleClass="trans">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" prefWidth="400.0">
-                                             <children>
-                                                <Label text="Status:            " />
-                                                <TextField fx:id="TargetStatusTextField" editable="false" promptText="status" />
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER_LEFT" layoutX="161.0" layoutY="10.0" prefWidth="400.0">
-                                             <children>
-                                                <Label text="Credits Earned: " />
-                                                <TextField fx:id="TargetCreditsEarnedTextField" editable="false" promptText="\$$$" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
-                                       <children>
-                                          <Label alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" styleClass="headLines" text="Run log" textAlignment="CENTER" wrapText="false">
-                                             <font>
-                                                <Font size="18.0" fx:id="x112" />
-                                             </font>
-                                             <textFill>
-                                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x212" />
-                                             </textFill>
-                                          </Label>
-                                          <TextArea fx:id="TargetsRunLogTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
-                           </content>
-                        </ScrollPane>
-                     </items>
-                  </SplitPane>
-               </content>
-            </ScrollPane>
-         </content>
-      </Tab>
       <Tab closable="false" text="My tasks">
          <content>
             <ScrollPane fitToHeight="true" fitToWidth="true">
@@ -229,6 +126,109 @@
                                        <padding>
                                           <Insets left="5.0" right="5.0" top="5.0" />
                                        </padding>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
+                     </items>
+                  </SplitPane>
+               </content>
+            </ScrollPane>
+         </content>
+      </Tab>
+      <Tab closable="false" text="My Targets">
+         <content>
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+               <content>
+                  <SplitPane dividerPositions="0.3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" styleClass="primaryBackground">
+                     <items>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" styleClass="primaryBackground">
+                                 <children>
+                                    <ListView fx:id="MyTargetsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" styleClass="primaryBackground">
+                                 <children>
+                                    <Label alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" styleClass="headLines" text="Selected Target information" textAlignment="CENTER" wrapText="false">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21" />
+                                       </textFill>
+                                    </Label>
+                                    <HBox alignment="CENTER">
+                                       <children>
+                                          <Label text="Target Name: " />
+                                          <TextField fx:id="TargetNameTextField" editable="false" promptText="target's name" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </HBox>
+                                    <HBox alignment="CENTER" minWidth="300.0" spacing="20.0" styleClass="trans" VBox.vgrow="NEVER">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefWidth="400.0">
+                                             <children>
+                                                <Label text="Task Name:    " />
+                                                <TextField fx:id="TargetTaskNameTextField" editable="false" promptText="task's name" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" prefWidth="400.0">
+                                             <children>
+                                                <Label text="Task Type:         " />
+                                                <TextField fx:id="TargetTaskTypeTextField" editable="false" promptText="task type" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </HBox>
+                                    <HBox alignment="CENTER" minWidth="300.0" spacing="20.0" styleClass="trans">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefWidth="400.0">
+                                             <children>
+                                                <Label text="Status:            " />
+                                                <TextField fx:id="TargetStatusTextField" editable="false" promptText="status" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" layoutX="161.0" layoutY="10.0" prefWidth="400.0">
+                                             <children>
+                                                <Label text="Credits Earned: " />
+                                                <TextField fx:id="TargetCreditsEarnedTextField" editable="false" promptText="\$$$" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </HBox>
+                                    <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <Label alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" styleClass="headLines" text="Run log" textAlignment="CENTER" wrapText="false">
+                                             <font>
+                                                <Font size="18.0" fx:id="x112" />
+                                             </font>
+                                             <textFill>
+                                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x212" />
+                                             </textFill>
+                                          </Label>
+                                          <TextArea fx:id="TargetsRunLogTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                       </children>
                                     </VBox>
                                  </children>
                                  <padding>

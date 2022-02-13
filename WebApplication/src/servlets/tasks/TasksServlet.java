@@ -170,9 +170,19 @@ public class TasksServlet extends HttpServlet {
             String status = req.getParameter("status");
             if(tasksManager.isTaskExists(selectedTaskName)) {
                 tasksManager.getTaskDetailsDTO(selectedTaskName).setTaskStatus(status);
-                if (status.equals("Finished")) {
+                tasksManager.getTaskForServerSide(selectedTaskName).setTaskStatus(status);
+                if (status.equalsIgnoreCase("Paused")){
+                    tasksManager.getTaskExecutorThread(selectedTaskName).setPaused(true);
+                }
+                if (status.equalsIgnoreCase("In process")) {
+                    tasksManager.getTaskExecutorThread(selectedTaskName).setPaused(false);
+                }
+                if (status.equalsIgnoreCase("Finished")) {
                     tasksManager.getTaskDetailsDTO(selectedTaskName).setCanRunIncrementally(
                             tasksManager.getTaskForServerSide(selectedTaskName).getCanRunIncrementally());
+                }
+                if (status.equalsIgnoreCase("Stopped")) {
+                    tasksManager.getTaskExecutorThread(selectedTaskName).setStopped(true);
                 }
             }
             else //Task not exists in the system
