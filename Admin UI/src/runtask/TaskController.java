@@ -654,7 +654,9 @@ public class TaskController {
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {}
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Objects.requireNonNull(response.body()).close();
+            }
         });
     }
 
