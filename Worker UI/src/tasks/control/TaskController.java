@@ -399,7 +399,8 @@ public class TaskController {
                         if (responseBody != null) {
                             TargetForWorker targetForWorker = gson.fromJson(responseBody.string(), TargetForWorker.class);
                             responseBody.close();
-                            Platform.runLater(() -> displaySelectedTargetInfoFromDto(targetForWorker));
+                            if(targetForWorker != null)
+                                Platform.runLater(() -> displaySelectedTargetInfoFromDto(targetForWorker));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -436,8 +437,7 @@ public class TaskController {
                     }
                     updateProgress(currTaskAmountOfFinishedTargets, currTaskAmountOfChosenTargets);
                 } catch (InterruptedException e) {
-                    TaskProgressBar.progressProperty().setValue(0);
-                    ProgressBarLabel.setText("");
+                    updateProgress(0,1);
                 }
                 return null;
             }
