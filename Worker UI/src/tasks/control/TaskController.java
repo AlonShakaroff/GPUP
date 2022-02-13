@@ -281,6 +281,7 @@ public class TaskController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.body().close();
                 response.close();
             }
         });
