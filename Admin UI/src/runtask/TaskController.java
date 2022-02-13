@@ -48,7 +48,6 @@ public class TaskController {
     private String lastTask = "";
     private SimpleBooleanProperty isPaused;
     private final SimpleBooleanProperty isATargetSelected;
-    private final SimpleBooleanProperty isIncrementalPossible;
     private final SimpleBooleanProperty isCurTaskFinished;
 
     private final ChangeListener<Boolean> isPausedListener;
@@ -73,7 +72,6 @@ public class TaskController {
 
     private Integer currTaskAmountOfChosenTargets = 1;
     private Integer currTaskAmountOfFinishedTargets = 0;
-    private Boolean isTaskFinished = false;
     private Thread progressBarThread = null;
     private Gson gson = new Gson();
     private Set<TargetForWorker> targetsDtoSet = new HashSet<>();
@@ -82,7 +80,6 @@ public class TaskController {
         isPaused = new SimpleBooleanProperty(false);
         isCurTaskFinished = new SimpleBooleanProperty(false);
         isATargetSelected = new SimpleBooleanProperty(false);
-        isIncrementalPossible = new SimpleBooleanProperty(false);
         currentSelectedFrozenListener = change -> {
             if (!change.getList().isEmpty()) {
                 updateTargetDetailsTableAndTextArea(change.getList().get(0));
@@ -351,12 +348,7 @@ public class TaskController {
         pauseTaskButton.setDisable(true);
         isPaused.setValue(false);
         setTaskRunStatus("Stopped");
-        isIncrementalPossible.set(true);
-        if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
-                (target -> (target.getRunResult() == Target.Result.SUCCESS ||
-                        target.getRunResult() == Target.Result.WARNING))) {
-            isIncrementalPossible.set(false);
-        }
+        isCurTaskFinished.setValue(true);
     }
 
     @FXML
@@ -462,12 +454,6 @@ public class TaskController {
             isPaused.setValue(false);
             stopTaskButton.setDisable(true);
         });
-
-        if (targetGraph.getAllTargets().values().stream().filter(Target::isChosen).allMatch
-                (target -> (target.getRunResult() == Target.Result.SUCCESS ||
-                        target.getRunResult() == Target.Result.WARNING))) {
-            isIncrementalPossible.set(false);
-        }
     }
 
     public void refreshTaskDataLists() {
@@ -681,7 +667,7 @@ public class TaskController {
                 {
                     currTaskAmountOfChosenTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfChosenTargets"))));
                     currTaskAmountOfFinishedTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfFinishedOrSkipped"))));
-                    isTaskFinished = (Boolean.parseBoolean(response.header("isFinished")));
+                    isCurTaskFinished.setValue(Boolean.parseBoolean(response.header("isFinished")));
                 }
                 Objects.requireNonNull(response.body()).close();
                 response.close();
@@ -706,11 +692,11 @@ public class TaskController {
     }
 
     public Boolean getTaskFinished() {
-        return isTaskFinished;
+        return isCurTaskFinished.getValue();
     }
 
     public void setTaskFinished(Boolean taskFinished) {
-        isTaskFinished = taskFinished;
+        isCurTaskFinished.setValue(taskFinished);
         setTaskRunStatus("Finished");
     }
 

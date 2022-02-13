@@ -83,7 +83,9 @@ public class TasksServlet extends HttpServlet {
                 Integer amountOfFinishedOrSkipped = targetGraph.howMuchAreFinishedOrSkipped();
                 resp.addHeader("amountOfChosenTargets", amountOfChosenTargets.toString());
                 resp.addHeader("amountOfFinishedOrSkipped", amountOfFinishedOrSkipped.toString());
-                resp.addHeader("isFinished",targetGraph.isTaskFinished().toString());
+                Boolean isFinishedOrStopped = (targetGraph.isTaskFinished() ||
+                        tasksManager.getTaskDetailsDTO(taskName).getTaskStatus().equalsIgnoreCase("Stopped"));
+                resp.addHeader("isFinished",isFinishedOrStopped.toString());
                 resp.setStatus(HttpServletResponse.SC_ACCEPTED);
             }
             else {
@@ -168,7 +170,10 @@ public class TasksServlet extends HttpServlet {
             String status = req.getParameter("status");
             if(tasksManager.isTaskExists(selectedTaskName)) {
                 tasksManager.getTaskDetailsDTO(selectedTaskName).setTaskStatus(status);
-
+                if (status.equals("Finished")) {
+                    tasksManager.getTaskDetailsDTO(selectedTaskName).setCanRunIncrementally(
+                            tasksManager.getTaskForServerSide(selectedTaskName).getCanRunIncrementally());
+                }
             }
             else //Task not exists in the system
             {
