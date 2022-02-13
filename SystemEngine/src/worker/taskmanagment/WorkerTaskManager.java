@@ -97,7 +97,7 @@ public class WorkerTaskManager extends Thread {
                     Gson gson = new Gson();
                     String gpupTaskDtoJson = response.body().string();
                     try {
-                        if(response.header("taskType").equalsIgnoreCase("simulation"))
+                        if(Objects.requireNonNull(response.header("taskType")).equalsIgnoreCase("simulation"))
                         {
                             SimulationTaskDto simulationTaskDto = gson.fromJson(gpupTaskDtoJson,SimulationTaskDto.class);
                             if(simulationTaskDto != null) {
@@ -105,7 +105,7 @@ public class WorkerTaskManager extends Thread {
                                 threadPool.execute(new SimulationTask(simulationTaskDto));
                             }
                         }
-                        else if(response.header("taskType").equalsIgnoreCase("compilation"))
+                        else if(Objects.requireNonNull(response.header("taskType")).equalsIgnoreCase("compilation"))
                         {
                             CompilationTaskDto compilationTaskDto = gson.fromJson(gpupTaskDtoJson,CompilationTaskDto.class);
                             if(compilationTaskDto != null) {

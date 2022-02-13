@@ -28,6 +28,7 @@ public class TaskHistoryDto {
     }
 
     public void addTargetDone() {
-        this.targetsDoneByWorker++;
+        System.out.println(targetsDoneByWorker + " target is done!");
+        this.targetsDoneByWorker = this.targetsDoneByWorker + 1;
     }
 }

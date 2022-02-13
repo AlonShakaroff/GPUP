@@ -292,11 +292,16 @@ public class DashboardController {
                             Platform.runLater(() -> {
                                 try {
                                     WorkerDetailsDto workerDetailsDto = gson.fromJson(responseBody.string(), WorkerDetailsDto.class);
-                                    responseBody.close();
-                                    creditsEarned = workerDetailsDto.getEarnedCredits();
-                                    CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
-                                    CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
-                                    RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
+                                    if(workerDetailsDto != null) {
+                                        responseBody.close();
+                                        creditsEarned = workerDetailsDto.getEarnedCredits();
+                                        CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
+                                        CreditsEarnedTextField.setText(String.valueOf(creditsEarned));
+                                        RegisteredTasks.addAll(workerDetailsDto.getRegisteredTasks());
+                                    }
+                                    else {
+                                        System.out.println("worker details dto failed to pass from server.");
+                                    }
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 } finally {
@@ -407,6 +412,7 @@ public class DashboardController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Objects.requireNonNull(response.body()).close();
             }
         });
     }

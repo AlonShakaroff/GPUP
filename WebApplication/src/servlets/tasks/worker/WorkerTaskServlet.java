@@ -112,7 +112,7 @@ public class WorkerTaskServlet extends HttpServlet {
         else if(request.getParameter("workerName") != null){
             String workerName = request.getParameter("workerName");
             Set<String> targetForWorkerSet = tasksManager.getWorkerTargetSet(workerName);
-            String targetForWorkerSetJson = gson.toJson(targetForWorkerSet);
+            String targetForWorkerSetJson = gson.toJson(targetForWorkerSet, new TypeToken<Set<String>>(){}.getType());
             out.write(targetForWorkerSetJson);
         }
     }

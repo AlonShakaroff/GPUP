@@ -15,6 +15,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
@@ -215,14 +216,18 @@
                                                 <Color blue="0.624" green="0.624" red="0.624" fx:id="x2111" />
                                              </textFill>
                                           </Label>
-                                          <ProgressBar fx:id="TaskProgressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="500.0" progress="0.0" VBox.vgrow="ALWAYS">
+                                          <StackPane VBox.vgrow="ALWAYS">
                                              <VBox.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                <Insets />
                                              </VBox.margin>
-                                          </ProgressBar>
+                                             <children>
+                                                <ProgressBar fx:id="TaskProgressBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="500.0" progress="0.0" />
+                                                <Label fx:id="ProgressBarLabel" textFill="#9f9f9f" />
+                                             </children>
+                                          </StackPane>
                                        </children>
                                        <padding>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                          <Insets left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                     </VBox>
                                  </children>

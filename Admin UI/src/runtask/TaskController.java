@@ -45,7 +45,6 @@ public class TaskController {
 
     private TargetGraph targetGraph;
     private AdminMainController mainController;
-    private Task<Void> task;
     private String lastTask = "";
     private SimpleBooleanProperty isPaused;
     private final SimpleBooleanProperty isATargetSelected;
@@ -143,6 +142,7 @@ public class TaskController {
         isPaused.addListener(isPausedListener);
 
     }
+
     private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
         TargetForWorker selectedTarget = targetsDtoSet.stream()
                 .filter(targetForWorker -> (targetForWorker.getName().equalsIgnoreCase(selectedTargetString.split(" ")[0]))).findFirst().orElse(null);
@@ -156,11 +156,11 @@ public class TaskController {
 
     private void statusUniqueDataDisplay(Target selectedTarget, Target.Status status) {
         String uniqueData = "";
-        switch(status) {
+        switch (status) {
             case FROZEN:
                 uniqueData = "Waiting for targets: \n" + selectedTarget.getDependsOnSet().stream()
                         .filter(Target::isChosen)
-                        .filter(target ->  (target.getRunStatus().equals(Target.Status.FROZEN) ||
+                        .filter(target -> (target.getRunStatus().equals(Target.Status.FROZEN) ||
                                 target.getRunStatus().equals(Target.Status.WAITING) || target.getRunStatus().equals(Target.Status.IN_PROCESS)))
                         .collect(Collectors.toList()) + "\nto finish running successfully.";
 
@@ -178,7 +178,7 @@ public class TaskController {
                 uniqueData = "Target is in process for: " + selectedTarget.getTimeInState() + " MS";
                 break;
             case FINISHED:
-                if(selectedTarget.getRunResult().equals(Target.Result.SUCCESS))
+                if (selectedTarget.getRunResult().equals(Target.Result.SUCCESS))
                     uniqueData = "Target finished running successfully.";
                 else if (selectedTarget.getRunResult().equals(Target.Result.WARNING))
                     uniqueData = "Target finished running successfully\nwith warning.";
@@ -202,7 +202,7 @@ public class TaskController {
         currentSelectedWaitingList.addListener(currentSelectedWaitingListener);
         currentSelectedInProcessList.addListener(currentSelectedInProcessListener);
         currentSelectedFinishedList.addListener(currentSelectedFinishedListener);
-        runTaskButton.disableProperty().bind(Bindings.or(isCurTaskFinished ,Bindings.and(stopTaskButton.disableProperty().not(),
+        runTaskButton.disableProperty().bind(Bindings.or(isCurTaskFinished, Bindings.and(stopTaskButton.disableProperty().not(),
                 pauseTaskButton.disableProperty().not())));
         FrozenListView.setItems(frozenTargetsNameList);
         SkippedListView.setItems(skippedTargetsNameList);
@@ -240,13 +240,13 @@ public class TaskController {
     private TableView<TargetsInfoTableItem> GraphTargetsTableView;
 
     @FXML
-    private TableColumn<TargetsInfoTableItem, Integer > GraphTargetsAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphTargetsAmount;
 
     @FXML
     private TableColumn<TargetsInfoTableItem, Integer> GraphIndependentAmount;
 
     @FXML
-    private TableColumn<TargetsInfoTableItem, Integer > GraphLeafAmount;
+    private TableColumn<TargetsInfoTableItem, Integer> GraphLeafAmount;
 
     @FXML
     private TableColumn<TargetsInfoTableItem, Integer> GraphMiddleAmount;
@@ -302,7 +302,7 @@ public class TaskController {
         stopTaskButton.setDisable(false);
         pauseTaskButton.setDisable(false);
         setTaskRunStatus("In process");
-        RequestBody body = RequestBody.create("",MediaType.parse("application/json"));
+        RequestBody body = RequestBody.create("", MediaType.parse("application/json"));
         String taskName = mainController.getTaskName();
 
         String finalUrl = HttpUrl
@@ -314,7 +314,7 @@ public class TaskController {
         Request request = new Request.Builder()
                 .url(finalUrl)
                 .post(body)
-                .addHeader("taskName",taskName)
+                .addHeader("taskName", taskName)
                 .build();
 
 
@@ -325,9 +325,8 @@ public class TaskController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
-                if(response.code() == 202)
-                {
-                    Platform.runLater(()->{
+                if (response.code() == 202) {
+                    Platform.runLater(() -> {
                         createNewProgressBar();
                     });
                 }
@@ -374,6 +373,7 @@ public class TaskController {
         TargetsNameList.clear();
         TargetsNameList.addAll(targetGraph.getAllTargets().keySet());
     }
+
     public void initializeTargetInfoTable() {
         name.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Name"));
         type.setCellValueFactory(new PropertyValueFactory<TargetInfoTableItem, String>("Type"));
@@ -403,7 +403,7 @@ public class TaskController {
                     try {
                         if (responseBody != null) {
                             TaskDetailsDto taskDetailsDto = gson.fromJson(responseBody.string(), TaskDetailsDto.class);
-                            Platform.runLater(() ->displaySelectedTaskInfoFromDto(taskDetailsDto));
+                            Platform.runLater(() -> displaySelectedTaskInfoFromDto(taskDetailsDto));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -451,12 +451,12 @@ public class TaskController {
 
     private void refreshTaskData() {
         refreshTaskDataLists();
-        while(!getTaskFinished()){
-            if(!isPaused.get())
+        while (!getTaskFinished()) {
+            if (!isPaused.get())
                 refreshTaskDataLists();
         }
         refreshTaskDataLists();
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             pauseTaskButton.setDisable(true);
             isPaused.setValue(false);
             stopTaskButton.setDisable(true);
@@ -468,7 +468,8 @@ public class TaskController {
             isIncrementalPossible.set(false);
         }
     }
-    private void refreshTaskDataLists() {
+
+    public void refreshTaskDataLists() {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -486,21 +487,22 @@ public class TaskController {
                 .toString();
 
         HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
 
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        targetsDtoSet = gson.fromJson(Objects.requireNonNull(response.body()).string(),
-                                new TypeToken<Set<TargetForWorker>>(){}.getType());
-                        Objects.requireNonNull(response.body()).close();
-                        Platform.runLater(()->{
-                            clearTaskDataLists();
-                            updateTaskDataLists();
-                        });
-                        response.close();
-                    }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                targetsDtoSet = gson.fromJson(Objects.requireNonNull(response.body()).string(),
+                        new TypeToken<Set<TargetForWorker>>() {
+                        }.getType());
+                Objects.requireNonNull(response.body()).close();
+                Platform.runLater(() -> {
+                    clearTaskDataLists();
+                    updateTaskDataLists();
+                });
+                response.close();
+            }
         });
 
     }
@@ -519,10 +521,10 @@ public class TaskController {
             inProcessTargetsNameList.add(target.getName());
         }
         for (TargetForWorker target : targetsDtoSet.stream().filter(target -> target.getTargetStatus().equals(Target.Status.FINISHED)).collect(Collectors.toSet())) {
-            finishedTargetsNameList.add(target.getName() + " - " +  target.getResult());
+            finishedTargetsNameList.add(target.getName() + " - " + target.getResult());
         }
 
-        if((finishedTargetsNameList.size() + skippedTargetsNameList.size()) == targetsDtoSet.size())
+        if ((finishedTargetsNameList.size() + skippedTargetsNameList.size()) == targetsDtoSet.size())
             setTaskFinished(true);
 
         frozenTargetsNameList.sort(String::compareTo);
@@ -540,14 +542,12 @@ public class TaskController {
         finishedTargetsNameList.clear();
     }
 
-    private void createNewProgressBar()
-    {
-        task = new Task<Void>() {
+    private void createNewProgressBar() {
+        Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 updateProgressFromServer();
-                while(currTaskAmountOfFinishedTargets < currTaskAmountOfChosenTargets)
-                {
+                while (currTaskAmountOfFinishedTargets < currTaskAmountOfChosenTargets) {
                     Thread.sleep(300);
                     updateProgressFromServer();
                     updateProgress(currTaskAmountOfFinishedTargets, currTaskAmountOfChosenTargets);
@@ -560,7 +560,7 @@ public class TaskController {
         this.progressBarLabel.textProperty().bind
                 (Bindings.concat(Bindings.format("%.0f", Bindings.multiply(task.progressProperty(), 100)), " %"));
 
-        if(progressBarThread != null)
+        if (progressBarThread != null)
             progressBarThread.interrupt();
         this.progressBarThread = new Thread(task);
         progressBarThread.setDaemon(true);
@@ -579,7 +579,8 @@ public class TaskController {
         InProcessListView.setItems(inProcessTargetsNameList);
         FinishedListView.setItems(finishedTargetsNameList);
     }
-    public void setStopAndPauseInit(){
+
+    public void setStopAndPauseInit() {
         String finalUrl = HttpUrl
                 .parse(Constants.TASKS_PATH)
                 .newBuilder()
@@ -638,8 +639,8 @@ public class TaskController {
         });
     }
 
-    private void setTaskRunStatus(String runStatus){
-        RequestBody body = RequestBody.create("",MediaType.parse("application/json"));
+    private void setTaskRunStatus(String runStatus) {
+        RequestBody body = RequestBody.create("", MediaType.parse("application/json"));
         String finalUrl = HttpUrl
                 .parse(Constants.TASKS_PATH)
                 .newBuilder()
@@ -677,10 +678,11 @@ public class TaskController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() >= 200 && response.code() < 300) //Success
                 {
-                        currTaskAmountOfChosenTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfChosenTargets"))));
-                        currTaskAmountOfFinishedTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfFinishedOrSkipped"))));
-                        isTaskFinished = (Boolean.parseBoolean(response.header("isFinished")));
+                    currTaskAmountOfChosenTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfChosenTargets"))));
+                    currTaskAmountOfFinishedTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfFinishedOrSkipped"))));
+                    isTaskFinished = (Boolean.parseBoolean(response.header("isFinished")));
                 }
+                Objects.requireNonNull(response.body()).close();
                 response.close();
             }
         });
@@ -710,8 +712,12 @@ public class TaskController {
         isTaskFinished = taskFinished;
         setTaskRunStatus("Finished");
     }
-}
 
+    public void resetProgressBarValues() {
+        currTaskAmountOfChosenTargets = 1;
+        currTaskAmountOfFinishedTargets = 0;
+    }
+}
 
 /** ------------------------------- Old Run Task --------------------------------
  @FXML

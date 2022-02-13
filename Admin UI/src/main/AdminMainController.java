@@ -363,6 +363,8 @@ public class AdminMainController {
 
     public void setSceneToTask() {
         taskController.clearTaskDataLists();
+        taskController.refreshTaskDataLists();
+        taskController.resetProgressBarValues();
         this.mainChangingScene.setContent(runTaskComponent);
         runTaskButton.setSelected(true);
     }

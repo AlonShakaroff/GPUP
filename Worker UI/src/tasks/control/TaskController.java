@@ -1,26 +1,22 @@
 package tasks.control;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import constants.WorkersConstants;
 import dashboard.tableitems.SelectedTaskStatusTableItem;
 import dashboard.tableitems.TargetsInfoTableItem;
 import dtos.TaskDetailsDto;
 import dtos.WorkerTaskDetailsDto;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -46,6 +42,9 @@ public class TaskController {
     private SimpleBooleanProperty isTaskSelected;
     private SimpleBooleanProperty isTargetSelected;
     private Thread refreshDataThread;
+    private Integer currTaskAmountOfChosenTargets = 1;
+    private Integer currTaskAmountOfFinishedTargets = 0;
+    private Thread progressBarThread = null;
 
     public TaskController() {
         isTaskSelected = new SimpleBooleanProperty(false);
@@ -53,6 +52,7 @@ public class TaskController {
 
         currentSelectedTaskListListener = change -> {
             displaySelectedTaskInfo();
+            createNewProgressBar();
             isTaskSelected.setValue(change.getList().size() != 0);
         };
 
@@ -71,7 +71,6 @@ public class TaskController {
         MyTargetsListView.setItems(usersTargetList);
         MyTasksListView.setItems(registeredTasksList);
         refreshDataThread = new Thread(this::refreshData);
-        refreshDataThread.setDaemon(true);
         refreshDataThread.start();
 
     }
@@ -158,6 +157,9 @@ public class TaskController {
     private TextArea TargetsRunLogTextArea;
 
     @FXML
+    private Label ProgressBarLabel;
+
+    @FXML
     void PauseTaskButtonClicked(ActionEvent event) {
 
     }
@@ -218,8 +220,8 @@ public class TaskController {
         for (String target: targetList) {
             if(!usersTargetList.contains(target))
                 usersTargetList.add(target);
-            displaySelectedTargetInfo();
         }
+        displaySelectedTargetInfo();
     }
 
     public void refreshMyTasksList() {
@@ -242,7 +244,7 @@ public class TaskController {
                 Gson gson = new Gson();
                 try {
                     if (responseBody != null) {
-                        Set<String> taskList = gson.fromJson(responseBody.string(), Set.class);
+                        Set<String> taskList = gson.fromJson(responseBody.string(), new TypeToken<Set<String>>(){}.getType());
                         Platform.runLater(()->updateTasksList(taskList));
                     }
                 } catch (IOException e) {
@@ -260,6 +262,7 @@ public class TaskController {
             if(!registeredTasksList.contains(task))
                 registeredTasksList.add(task);
         }
+        displaySelectedTaskInfo();
     }
 
     public void unregisterFromTask(String taskName) {
@@ -395,5 +398,57 @@ public class TaskController {
             TargetCreditsEarnedTextField.setText(targetForWorker.getPricing().toString());
         TargetsRunLogTextArea.setText(targetForWorker.getRunLog());
 
+    }
+
+    private void createNewProgressBar()
+    {
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                updateProgressFromServer();
+                while (currTaskAmountOfFinishedTargets < currTaskAmountOfChosenTargets) {
+                    Thread.sleep(300);
+                    updateProgressFromServer();
+                    updateProgress(currTaskAmountOfFinishedTargets, currTaskAmountOfChosenTargets);
+                }
+                updateProgress(currTaskAmountOfFinishedTargets, currTaskAmountOfChosenTargets);
+                return null;
+            }
+        };
+        this.TaskProgressBar.progressProperty().bind(task.progressProperty());
+        this.ProgressBarLabel.textProperty().bind
+                (Bindings.concat(Bindings.format("%.0f", Bindings.multiply(task.progressProperty(), 100)), " %"));
+
+        if (progressBarThread != null)
+            progressBarThread.interrupt();
+        this.progressBarThread = new Thread(task);
+        progressBarThread.setDaemon(true);
+        progressBarThread.start();
+    }
+
+    private void updateProgressFromServer() {
+        String finalUrl = HttpUrl
+                .parse(Constants.TASKS_PATH)
+                .newBuilder()
+                .addQueryParameter("getProgress", MyTasksListView.getSelectionModel().getSelectedItem())
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, "GET", null, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() >= 200 && response.code() < 300) //Success
+                {
+                    currTaskAmountOfChosenTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfChosenTargets"))));
+                    currTaskAmountOfFinishedTargets = (Integer.parseInt(Objects.requireNonNull(response.header("amountOfFinishedOrSkipped"))));
+                }
+                Objects.requireNonNull(response.body()).close();
+                response.close();
+            }
+        });
     }
 }
