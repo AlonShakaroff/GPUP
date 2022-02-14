@@ -13,10 +13,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import login.WorkerLoginController;
 import main.include.Constants;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
 import worker.taskmanagment.WorkerTaskManager;
@@ -26,6 +23,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static constants.WorkersConstants.WORKERS_LOGIN_FXML_RESOURCE;
 import static main.include.Constants.LOGIN_FXML_RESOURCE;
@@ -39,6 +38,8 @@ public class WorkersMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
+
         primaryStage.getIcons().add(new Image(WorkersConstants.ICON_IMAGE));
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(WORKERS_LOGIN_FXML_RESOURCE);

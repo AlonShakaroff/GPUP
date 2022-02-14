@@ -3,6 +3,8 @@ package util.http;
 import okhttp3.*;
 
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HttpClientUtil {
     private final static OkHttpClient HTTP_CLIENT =
