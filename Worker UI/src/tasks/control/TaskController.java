@@ -371,7 +371,7 @@ public class TaskController {
     }
 
     private void displaySelectedTargetInfo() {
-        if (currentSelectedTaskList.isEmpty())
+        if (currentSelectedTargetList.isEmpty())
             return;
 
         String selectedTargetName = currentSelectedTargetList.get(0);

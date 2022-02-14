@@ -26,6 +26,7 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import users.UsersLists;
 import util.http.HttpClientUtil;
+import workerdashboard.tableitems.SelectedTaskDashTableItem;
 
 import java.awt.*;
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class DashboardController {
     private ObservableList<String> onlineWorkersList = FXCollections.observableArrayList();
     private ObservableList<String> currentSelectedTaskList = FXCollections.observableArrayList();
     private ObservableList<TargetsInfoTableItem> targetsTypeInfoTableList = FXCollections.observableArrayList();
-    private ObservableList<SelectedTaskStatusTableItem> TaskInfoTableList = FXCollections.observableArrayList();
+    private ObservableList<SelectedTaskDashTableItem> TaskInfoTableList = FXCollections.observableArrayList();
     private SimpleBooleanProperty isRegisteredToCurTask;
     private int creditsEarned = 0;
     private Set<String> RegisteredTasks = new HashSet<>();
@@ -129,16 +130,16 @@ public class DashboardController {
     private TableColumn<TargetsInfoTableItem, Integer> RootAmount;
 
     @FXML
-    private TableView<SelectedTaskStatusTableItem> TaskInfoTableView;
+    private TableView<SelectedTaskDashTableItem> TaskInfoTableView;
 
     @FXML
-    private TableColumn<SelectedTaskStatusTableItem, String> TaskStatus;
+    private TableColumn<SelectedTaskDashTableItem, String> TaskStatus;
 
     @FXML
-    private TableColumn<SelectedTaskStatusTableItem, Integer> currentWorkers;
+    private TableColumn<SelectedTaskDashTableItem, Integer> currentWorkers;
 
     @FXML
-    private TableColumn<SelectedTaskStatusTableItem, Integer> TaskWorkPayment;
+    private TableColumn<SelectedTaskDashTableItem, Integer> TaskWorkPayment;
 
     @FXML
     private TextField TaskTypeTextField;
@@ -224,13 +225,14 @@ public class DashboardController {
 
         TargetsInfoTableItem targetsInfoTableItem = new TargetsInfoTableItem(taskDetailsDto.getRoots(),
                 taskDetailsDto.getMiddles(), taskDetailsDto.getLeaves(), taskDetailsDto.getIndependents(), taskDetailsDto.getTargets());
-        SelectedTaskStatusTableItem selectedTaskStatusTableItem =
-                new SelectedTaskStatusTableItem(taskDetailsDto.getTaskStatus(),taskDetailsDto.getTotalWorkers(),taskDetailsDto.getTotalPayment());
+        SelectedTaskDashTableItem selectedTaskDashTableItem =
+                new SelectedTaskDashTableItem(taskDetailsDto.getTaskStatus(),
+                        taskDetailsDto.getTotalWorkers(),taskDetailsDto.getTotalPayment()/taskDetailsDto.getTargets());
 
         this.targetsTypeInfoTableList.clear();
         this.targetsTypeInfoTableList.add(targetsInfoTableItem);
         this.TaskInfoTableList.clear();
-        this.TaskInfoTableList.add(selectedTaskStatusTableItem);
+        this.TaskInfoTableList.add(selectedTaskDashTableItem);
 
         this.TaskTypesAmountTableView.setItems(this.targetsTypeInfoTableList);
         this.TaskInfoTableView.setItems(this.TaskInfoTableList);
@@ -246,9 +248,9 @@ public class DashboardController {
     }
 
     public void initializeTaskStatusTable() {
-        this.TaskStatus.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, String>("status"));
-        this.currentWorkers.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, Integer>("workers"));
-        this.TaskWorkPayment.setCellValueFactory(new PropertyValueFactory<SelectedTaskStatusTableItem, Integer>("totalPayment"));
+        this.TaskStatus.setCellValueFactory(new PropertyValueFactory<SelectedTaskDashTableItem, String>("status"));
+        this.currentWorkers.setCellValueFactory(new PropertyValueFactory<SelectedTaskDashTableItem, Integer>("workers"));
+        this.TaskWorkPayment.setCellValueFactory(new PropertyValueFactory<SelectedTaskDashTableItem, Integer>("targetPayment"));
     }
 
     private void refreshDashboardData() {
