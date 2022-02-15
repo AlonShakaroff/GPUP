@@ -36,6 +36,7 @@ public class AdminMain extends Application {
         Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
 
         primaryStage.getIcons().add(new Image("/resources/images/icon.png"));
+        primaryStage.setTitle("G.P.U.P Admin application");
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(LOGIN_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
@@ -61,6 +62,7 @@ public class AdminMain extends Application {
                 if(result.get() == ButtonType.OK) {
                     logout(adminLoginController.getCurrentUser());
                     Platform.exit();
+                    System.exit(0);
                 }
                 event.consume();
             }

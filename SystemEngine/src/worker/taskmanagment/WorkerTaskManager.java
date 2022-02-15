@@ -77,16 +77,17 @@ public class WorkerTaskManager extends Thread {
 
     @Override
     public void run() {
-        while(true) {
-            try {
-                Thread.sleep(500);
-            }
-            catch (Exception ignore) {}
-            if(!isThreadPoolFull() && amountOfTasksRegisteredTo > 0) {
-                getGPUPTaskToRunFromServer();
-            }
+            while (true) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ignore) {
+                    this.threadPool.shutdownNow();
+                }
+                if (!isThreadPoolFull() && amountOfTasksRegisteredTo > 0) {
+                    getGPUPTaskToRunFromServer();
+                }
 
-        }
+            }
     }
 
     private void getGPUPTaskToRunFromServer() {

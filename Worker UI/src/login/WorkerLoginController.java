@@ -109,6 +109,7 @@ public class WorkerLoginController {
                             workerMainController.setUserName(currentUser);
                             workerMainController.initialize(primaryStage);
                             workerMainController.getTaskExecutor().setTasksRegisteredToSet(workerDetailsDto.getRegisteredTasks());
+                            setMainController(workerMainController);
                         }
                         catch(Exception e) {
                             e.printStackTrace();

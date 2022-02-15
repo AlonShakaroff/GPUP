@@ -100,6 +100,7 @@ public class TaskController {
         MyTargetsListView.setItems(usersTargetList);
         MyTasksListView.setItems(registeredTasksList);
         refreshDataThread = new Thread(this::refreshData);
+        refreshDataThread.setDaemon(true);
         refreshDataThread.start();
 
     }

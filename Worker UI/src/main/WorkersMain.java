@@ -41,6 +41,7 @@ public class WorkersMain extends Application {
         Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
 
         primaryStage.getIcons().add(new Image(WorkersConstants.ICON_IMAGE));
+        primaryStage.setTitle("G.P.U.P Worker application");
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(WORKERS_LOGIN_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
@@ -59,13 +60,17 @@ public class WorkersMain extends Application {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Close confirmation");
                 alert.setHeaderText("Are you sure you want to exit?");
-
                 alert.initOwner(primaryStage);
                 Toolkit.getDefaultToolkit().beep();
                 Optional<ButtonType> result = alert.showAndWait();
                 if(result.get() == ButtonType.OK) {
+                    if(workerLoginController.getWorkerMainController() != null)
+                    {
+                        workerLoginController.getWorkerMainController().getTaskExecutor().interrupt();
+                    }
                     logout(workerLoginController.getCurrentUser());
                     Platform.exit();
+                    System.exit(0);
                 }
                 event.consume();
             }
