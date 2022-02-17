@@ -121,6 +121,7 @@ public class TasksServlet extends HttpServlet {
                     targetGraph.markTargetsAsChosen(newTaskInfo.getTargetsToExecute());
                     if (newTaskInfo.isIncremental() && req.getHeader("oldTaskName") != null){
                         targetGraph.copyStatusAndResult(tasksManager.getTaskForServerSide(req.getHeader("oldTaskName")).getTargetGraph());
+                        targetGraph.setGraphToRunIncrementallyAndGetChosenTargets();
                     }
                     tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
                             TargetGraph.TaskType.SIMULATION, newTaskInfo.getTargetsToExecute(), targetGraph);
@@ -151,6 +152,7 @@ public class TasksServlet extends HttpServlet {
                     targetGraph.markTargetsAsChosen(newTaskInfo.getTargetsToExecute());
                     if (newTaskInfo.isIncremental() && req.getHeader("oldTaskName") != null){
                         targetGraph.copyStatusAndResult(tasksManager.getTaskForServerSide(req.getHeader("oldTaskName")).getTargetGraph());
+                        targetGraph.setGraphToRunIncrementallyAndGetChosenTargets();
                     }
                     tasksManager.addTaskDetailsDTO(newTaskInfo.getTaskName(), newTaskInfo.getTaskCreator(),
                                                 TargetGraph.TaskType.COMPILATION, newTaskInfo.getTargetsToExecute(), targetGraph);

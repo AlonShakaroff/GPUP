@@ -1,6 +1,7 @@
 package target;
 
 import exceptions.*;
+import org.jetbrains.annotations.NotNull;
 import xmlfiles.generated.GPUPConfiguration;
 import xmlfiles.generated.GPUPDescriptor;
 import xmlfiles.generated.GPUPTarget;
@@ -72,21 +73,7 @@ public class TargetGraph implements Serializable {
         Set<Target> ChosenTargets;
         currentTaskLog = "";
         if (isIncremental) {
-            ChosenTargets = allTargets.values().stream().filter(Target::isChosen).filter
-                    (target -> (target.getRunResult().equals(Target.Result.FAILURE) ||
-                            target.getRunResult().equals(Target.Result.SKIPPED))).collect(Collectors.toSet());
-
-            Set<Target> SuccededTargets = allTargets.values().stream().filter(Target::isChosen).filter
-                    (target -> (target.getRunResult().equals(Target.Result.SUCCESS) ||
-                            target.getRunResult().equals(Target.Result.WARNING))).collect(Collectors.toSet());
-
-            SuccededTargets.forEach(target -> {target.setIsChosen(false);});
-
-            for (Target target : ChosenTargets)
-                target.determineStatusBeforeTask();
-
-            SuccededTargets.forEach(target -> {target.setIsChosen(true);});
-
+            ChosenTargets = setGraphToRunIncrementallyAndGetChosenTargets();
         }
         else {
             allTargets.values().forEach(Target::resetTarget);
@@ -94,6 +81,26 @@ public class TargetGraph implements Serializable {
             for (Target target : ChosenTargets)
                 target.determineStatusBeforeTask();
         }
+        return ChosenTargets;
+    }
+
+    @NotNull
+    public Set<Target> setGraphToRunIncrementallyAndGetChosenTargets() {
+        Set<Target> ChosenTargets;
+        ChosenTargets = allTargets.values().stream().filter(Target::isChosen).filter
+                (target -> (target.getRunResult().equals(Target.Result.FAILURE) ||
+                        target.getRunResult().equals(Target.Result.SKIPPED))).collect(Collectors.toSet());
+
+        Set<Target> SucceededTargets = allTargets.values().stream().filter(Target::isChosen).filter
+                (target -> (target.getRunResult().equals(Target.Result.SUCCESS) ||
+                        target.getRunResult().equals(Target.Result.WARNING))).collect(Collectors.toSet());
+
+        SucceededTargets.forEach(target -> {target.setIsChosen(false);});
+
+        for (Target target : ChosenTargets)
+            target.determineStatusBeforeTask();
+
+        SucceededTargets.forEach(target -> {target.setIsChosen(true);});
         return ChosenTargets;
     }
 
