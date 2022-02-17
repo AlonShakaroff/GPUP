@@ -1,6 +1,7 @@
 package task;
 
 import com.google.gson.Gson;
+import com.sun.security.ntlm.Client;
 import dtos.GPUPTaskDto;
 import main.include.Constants;
 import okhttp3.*;
@@ -11,6 +12,7 @@ import util.http.HttpClientUtil;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public abstract class GPUPTask implements Runnable{
     protected final String taskName;
@@ -66,17 +68,14 @@ public abstract class GPUPTask implements Runnable{
                 .post(body)
                 .build();
 
-        HttpClientUtil.runAsyncWithRequest(request, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                uploadTaskStatusToServer();
-            }
+        try {
+            Response response = HttpClientUtil.runSyncWithRequest(request);
+            Objects.requireNonNull(response.body()).close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {
-                response.close();
-            }
-        });
     }
 
     public String getWorkerName() { return workerName; }

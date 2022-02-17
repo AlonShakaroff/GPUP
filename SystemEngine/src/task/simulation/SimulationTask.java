@@ -63,7 +63,6 @@ public class SimulationTask extends GPUPTask {
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " woke up with result: " + target.getTargetResult().toString() + "\n\n"));
             target.setTargetStatus(Target.Status.FINISHED);
             uploadTaskStatusToServer();
-
         } catch (InterruptedException exception) {
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " was interrupted! \n\n"));
             target.setTargetStatus(Target.Status.SKIPPED);

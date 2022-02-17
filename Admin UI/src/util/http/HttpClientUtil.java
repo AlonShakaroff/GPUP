@@ -2,6 +2,7 @@ package util.http;
 
 import okhttp3.*;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,10 @@ public class HttpClientUtil {
 
     public static void runAsyncWithRequest(Request request, Callback callback) {
         HttpClientUtil.HTTP_CLIENT.newCall(request).enqueue(callback);
+    }
+
+    public static Response runSyncWithRequest(Request request) throws IOException {
+        return  HttpClientUtil.HTTP_CLIENT.newCall(request).execute();
     }
 
 

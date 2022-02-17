@@ -65,13 +65,13 @@ public class CompilationTask extends GPUPTask {
                 uploadTaskStatusToServer();
             }
             target.setTargetStatus(Target.Status.FINISHED);
+            uploadTaskStatusToServer();
         }catch (Exception exception) {
             target.setRunLog(target.getRunLog().concat("Target " + target.getName() + " was interrupted!\n\n"));
             target.setTargetStatus(Target.Status.SKIPPED);
             target.setTargetResult(Target.Result.SKIPPED);
-        }
-        finally{
             uploadTaskStatusToServer();
+
         }
     }
 

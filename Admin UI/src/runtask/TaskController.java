@@ -29,6 +29,7 @@ import main.include.Constants;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import runtask.tableview.TargetInfoTableItem;
+import sun.plugin2.main.server.HeartbeatThread;
 import target.Target;
 import target.TargetForWorker;
 import target.TargetGraph;
@@ -75,6 +76,7 @@ public class TaskController {
     private Thread progressBarThread = null;
     private Gson gson = new Gson();
     private Set<TargetForWorker> targetsDtoSet = new HashSet<>();
+    private Boolean isStopped = false;
 
     public TaskController() {
         isPaused = new SimpleBooleanProperty(false);
@@ -348,6 +350,7 @@ public class TaskController {
         pauseTaskButton.setDisable(true);
         isPaused.setValue(false);
         setTaskRunStatus("Stopped");
+        isStopped = true;
         isCurTaskFinished.setValue(true);
     }
 
@@ -444,15 +447,25 @@ public class TaskController {
     private void refreshTaskData() {
         refreshTaskDataLists();
         while (!getTaskFinished()) {
-            if (!isPaused.get())
-                refreshTaskDataLists();
+            refreshTaskDataLists();
             displaySelectedTaskInfo(mainController.getTaskName());
         }
         refreshTaskDataLists();
+        if(isStopped) {
+            while (!inProcessTargetsNameList.isEmpty()) {
+                try {
+                    Thread.sleep(50);
+                    refreshTaskDataLists();
+                    displaySelectedTaskInfo(mainController.getTaskName());
+                } catch (Exception ignore) {
+                }
+            }
+        }
         Platform.runLater(() -> {
             pauseTaskButton.setDisable(true);
             isPaused.setValue(false);
             stopTaskButton.setDisable(true);
+            isStopped = false;
         });
     }
 
