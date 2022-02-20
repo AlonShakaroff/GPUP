@@ -77,14 +77,17 @@ public class TaskController {
     private Gson gson = new Gson();
     private Set<TargetForWorker> targetsDtoSet = new HashSet<>();
     private Boolean isStopped = false;
+    private String selectedTargetString;
 
     public TaskController() {
+        selectedTargetString = "";
         isPaused = new SimpleBooleanProperty(false);
         isCurTaskFinished = new SimpleBooleanProperty(false);
         isATargetSelected = new SimpleBooleanProperty(false);
         currentSelectedFrozenListener = change -> {
             if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
+                selectedTargetString = change.getList().get(0);
+                updateTargetDetailsTableAndTextArea();
                 isATargetSelected.set(true);
                 SkippedListView.getSelectionModel().clearSelection();
                 WaitingListView.getSelectionModel().clearSelection();
@@ -94,8 +97,9 @@ public class TaskController {
         };
         currentSelectedSkippedListener = change -> {
             if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
+                selectedTargetString = change.getList().get(0);
                 isATargetSelected.set(true);
+                updateTargetDetailsTableAndTextArea();
                 FrozenListView.getSelectionModel().clearSelection();
                 WaitingListView.getSelectionModel().clearSelection();
                 InProcessListView.getSelectionModel().clearSelection();
@@ -104,8 +108,9 @@ public class TaskController {
         };
         currentSelectedWaitingListener = change -> {
             if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
+                selectedTargetString = change.getList().get(0);
                 isATargetSelected.set(true);
+                updateTargetDetailsTableAndTextArea();
                 FrozenListView.getSelectionModel().clearSelection();
                 SkippedListView.getSelectionModel().clearSelection();
                 InProcessListView.getSelectionModel().clearSelection();
@@ -114,8 +119,9 @@ public class TaskController {
         };
         currentSelectedInProcessListener = change -> {
             if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
+                selectedTargetString = change.getList().get(0);
                 isATargetSelected.set(true);
+                updateTargetDetailsTableAndTextArea();
                 FrozenListView.getSelectionModel().clearSelection();
                 SkippedListView.getSelectionModel().clearSelection();
                 WaitingListView.getSelectionModel().clearSelection();
@@ -124,8 +130,9 @@ public class TaskController {
         };
         currentSelectedFinishedListener = change -> {
             if (!change.getList().isEmpty()) {
-                updateTargetDetailsTableAndTextArea(change.getList().get(0));
+                selectedTargetString = change.getList().get(0);
                 isATargetSelected.set(true);
+                updateTargetDetailsTableAndTextArea();;
                 FrozenListView.getSelectionModel().clearSelection();
                 SkippedListView.getSelectionModel().clearSelection();
                 WaitingListView.getSelectionModel().clearSelection();
@@ -142,15 +149,17 @@ public class TaskController {
 
     }
 
-    private void updateTargetDetailsTableAndTextArea(String selectedTargetString) {
-        TargetForWorker selectedTarget = targetsDtoSet.stream()
-                .filter(targetForWorker -> (targetForWorker.getName().equalsIgnoreCase(selectedTargetString.split(" ")[0]))).findFirst().orElse(null);
+    private void updateTargetDetailsTableAndTextArea() {
         targetInfoTableList.clear();
-        targetInfoTableList.add(new TargetInfoTableItem(selectedTarget));
-        TargetInfoTableView.setItems(targetInfoTableList);
-
         TargetInfoTextArea.clear();
-        TargetInfoTextArea.setText(selectedTarget.getUniqueData());
+
+        if(isATargetSelected.get()) {
+            TargetForWorker selectedTarget = targetsDtoSet.stream()
+                    .filter(targetForWorker -> (targetForWorker.getName().equalsIgnoreCase(selectedTargetString.split(" ")[0]))).findFirst().orElse(null);
+            targetInfoTableList.add(new TargetInfoTableItem(selectedTarget));
+            TargetInfoTableView.setItems(targetInfoTableList);
+            TargetInfoTextArea.setText(selectedTarget.getUniqueData());
+        }
     }
 
     @FXML
@@ -413,6 +422,7 @@ public class TaskController {
         refreshTaskDataLists();
         while (!getTaskFinished()) {
             refreshTaskDataLists();
+            updateTargetDetailsTableAndTextArea();
             displaySelectedTaskInfo(mainController.getTaskName());
         }
         refreshTaskDataLists();

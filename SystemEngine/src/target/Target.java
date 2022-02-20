@@ -26,7 +26,7 @@ public class Target implements Serializable, Cloneable {
     private Type nodeType;
     private Duration targetTaskTime;
     private Instant targetTaskBegin,targetTaskEnd;
-    private Instant startTimeInCurState;
+    private Instant startTimeInCurState = null;
     private boolean isVisited;
     private boolean isChosen;
     private final Set<Target> responsibleTargets;
@@ -384,7 +384,8 @@ public class Target implements Serializable, Cloneable {
                     uniqueData = "Skipped because targets:\n" + this.getResponsibleTargets().toString() + "\nfailed.";
                 break;
             case WAITING:
-                uniqueData = "Target is waiting for: " + this.getTimeInState() + " MS";
+                if(startTimeInCurState != null)
+                    uniqueData = "Target is waiting for: " + this.getTimeInState() + " MS";
                 break;
             case IN_PROCESS:
                 uniqueData = "Target is in process for: " + this.getTimeInState() + " MS";
