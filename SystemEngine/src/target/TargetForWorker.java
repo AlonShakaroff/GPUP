@@ -11,9 +11,11 @@ public class TargetForWorker {
     private String taskType;
     private Integer pricing;
     private String nodeType;
+    private String uniqueData;
 
 
-    public TargetForWorker(String name, String extraData, String taskName,String taskType ,Integer pricing, String nodeType) {
+    public TargetForWorker(String name, String extraData, String taskName
+            ,String taskType ,Integer pricing, String nodeType, String uniqueData) {
         this.name = name;
         this.targetId = name + "("+ taskName + ")";
         this.extraData = extraData;
@@ -22,6 +24,7 @@ public class TargetForWorker {
         this.taskType = taskType;
         this.pricing = pricing;
         this.nodeType = nodeType;
+        this.uniqueData = uniqueData;
     }
 
     public String getName() {
@@ -89,5 +92,9 @@ public class TargetForWorker {
 
     public String getTaskType() {
         return taskType;
+    }
+
+    public String getUniqueData() {
+        return uniqueData;
     }
 }

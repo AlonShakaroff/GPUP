@@ -86,6 +86,7 @@ public class ExecutorThread extends Thread{
     public void run() {
         tasksManager.getTaskForServerSide(taskName).getTargetGraph().setTaskStartTime(Instant.now());
         tasksManager.getTaskForServerSide(taskName).getTargetGraph().getAllTargets().values().forEach(Target::setStartTimeInCurState);
+        tasksManager.getTaskForServerSide(taskName).getTargetGraph().getAllTargets().values().forEach(Target::setUniqueDataDisplay);
         while (!tasksList.isEmpty()) {
             if (isStopped) { // break if stopped
                 break;
@@ -106,6 +107,7 @@ public class ExecutorThread extends Thread{
             } else {    // target is waiting (but maybe needs to be skipped)
                 Target curTarget = tasksManager.getTaskForServerSide(taskName).getTargetGraph().getTarget(curTask.getTarget().getName());
                 curTarget.checkIfNeedsToBeSkipped();
+                curTarget.setUniqueDataDisplay();
                 curTask.getTarget().setTargetResult(curTarget.getRunResult());
                 curTask.getTarget().setTargetStatus(curTarget.getRunStatus());
                 if (curTask.getTarget().getTargetStatus().equals(Target.Status.SKIPPED)) {

@@ -1,7 +1,6 @@
 package target;
 
 import exceptions.*;
-import org.jetbrains.annotations.NotNull;
 import xmlfiles.generated.GPUPConfiguration;
 import xmlfiles.generated.GPUPDescriptor;
 import xmlfiles.generated.GPUPTarget;
@@ -84,7 +83,6 @@ public class TargetGraph implements Serializable {
         return ChosenTargets;
     }
 
-    @NotNull
     public Set<Target> setGraphToRunIncrementallyAndGetChosenTargets() {
         Set<Target> ChosenTargets;
         ChosenTargets = allTargets.values().stream().filter(Target::isChosen).filter
@@ -375,6 +373,8 @@ public class TargetGraph implements Serializable {
         target.setStatus(targetForWorker.getTargetStatus());
         target.setResult(targetForWorker.getTargetResult());
         target.setRunLog(targetForWorker.getRunLog());
+        if(targetForWorker.getTargetStatus() == Target.Status.IN_PROCESS)
+            target.setStartTimeInCurState();
     }
 
     public Set<Target> getAllChosenTargets() {

@@ -150,42 +150,7 @@ public class TaskController {
         TargetInfoTableView.setItems(targetInfoTableList);
 
         TargetInfoTextArea.clear();
-        //statusUniqueDataDisplay(selectedTarget, selectedTarget.getRunStatus());
-    }
-
-    private void statusUniqueDataDisplay(Target selectedTarget, Target.Status status) {
-        String uniqueData = "";
-        switch (status) {
-            case FROZEN:
-                uniqueData = "Waiting for targets: \n" + selectedTarget.getDependsOnSet().stream()
-                        .filter(Target::isChosen)
-                        .filter(target -> (target.getRunStatus().equals(Target.Status.FROZEN) ||
-                                target.getRunStatus().equals(Target.Status.WAITING) || target.getRunStatus().equals(Target.Status.IN_PROCESS)))
-                        .collect(Collectors.toList()) + "\nto finish running successfully.";
-
-                break;
-            case SKIPPED:
-                if (selectedTarget.getResponsibleTargets().isEmpty())
-                    uniqueData = "Target was Interrupted!\n";
-                else
-                    uniqueData = "Skipped because targets:\n" + selectedTarget.getResponsibleTargets().toString() + "\nfailed.";
-                break;
-            case WAITING:
-                uniqueData = "Target is waiting for: " + selectedTarget.getTimeInState() + " MS";
-                break;
-            case IN_PROCESS:
-                uniqueData = "Target is in process for: " + selectedTarget.getTimeInState() + " MS";
-                break;
-            case FINISHED:
-                if (selectedTarget.getRunResult().equals(Target.Result.SUCCESS))
-                    uniqueData = "Target finished running successfully.";
-                else if (selectedTarget.getRunResult().equals(Target.Result.WARNING))
-                    uniqueData = "Target finished running successfully\nwith warning.";
-                else
-                    uniqueData = "Target FAILED.";
-                break;
-        }
-        TargetInfoTextArea.appendText(uniqueData);
+        TargetInfoTextArea.setText(selectedTarget.getUniqueData());
     }
 
     @FXML
