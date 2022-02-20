@@ -2,10 +2,7 @@ package servlets.tasks.worker;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import dtos.CompilationTaskDto;
-import dtos.GPUPTaskDto;
-import dtos.SimulationTaskDto;
-import dtos.WorkerDetailsDto;
+import dtos.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,7 +50,7 @@ public class WorkerTaskServlet extends HttpServlet {
                     response.addHeader("taskType", "compilation");
                 }
             }
-            out.write(gpupTaskJson);
+            out.println(gpupTaskJson);
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
 
@@ -69,6 +66,7 @@ public class WorkerTaskServlet extends HttpServlet {
                         ,targetForWorker.getTaskName()).addCredits(targetForWorker.getPricing());
             }
             tasksManager.addTargetToWorkerMap(workerName,targetForWorker);
+            response.getWriter().println("updated status successfully!");
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
         else if(request.getParameter("registerToTask") != null) {
@@ -78,6 +76,7 @@ public class WorkerTaskServlet extends HttpServlet {
             {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.addHeader("message","Already registered to task " + taskName);
+                response.getWriter().println("Already registered to task " + taskName);
             }
             else {
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -85,6 +84,8 @@ public class WorkerTaskServlet extends HttpServlet {
                 tasksManager.getTaskDetailsDTO(taskName).addWorker();
                 workerDetailsDto.registerToTask(taskName.toLowerCase());
                 tasksManager.createTaskHistoryForWorker(workerDetailsDto.getUserName(),taskName);
+                String taskDetailsDtoJSON = gson.toJson(tasksManager.getTaskDetailsDTO(taskName), TaskDetailsDto.class);
+                response.getWriter().println(taskDetailsDtoJSON);
             }
         }
         else if(request.getParameter("unregisterFromTask") != null) {
@@ -92,6 +93,9 @@ public class WorkerTaskServlet extends HttpServlet {
             tasksManager.getTaskForServerSide(taskName).removeWorker();
             tasksManager.getTaskDetailsDTO(taskName).removeWorker();
             userManager.getWorkerDetailsDto(request.getParameter("workerName").toLowerCase()).unregisterFromTask(taskName.toLowerCase());
+        }
+        else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
