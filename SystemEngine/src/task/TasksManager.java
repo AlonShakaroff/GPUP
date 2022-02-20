@@ -147,6 +147,7 @@ public class TasksManager {
 
     public synchronized void updateTargetsStatusAndResult(TargetForWorker target) {
         taskForServerSideMap.get(target.getTaskName()).getTargetGraph().updateTargetsStatusAndResult(target);
+        taskForServerSideMap.get(target.getTaskName()).getTargetGraph().getTarget(target.getName()).setUniqueDataDisplay();
     }
 
     public ExecutorThread getTaskExecutorThread(String taskName) {

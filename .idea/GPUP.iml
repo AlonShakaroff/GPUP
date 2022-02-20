@@ -6,7 +6,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 10.0.16" level="application_server_libraries" />
-    <orderEntry type="library" name="okHttp" level="project" />
     <orderEntry type="library" name="gson" level="project" />
+    <orderEntry type="library" name="okHttp" level="project" />
   </component>
 </module>

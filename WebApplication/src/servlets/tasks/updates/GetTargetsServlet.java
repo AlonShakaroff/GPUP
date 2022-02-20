@@ -31,6 +31,7 @@ public class GetTargetsServlet extends HttpServlet {
             String taskName = request.getParameter("taskName");
             Set<TargetForWorker>  targetDtoSet = new HashSet<>();
             for (Target target:tasksManager.getTaskForServerSide(taskName).getTargetGraph().getAllChosenTargets()) {
+                target.setUniqueDataDisplay();
                 TaskForServerSide taskForServerSide = tasksManager.getTaskForServerSide(taskName);
                 targetDtoSet.add(Target.extractTargetForWorkerFromTarget(target,taskName,taskForServerSide.getTaskType().name()
                         ,taskForServerSide.getTargetGraph().getTaskPricing().get(taskForServerSide.getTaskType())));

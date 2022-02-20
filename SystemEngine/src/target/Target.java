@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Target implements Serializable, Cloneable {
 
@@ -25,11 +26,12 @@ public class Target implements Serializable, Cloneable {
     private Type nodeType;
     private Duration targetTaskTime;
     private Instant targetTaskBegin,targetTaskEnd;
-    private Instant startTimeInCurState;
+    private Instant startTimeInCurState = null;
     private boolean isVisited;
     private boolean isChosen;
     private final Set<Target> responsibleTargets;
     private String runLog;
+    private String uniqueData = "";
 
     public Target(String name, String extraData)
     {
@@ -105,6 +107,10 @@ public class Target implements Serializable, Cloneable {
         return nodeType;
     }
 
+    public String getUniqueData() {
+        return uniqueData;
+    }
+
     public String getNodeTypeAsString() {
         switch (nodeType)
         {
@@ -172,6 +178,7 @@ public class Target implements Serializable, Cloneable {
                 (target.getRunStatus().equals(Status.FINISHED) || target.getRunStatus().equals(Status.SKIPPED)))) {
             this.setStatus(Status.WAITING);
             this.setStartTimeInCurState();
+            this.setUniqueDataDisplay();
         }
     }
     public void checkIfNeedsToBeSkipped() {
@@ -344,7 +351,8 @@ public class Target implements Serializable, Cloneable {
     }
 
     public static TargetForWorker extractTargetForWorkerFromTarget(Target target,String taskName,String taskType, Integer pricing) {
-        TargetForWorker targetForWorker = new TargetForWorker(target.getName(),target.getExtraData(),taskName,taskType,pricing,target.getNodeType().name());
+        TargetForWorker targetForWorker = new TargetForWorker(target.getName(),target.getExtraData()
+                ,taskName,taskType,pricing,target.getNodeType().name(),target.getUniqueData());
         targetForWorker.setTargetStatus(target.getRunStatus());
         targetForWorker.setTargetResult(target.getRunResult());
         return targetForWorker;
@@ -356,5 +364,41 @@ public class Target implements Serializable, Cloneable {
 
     public void setRunLog(String runLog) {
         this.runLog = runLog;
+    }
+
+    public void setUniqueDataDisplay() {
+        String uniqueData = "";
+        switch (runStatus) {
+            case FROZEN:
+                uniqueData = "Waiting for targets: \n" + this.getDependsOnSet().stream()
+                        .filter(Target::isChosen)
+                        .filter(target -> (target.getRunStatus().equals(Target.Status.FROZEN) ||
+                                target.getRunStatus().equals(Target.Status.WAITING) || target.getRunStatus().equals(Target.Status.IN_PROCESS)))
+                        .collect(Collectors.toList()) + "\nto finish running successfully.";
+
+                break;
+            case SKIPPED:
+                if (this.getResponsibleTargets().isEmpty())
+                    uniqueData = "Target was Interrupted!\n";
+                else
+                    uniqueData = "Skipped because targets:\n" + this.getResponsibleTargets().toString() + "\nfailed.";
+                break;
+            case WAITING:
+                if(startTimeInCurState != null)
+                    uniqueData = "Target is waiting for: " + this.getTimeInState() + " MS";
+                break;
+            case IN_PROCESS:
+                uniqueData = "Target is in process for: " + this.getTimeInState() + " MS";
+                break;
+            case FINISHED:
+                if (this.getRunResult().equals(Target.Result.SUCCESS))
+                    uniqueData = "Target finished running successfully.";
+                else if (this.getRunResult().equals(Target.Result.WARNING))
+                    uniqueData = "Target finished running successfully\nwith warning.";
+                else
+                    uniqueData = "Target FAILED.";
+                break;
+        }
+        this.uniqueData = uniqueData;
     }
 }

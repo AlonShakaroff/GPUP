@@ -1,19 +1,21 @@
 package target;
 
 public class TargetForWorker {
-    private String name;
-    private String targetId;
+    private final String name;
+    private final String targetId;
     private String result;
     private String status;
     private String runLog;
-    private String extraData;
-    private String taskName;
-    private String taskType;
-    private Integer pricing;
-    private String nodeType;
+    private final String extraData;
+    private final String taskName;
+    private final String taskType;
+    private final Integer pricing;
+    private final String nodeType;
+    private final String uniqueData;
 
 
-    public TargetForWorker(String name, String extraData, String taskName,String taskType ,Integer pricing, String nodeType) {
+    public TargetForWorker(String name, String extraData, String taskName
+            ,String taskType ,Integer pricing, String nodeType, String uniqueData) {
         this.name = name;
         this.targetId = name + "("+ taskName + ")";
         this.extraData = extraData;
@@ -22,6 +24,7 @@ public class TargetForWorker {
         this.taskType = taskType;
         this.pricing = pricing;
         this.nodeType = nodeType;
+        this.uniqueData = uniqueData;
     }
 
     public String getName() {
@@ -89,5 +92,13 @@ public class TargetForWorker {
 
     public String getTaskType() {
         return taskType;
+    }
+
+    public String getUniqueData() {
+        return uniqueData;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 }
