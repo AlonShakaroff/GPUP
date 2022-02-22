@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact name="Admin UI:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Admin_UI_jar</output-path>
+    <root id="root">
+      <element id="archive" name="Admin UI.jar">
+        <element id="module-output" name="Admin UI" />
+        <element id="module-output" name="SystemEngine" />
+        <element id="module-output" name="WebApplication" />
+        <element id="module-output" name="Worker UI" />
+      </element>
+      <element id="library" level="application_server_libraries" name="Tomcat 10.0.16" />
+      <element id="library" level="project" name="okHttp" />
+      <element id="library" level="project" name="gson" />
+    </root>
+  </artifact>
+</component>

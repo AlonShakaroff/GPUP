@@ -1,10 +1,10 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="SystemEngine:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/SystemEngine_jar</output-path>
-    <root id="archive" name="SystemEngine.jar">
+  <artifact type="jar" name="WebApplication:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/WebApplication_jar</output-path>
+    <root id="archive" name="WebApplication.jar">
+      <element id="module-output" name="WebApplication" />
       <element id="module-output" name="SystemEngine" />
       <element id="module-output" name="Admin UI" />
-      <element id="module-output" name="WebApplication" />
       <element id="module-output" name="Worker UI" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../../../../tomcat/apache-tomcat-10.0.16/lib/jsp-api.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../../../../tomcat/apache-tomcat-10.0.16/lib/servlet-api.jar" path-in-jar="/" />
