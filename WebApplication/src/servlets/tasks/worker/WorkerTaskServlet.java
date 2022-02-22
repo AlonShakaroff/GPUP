@@ -50,7 +50,10 @@ public class WorkerTaskServlet extends HttpServlet {
                     response.addHeader("taskType", "compilation");
                 }
             }
-            out.write(gpupTaskJson);
+            if(gpupTaskJson != null)
+                out.println(gpupTaskJson);
+            else
+                out.write(gpupTaskJson);
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
 
