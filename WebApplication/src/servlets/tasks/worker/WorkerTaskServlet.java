@@ -50,7 +50,7 @@ public class WorkerTaskServlet extends HttpServlet {
                     response.addHeader("taskType", "compilation");
                 }
             }
-            out.println(gpupTaskJson);
+            out.write(gpupTaskJson);
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
 
@@ -93,9 +93,6 @@ public class WorkerTaskServlet extends HttpServlet {
             tasksManager.getTaskForServerSide(taskName).removeWorker();
             tasksManager.getTaskDetailsDTO(taskName).removeWorker();
             userManager.getWorkerDetailsDto(request.getParameter("workerName").toLowerCase()).unregisterFromTask(taskName.toLowerCase());
-        }
-        else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
