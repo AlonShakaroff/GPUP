@@ -18,7 +18,8 @@ public class WorkersConstants {
 
     /*--------------------------------------------Servlets---------------------------------------------------*/
     public final static String BASE_DOMAIN = "localhost";
-    private final static String FULL_SERVER_PATH = "http://" + BASE_DOMAIN + ":8080";
+    public final static String APPLICATION_NAME = "/WebApplication_Web";
+    private final static String FULL_SERVER_PATH = "http://" + BASE_DOMAIN + ":8080" + APPLICATION_NAME;
 
     public static final String WORKER_TASK_PAGE = FULL_SERVER_PATH + "/worker/task";
     public static final String GET_WORKER_PAGE = FULL_SERVER_PATH + "/getWorker";

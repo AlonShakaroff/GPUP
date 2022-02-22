@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="WebApplication:Web">
+    <output-path>$PROJECT_DIR$/out/artifacts/WebApplication_Web</output-path>
+    <root id="archive" name="WebApplication_Web.war">
+      <element id="artifact" artifact-name="WebApplication:Web exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Worker UI" />
+          <element id="module-output" name="Admin UI" />
+          <element id="module-output" name="SystemEngine" />
+          <element id="module-output" name="WebApplication" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="okHttp" />
+          <element id="library" level="project" name="gson" />
+          <element id="library" level="application_server_libraries" name="Tomcat 10.0.16" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

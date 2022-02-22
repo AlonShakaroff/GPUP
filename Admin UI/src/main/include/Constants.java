@@ -10,7 +10,8 @@ public class Constants {
     public final static String LOGIN_FXML_RESOURCE = "/login/AdminLogin.fxml";
 
     public final static String BASE_DOMAIN = "localhost";
-    private final static String FULL_SERVER_PATH = "http://" + BASE_DOMAIN + ":8080";
+    public final static String APPLICATION_NAME = "/WebApplication_Web";
+    private final static String FULL_SERVER_PATH = "http://" + BASE_DOMAIN + ":8080" + APPLICATION_NAME;
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/login";
     public final static String USERS_LISTS = FULL_SERVER_PATH + "/userslists";

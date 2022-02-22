@@ -8,6 +8,7 @@
           <element id="module-output" name="WebApplication" />
           <element id="module-output" name="SystemEngine" />
           <element id="module-output" name="Admin UI" />
+          <element id="module-output" name="Worker UI" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="application_server_libraries" name="Tomcat 10.0.16" />
