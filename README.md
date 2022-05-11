@@ -1,4 +1,6 @@
-# ![GPUPLogo](https://user-images.githubusercontent.com/80321222/167834448-ded706c1-1570-46e4-b9a5-083660769ea8.png)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/80321222/167834448-ded706c1-1570-46e4-b9a5-083660769ea8.png" />
+</p>
 
 # Description
 GPUP is a platform that utlizes task managment given by managers to workers and processing those tasks on the worker side.
@@ -65,4 +67,3 @@ in practice there is no prevention that the task will run on several targets sim
 * Viewing details about the worker history - the amount of tasks that he assigned to, the amount of targets that he finished running on, and the current balance of money the worker earned so far.
 * Viewing details about a task from the online tasks - task progress, the amount of targets in the task, the payment for each target execution, etc.
 * Viewing the list of online tasks that the worker is assinged to, and the target history of the worker.
-
