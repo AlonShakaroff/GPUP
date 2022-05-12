@@ -6,6 +6,8 @@
 GPUP is a platform that utlizes task managment given by managers to workers and processing those tasks on the worker side.
 The platform is managed from two desktop applications - Admin application and Worker application, one for task creation, and the other for task execution.
 
+##### Authored by Alon Shakaroff & Omer Cohen Shor
+
 # About GPUP
 ### The fundamental idea that stands in GPUP's core is based on two main components:
 
